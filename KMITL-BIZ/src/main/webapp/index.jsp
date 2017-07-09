@@ -68,9 +68,11 @@
                     <form>
                         <div class="form-group"></div>
                     </form>
-                    <h5 class="text-center">พนักงาน: สมจิตร</h5>
+                    <h5 class="text-center">พนักงาน: ${sessionScope.staff.getFirst_name()} ${sessionScope.staff.getLast_name()}</h5>
                     <h5 class="text-center">วันพฤหัสที่ 23 สิงหาคม 2560 เวลา 18:45</h5>
-                    <button class="btn btn-danger" type="button" style="width:100%;">ออกจากระบบ </button>
+                    <form action="${SITE_URL}/LogoutServlet" method="POST">
+                        <button class="btn btn-danger" type="submit" style="width:100%;">ออกจากระบบ </button>
+                    </form>
                 </div>
             </div>
         </div>

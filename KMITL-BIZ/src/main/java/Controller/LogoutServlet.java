@@ -5,9 +5,8 @@
  */
 package Controller;
 
-import Model.Staff;
 import java.io.IOException;
-import java.sql.Connection;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,8 +18,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author BellKunG
  */
-@WebServlet(name = "Authentication", urlPatterns = {"/Authentication"})
-public class Authentication extends HttpServlet {
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,19 +35,9 @@ public class Authentication extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        Connection conn = (Connection) getServletContext().getAttribute("connection");
         HttpSession session = request.getSession();
-        
-        Staff staff = new Staff(conn, username, password);
-        if (staff.isStaff()) {
-            session.setAttribute("staff", staff);
-            response.sendRedirect("/KMITL-BIZ/index.jsp");
-        } else {
-            response.sendRedirect("/KMITL-BIZ/Login.jsp");
-        }
+        session.invalidate();
+        response.sendRedirect("/KMITL-BIZ/Login.jsp");
         return;
     }
 
