@@ -5,14 +5,8 @@
  */
 package Controller;
 
-import Model.Product;
-import Model.Staff;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,8 +18,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author BellKunG
  */
-@WebServlet(name = "Authentication", urlPatterns = {"/Authentication"})
-public class Authentication extends HttpServlet {
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,36 +35,9 @@ public class Authentication extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Connection conn = (Connection) getServletContext().getAttribute("connection");
         HttpSession session = request.getSession();
-        
-        Staff staff = new Staff(conn, username, password);
-        if (staff.isStaff()) {
-            
-            ArrayList<Product> allProduct = new ArrayList<>();
-            try {
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.PRODUCT");
-                ResultSet rs = pstmt.executeQuery();
-                
-                while (rs.next()) {
-                    Product pro = new Product(conn, rs.getInt("product_id"), rs.getString("product_name"));
-                    allProduct.add(pro);
-                }
-                
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
-
-            session.setAttribute("staff", staff);
-            session.setAttribute("allProduct", allProduct);
-            response.sendRedirect("/KMITL-BIZ/index.jsp");
-            
-        } else {
-            response.sendRedirect("/KMITL-BIZ/Login.jsp");
-        }
+        session.invalidate();
+        response.sendRedirect("/KMITL-BIZ/Login.jsp");
         return;
     }
 
