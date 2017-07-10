@@ -2,3 +2,26 @@
   border-radius:5px;
 }
 
+.div-disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.btn-area {
+    margin: 0px 0px 0px 0px; 
+    height: 40px; 
+    width: 50px;
+}
+
+.blank-space {
+    margin: 0px 0px 0px 0px; 
+    height: 40px; 
+    width: 50px;
+}
+
+.black-area {
+    margin: 0px 0px 0px 0px; 
+    height: 40px; 
+    width: 50px;
+    background-color: black;
+}

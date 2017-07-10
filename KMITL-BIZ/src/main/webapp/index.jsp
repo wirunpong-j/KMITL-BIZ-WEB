@@ -52,7 +52,48 @@
     <div>
         <div class="container">
             <div class="row" style="padding:15px;">
-                <div class="col-md-9"><img class="img-responsive" src="assets/img/Caremal-Market.jpg"></div>
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <c:forEach var="i" begin="1" end="165">
+                                        <th><button class="btn btn-danger btn-xs btn-area" type="button">X${i}</button></th>
+                                    </c:forEach>
+                                </tr>
+                            </thead>
+                            <tbody>
+<!---------------------------------------------------Map Area--------------------------------------------------------------------------------->
+                                    <c:forEach var="area" items="${sessionScope.allArea}">
+                                        <tr>
+                                        <c:forEach var="a" items="${area}">
+                                            <c:choose>
+                                                <c:when test="${a == 'X'}">
+                                                    <td class="blank-space"></td>
+                                                </c:when>
+                                                <c:when test="${a == 'B'}">
+                                                    <td class="black-area"></td>
+                                                </c:when>    
+                                                <c:otherwise>
+                                                    <c:choose>
+                                                        <c:when test="${sessionScope.allZone[a] == 0}">
+                                                            <td><button class="btn btn-success btn-xs btn-area" type="button">${a}</button></td>
+                                                        </c:when>    
+                                                        <c:otherwise>
+                                                            <td><button class="btn btn-danger btn-xs btn-area" type="button" disabled>${a}</button></td>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                        </tr>
+                                    </c:forEach>
+ 
+<!---------------------------------------------------END--------------------------------------------------------------------------------->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="col-md-3" style="margin:auto 0;">
                     <c:choose>
                         <c:when test="${sessionScope.status == 'RENT'}">
