@@ -9,8 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,6 +31,7 @@ public class Staff {
     
     public boolean isStaff() {
         try {
+            System.out.println(conn);
             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.STAFF WHERE staff_id = ? AND password = ?");
             pstmt.setString(1, this.staff_id);
             pstmt.setString(2, this.password);
@@ -42,6 +41,7 @@ public class Staff {
                 this.first_name = rs.getString("fname");
                 this.last_name = rs.getString("lname");
                 this.role = rs.getString("role");
+                
                 return true;
             } else {
                 return false;
