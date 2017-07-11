@@ -13,28 +13,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css"/>
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/default.min.css"/>
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/semantic.min.css"/>
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css"/>
+    
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- JavaScript -->
+    <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
 </head>
 
 <body>
     <div>
         <div class="container" style="margin:20px auto;">
-            <div class="row" style="background-color:#eeeeee;padding:15px;">
-                <div class="col-md-9">
-                    <c:forEach var="pro" items="${sessionScope.allProduct}">
-                        <button class="btn btn-default btn-product" type="button" style="margin:2px 0;">${pro.getProduct_name()}</button>
-                    </c:forEach>
-                        
+            <div class="row" style="background-color:#eeeeee; padding:15px;">
+                <div class="col-md-9" id="allProduct">
+                    <c:choose>
+                        <c:when test="${sessionScope.status == 'RENT'}">
+                            <c:forEach var="pro" items="${sessionScope.allProduct}">
+                                <button class="btn btn-default btn-product" type="button" style="margin:2px 0;" disabled>${pro.getProduct_name()}</button>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="pro" items="${sessionScope.allProduct}">
+                                <button class="btn btn-default btn-product" type="button" style="margin:2px 0;">${pro.getProduct_name()}</button>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>    
                 </div>
+                
                 <div class="col-md-3">
-                    <form action="${SITE_URL}/ProductServlet" method="POST">
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="product" id="product" placeholder="ชื่อสินค้า">
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="customer" placeholder="รหัสรับบริการ">
-                        </div>
-                        <button class="btn btn-primary" type="submit" style="width:100%;">บันทึก </button>
-                    </form>
+                    <c:choose>
+                        <c:when test="${sessionScope.status == 'RENT'}">
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="product" placeholder="ชื่อสินค้า" value="${sessionScope.product.getProduct_name()}" disabled>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="customer" placeholder="รหัสรับบริการ" value="${sessionScope.customer.getCust_id_str()}" disabled>
+                            </div>
+                            <button class="btn btn-primary" type="button" style="width:100%;" disabled>ทำการเลือกสินค้าแล้ว </button>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="product" id="product" placeholder="ชื่อสินค้า">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="customer" id="customer" placeholder="รหัสรับบริการ">
+                            </div>
+                            <button class="btn btn-primary" type="button" id="saveBtn" style="width:100%;">บันทึก </button>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                         
                 <c:choose>
@@ -51,49 +88,59 @@
     </div>
     <div>
         <div class="container">
-            <div class="row" style="padding:15px;">
-                <div class="col-md-9">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <c:forEach var="i" begin="1" end="165">
-                                        <th><button class="btn btn-danger btn-xs btn-area" type="button">X${i}</button></th>
-                                    </c:forEach>
-                                </tr>
-                            </thead>
-                            <tbody>
-<!---------------------------------------------------Map Area--------------------------------------------------------------------------------->
-                                    <c:forEach var="area" items="${sessionScope.allArea}">
+            <div class="row" style="background-color:#eeeeee; padding:15px;">
+                    <c:choose>
+                        <c:when test="${sessionScope.status != 'RENT'}">
+                            <div class="col-md-9"><img class="img-responsive" src="assets/img/Caremal-Market.jpg"></div>
+                        </c:when>
+                        <c:otherwise>
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
                                         <tr>
-                                        <c:forEach var="a" items="${area}">
-                                            <c:choose>
-                                                <c:when test="${a == 'X'}">
-                                                    <td class="blank-space"></td>
-                                                </c:when>
-                                                <c:when test="${a == 'B'}">
-                                                    <td class="black-area"></td>
-                                                </c:when>    
-                                                <c:otherwise>
-                                                    <c:choose>
-                                                        <c:when test="${sessionScope.allZone[a] == 0}">
-                                                            <td><button class="btn btn-success btn-xs btn-area" type="button">${a}</button></td>
-                                                        </c:when>    
-                                                        <c:otherwise>
-                                                            <td><button class="btn btn-danger btn-xs btn-area" type="button" disabled>${a}</button></td>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </c:forEach>
+                                            <c:forEach var="i" begin="1" end="165">
+                                                <th><button class="btn btn-danger btn-xs btn-area" type="button">X${i}</button></th>
+                                            </c:forEach>
                                         </tr>
-                                    </c:forEach>
+                                    </thead>
+                                    <tbody>
+<!---------------------------------------------------Map Area--------------------------------------------------------------------------------->
+                                        <c:forEach var="area" items="${sessionScope.allArea}">
+                                            <tr>
+                                            <c:forEach var="a" items="${area}">
+                                                <c:choose>
+                                                    <c:when test="${a == 'X'}">
+                                                        <td class="blank-space"></td>
+                                                    </c:when>
+                                                    <c:when test="${a == 'B'}">
+                                                        <td class="black-area"></td>
+                                                    </c:when>    
+                                                    <c:otherwise>
+                                                        <c:choose>
+                                                            <c:when test="${sessionScope.allZone[a].getOrder_id() == 0}">
+                                                                <td><button class="btn btn-success btn-xs btn-area" type="button">${a}</button></td>
+                                                            </c:when>
+                                                            <c:when test="${sessionScope.allZone[a].getProduct_id() == sessionScope.customer.getProduct_id()}">
+                                                                <td><button class="btn btn-warning btn-xs btn-area" type="button" disabled>${a}</button></td>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <td><button class="btn btn-danger btn-xs btn-area" type="button" disabled>${a}</button></td>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                            </tr>
+                                        </c:forEach>
  
 <!---------------------------------------------------END--------------------------------------------------------------------------------->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                    </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                        </c:otherwise>
+                    </c:choose>
                 <div class="col-md-3" style="margin:auto 0;">
                     <c:choose>
                         <c:when test="${sessionScope.status == 'RENT'}">
@@ -134,10 +181,36 @@
                 </div>
             </div>
         </div>
+        <br><br>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                        
     <script>
+        $('#saveBtn').click(function() {
+            var product = $('#product').val();
+            var customer = $('#customer').val();
+            alertify.confirm("Do you want to save?", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "${SITE_URL}/ProductServlet",
+                    data: {'product': product, 'customer': customer},
+                    success: function(data) {
+                        $('#saveBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
+                        $('#product').attr('disabled', true);
+                        $('#customer').attr('disabled', true);
+                        
+                        setTimeout(function() {
+                            alertify.success('คุณทำการเลือกสินค้า ' + product);
+                            setTimeout(function() {
+                                window.location = "${SITE_URL}/index.jsp";
+                            }, 2000);
+                        }, 2000);
+                    }
+                });
+                }, function() {
+                    alertify.error('คุณทำการยกเลิก');
+                });
+        });
+        
         $('.btn-product').click(function() {
             $('#product').val($(this).text());
         });

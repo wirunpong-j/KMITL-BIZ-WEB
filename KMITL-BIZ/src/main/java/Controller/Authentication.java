@@ -8,7 +8,6 @@ package Controller;
 import Model.AreaModel;
 import Model.Product;
 import Model.Staff;
-import Model.Zone;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,48 +62,16 @@ public class Authentication extends HttpServlet {
                     allProduct.add(pro);
                 }
                 
+                pstmt.close();
+                rs.close();
+                
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
             
-            HashMap<String,Integer> allZone = new HashMap<String,Integer>();
-            for (String[] area: AreaModel.allArea()) {
-                for (String a: area) {
-                    try {
-                        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.ZONE WHERE zone_id = ?");
-                        pstmt.setString(1, a);
-                        
-                        ResultSet rs = pstmt.executeQuery();
-                        if (rs.next()) {
-                            allZone.put(a, rs.getInt("order_id"));
-                        } else {
-                            allZone.put(a, 0);
-                        }
-                        
-                    } catch (SQLException ex) {
-                        System.out.println(ex.getMessage());
-                    }
-                    
-                }
-            }
-
             session.setAttribute("staff", staff);
             session.setAttribute("allProduct", allProduct);
             session.setAttribute("allArea", AreaModel.allArea());
-            session.setAttribute("allZone", allZone);
-            
-//            session.setAttribute("area1", AreaModel.area1);
-//            session.setAttribute("area2", AreaModel.area2);
-//            session.setAttribute("area3", AreaModel.area3);
-//            session.setAttribute("area4", AreaModel.area4);
-//            session.setAttribute("area5", AreaModel.area5);
-//            session.setAttribute("area6", AreaModel.area6);
-//            session.setAttribute("area7", AreaModel.area7);
-//            session.setAttribute("area8", AreaModel.area8);
-//            session.setAttribute("area9", AreaModel.area9);
-//            session.setAttribute("area10", AreaModel.area10);
-//            session.setAttribute("area11", AreaModel.area11);
-            
             
             
             response.sendRedirect("/KMITL-BIZ/index.jsp");

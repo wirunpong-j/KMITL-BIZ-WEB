@@ -16,6 +16,7 @@ import java.sql.SQLException;
  */
 public class Customer {
     private int cust_id;
+    private String cust_id_str;
     private String fullname;
     private String tel;
     private String cust_type;
@@ -124,6 +125,15 @@ public class Customer {
         }
     }
 
+    public String getCust_id_str() {
+        this.cust_id_str = AllFormat.toPadZero(this.cust_id);
+        return cust_id_str;
+    }
+
+    public void setCust_id_str(String cust_id_str) {
+        this.cust_id_str = cust_id_str;
+    }
+    
     public int getCust_id() {
         return cust_id;
     }

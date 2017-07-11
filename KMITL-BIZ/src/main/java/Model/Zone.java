@@ -12,12 +12,12 @@ package Model;
 public class Zone {
     private String zone_id;
     private int order_id;
-    private String status;
+    private int product_id;
 
-    public Zone(String zone_id, int order_id, String status) {
+    public Zone(String zone_id, int order_id, int pro_id) {
         this.zone_id = zone_id;
         this.order_id = order_id;
-        this.status = status;
+        this.product_id = pro_id;
     }
 
     public String getZone_id() {
@@ -36,13 +36,12 @@ public class Zone {
         this.order_id = order_id;
     }
 
-    public String getStatus() {
-        return status;
+    public int getProduct_id() {
+        return product_id;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setProduct_id(int product_id) {
+        this.product_id = product_id;
     }
-    
-    
+
 }

@@ -31,6 +31,15 @@ public class Order {
         this.order_id = order_id;
     }
 
+    public Order(int order_id, String order_date, double price, int cust_id, String staff_id, String zone_id) {
+        this.order_id = order_id;
+        this.order_date = order_date;
+        this.price = price;
+        this.cust_id = cust_id;
+        this.staff_id = staff_id;
+        this.zone_id = zone_id;
+    }
+
     public Order(Connection conn, double price, int cust_id, String staff_id, String zone_id) {
         this.conn = conn;
         this.price = price;
