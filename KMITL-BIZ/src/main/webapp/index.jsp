@@ -55,10 +55,10 @@
                     <c:choose>
                         <c:when test="${sessionScope.status == 'RENT'}">
                             <div class="form-group">
-                                <input class="form-control" type="text" name="product" placeholder="ชื่อสินค้า" value="${sessionScope.product.getProduct_name()}" disabled>
+                                <input class="form-control" type="text" name="product" placeholder="ชื่อสินค้า" value="${sessionScope.product.getProduct_name()}" readonly>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" type="text" name="customer" placeholder="รหัสรับบริการ" value="${sessionScope.customer.getCust_id_str()}" disabled>
+                                <input class="form-control" type="text" name="customer" placeholder="รหัสรับบริการ" value="${sessionScope.customer.getCust_id_str()}" readonly>
                             </div>
                             <button class="btn btn-primary" type="button" style="width:100%;" disabled>ทำการเลือกสินค้าแล้ว </button>
                         </c:when>
@@ -119,7 +119,7 @@
                                                     <c:otherwise>
                                                         <c:choose>
                                                             <c:when test="${sessionScope.allZone[a].getOrder_id() == 0}">
-                                                                <td><button class="btn btn-success btn-xs btn-area" type="button">${a}</button></td>
+                                                                <td><button class="btn btn-success btn-xs btn-area btn-unselect" id="${a}" name="${a}" type="button">${a}</button></td>
                                                             </c:when>
                                                             <c:when test="${sessionScope.allZone[a].getProduct_id() == sessionScope.customer.getProduct_id()}">
                                                                 <td><button class="btn btn-warning btn-xs btn-area" type="button" disabled>${a}</button></td>
@@ -145,11 +145,11 @@
                     <c:choose>
                         <c:when test="${sessionScope.status == 'RENT'}">
                           <div class="form-group">
-                            <button class="btn btn-primary btn-block" type="button" style="width:100%;">A23 </button>
+                            <button class="btn btn-primary btn-block" id="showArea" type="button" style="width:100%;">- </button>
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-success" type="button" style="width:100%;">ยืนยัน/พิมพ์ใบเสร็จ</button>
+                            <button class="btn btn-success" type="button" id="confirmBtn" style="width:100%;">ยืนยัน/พิมพ์ใบเสร็จ</button>
                         </div>
 
                         <div class="form-group">
@@ -158,7 +158,7 @@
                         </c:when>
                         <c:otherwise>
                             <div class="form-group">
-                                <button class="btn btn-primary btn-block" type="button" style="width:100%;" disabled>A23 </button>
+                                <button class="btn btn-primary btn-block" type="button" style="width:100%;" disabled>- </button>
                             </div>
 
                             <div class="form-group">
@@ -185,6 +185,31 @@
     </div>
                         
     <script>
+        var allArea = '';
+        var count = 1;
+        
+        $('#confirmBtn').click(function() {
+            alertify.confirm("Do you want to save?", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "${SITE_URL}/RentArea",
+                    data: {'allArea': allArea},
+                    success: function(data) {
+                        $('#confirmBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
+                        
+                        setTimeout(function() {
+                            alertify.success('คุณได้ทำการเลือกสินค้า ${sessionScope.product.getProduct_name()} และจองพื้นที่ตำแหน่ง ' + allArea);
+                            setTimeout(function() {
+                                window.location = "${SITE_URL}/information.jsp";
+                            }, 2000);
+                        }, 2000);
+                    }
+                });
+            }, function() {
+                alertify.error('คุณทำการยกเลิก');
+            });
+        });
+        
         $('#saveBtn').click(function() {
             var product = $('#product').val();
             var customer = $('#customer').val();
@@ -195,8 +220,8 @@
                     data: {'product': product, 'customer': customer},
                     success: function(data) {
                         $('#saveBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
-                        $('#product').attr('disabled', true);
-                        $('#customer').attr('disabled', true);
+                        $('#product').attr('readonly', true);
+                        $('#customer').attr('readonly', true);
                         
                         setTimeout(function() {
                             alertify.success('คุณทำการเลือกสินค้า ' + product);
@@ -210,6 +235,23 @@
                     alertify.error('คุณทำการยกเลิก');
                 });
         });
+        
+        $('.btn-unselect').click(function() {
+            if (count > 3) {
+                count = 1;
+                allArea = '';
+            }
+            selectArea($(this).text());
+            $('#showArea').text(allArea);
+        });
+        
+        function selectArea(text) {
+            switch (count) {
+                case 1: allArea += text; break;
+                default: allArea += ',' + text;
+            }
+            count++;
+        }
         
         $('.btn-product').click(function() {
             $('#product').val($(this).text());

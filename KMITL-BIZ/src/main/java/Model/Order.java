@@ -18,6 +18,7 @@ import java.util.Calendar;
  */
 public class Order {
     private int order_id;
+    private String order_id_str;
     private String order_date;
     private double price;
     private int cust_id;
@@ -91,6 +92,11 @@ public class Order {
         
     }
 
+    public String getOrder_id_str() {
+        this.order_id_str = AllFormat.toPadZero(this.order_id);
+        return order_id_str;
+    }
+    
     public int getOrder_id() {
         return order_id;
     }

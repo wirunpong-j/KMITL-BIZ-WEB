@@ -124,6 +124,16 @@ public class Customer {
             System.out.println(ex.getMessage());
         }
     }
+    
+    public String getCust_type_Str() {
+        String type = "";
+        switch (this.cust_type) {
+            case "STUDENT": type = "นักศึกษา"; break;
+            case "STAFF": type = "บุคลากรของสถาบัน"; break;
+            case "OUTSIDER": type = "บุคคลภายนอก"; break;
+        }
+        return type;
+    }
 
     public String getCust_id_str() {
         this.cust_id_str = AllFormat.toPadZero(this.cust_id);

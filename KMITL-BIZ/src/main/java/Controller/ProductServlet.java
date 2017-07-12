@@ -94,7 +94,6 @@ public class ProductServlet extends HttpServlet {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 allOrder.put(rs.getInt(1), rs.getInt(2));
-                System.out.println(allOrder.get(rs.getInt(1)));
             }
 
             rs.close();
