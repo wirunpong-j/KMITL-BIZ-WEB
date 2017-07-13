@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Listener.Constant;
 import Model.AreaModel;
 import Model.Product;
 import Model.Staff;
@@ -14,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -46,10 +46,17 @@ public class Authentication extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        Connection conn = (Connection) getServletContext().getAttribute("connection");
+        Connection conn = null;
+        
+        try {
+            conn = (Connection) Constant.dataSource.getConnection();
+        } catch (Exception ex) {
+            System.out.println("Eiei" + ex.getMessage());
+        }
+        
         HttpSession session = request.getSession();
         
-        Staff staff = new Staff(conn, username, password);
+        Staff staff = new Staff(username, password);
         if (staff.isStaff()) {
             
             ArrayList<Product> allProduct = new ArrayList<>();
@@ -58,7 +65,7 @@ public class Authentication extends HttpServlet {
                 ResultSet rs = pstmt.executeQuery();
                 
                 while (rs.next()) {
-                    Product pro = new Product(conn, rs.getInt("product_id"), rs.getString("product_name"));
+                    Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
                     allProduct.add(pro);
                 }
                 
@@ -73,6 +80,7 @@ public class Authentication extends HttpServlet {
             session.setAttribute("allProduct", allProduct);
             session.setAttribute("allArea", AreaModel.allArea());
             
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
             
             response.sendRedirect("/KMITL-BIZ/index.jsp");
             

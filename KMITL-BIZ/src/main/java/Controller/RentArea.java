@@ -39,7 +39,6 @@ public class RentArea extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        Connection conn = (Connection) getServletContext().getAttribute("connection");
         HttpSession session = request.getSession();
         
         Product product = (Product) session.getAttribute("product");
@@ -50,7 +49,7 @@ public class RentArea extends HttpServlet {
         
         ArrayList<Order> allOrder = new ArrayList<>();
         for (String area: allArea) {
-            Order order = new Order(conn, 999, customer.getCust_id(), staff.getStaff_id(), area);
+            Order order = new Order(999, customer.getCust_id(), staff.getStaff_id(), area);
             order.addOrder();
             allOrder.add(order);
         }

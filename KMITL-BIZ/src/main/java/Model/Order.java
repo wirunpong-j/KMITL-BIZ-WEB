@@ -5,6 +5,7 @@
  */
 package Model;
 
+import Listener.Constant;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,10 +26,7 @@ public class Order {
     private String staff_id;
     private String zone_id;
     
-    private Connection conn;
-    
-    public Order(Connection conn, int order_id) {
-        this.conn = conn;
+    public Order(int order_id) {
         this.order_id = order_id;
     }
 
@@ -41,8 +39,7 @@ public class Order {
         this.zone_id = zone_id;
     }
 
-    public Order(Connection conn, double price, int cust_id, String staff_id, String zone_id) {
-        this.conn = conn;
+    public Order(double price, int cust_id, String staff_id, String zone_id) {
         this.price = price;
         this.cust_id = cust_id;
         this.staff_id = staff_id;
@@ -52,7 +49,9 @@ public class Order {
     public void addOrder() {
         Calendar calendar = Calendar.getInstance();
         PreparedStatement pstmt;
+        Connection conn = null;
         try {
+            conn = (Connection) Constant.dataSource.getConnection();
             
             pstmt = conn.prepareStatement("INSERT INTO KMITLBIZ.ORDER(order_date, price, cust_id, staff_id) VALUES(?,?,?,?)");
             pstmt.setTimestamp(1, new Timestamp(calendar.getTime().getTime()));
@@ -88,6 +87,8 @@ public class Order {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
         
     }
@@ -145,16 +146,4 @@ public class Order {
         this.zone_id = zone_id;
     }
 
-    public Connection getConn() {
-        return conn;
-    }
-
-    public void setConn(Connection conn) {
-        this.conn = conn;
-    }
-    
-    
-    
-    
-    
 }

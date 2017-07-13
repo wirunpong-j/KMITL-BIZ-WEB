@@ -5,6 +5,7 @@
  */
 package Model;
 
+import Listener.Constant;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,25 +18,25 @@ import java.sql.SQLException;
 public class Product {
     private int product_id;
     private String product_name;
-    private Connection conn;
 
     public Product() {
         
     }
 
-    public Product(Connection conn, String product_name) {
-        this.conn = conn;
+    public Product(String product_name) {
         this.product_name = product_name;
     }
 
-    public Product(Connection conn, int product_id, String product_name) {
-        this.conn = conn;
+    public Product(int product_id, String product_name) {
         this.product_id = product_id;
         this.product_name = product_name;
     }
     
     public void addToDB() {
+        Connection conn = null;
         try {
+            conn = (Connection) Constant.dataSource.getConnection();
+            
             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO KMITLBIZ.PRODUCT(product_name) VALUES(?)");
             pstmt.setString(1, product_name);
             pstmt.executeUpdate();
@@ -52,6 +53,8 @@ public class Product {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
     }
 

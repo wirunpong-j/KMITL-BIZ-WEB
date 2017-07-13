@@ -5,6 +5,7 @@
  */
 package Model;
 
+import Listener.Constant;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,18 +21,17 @@ public class Staff {
     private String first_name;
     private String last_name;
     private String role;
-    
-    private Connection conn;
 
-    public Staff(Connection conn, String staff_id, String password) {
-        this.conn = conn;
+    public Staff(String staff_id, String password) {
         this.staff_id = staff_id;
         this.password = password;
     }
     
     public boolean isStaff() {
+        Connection conn = null;
         try {
-            System.out.println(conn);
+            conn = (Connection) Constant.dataSource.getConnection();
+            
             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.STAFF WHERE staff_id = ? AND password = ?");
             pstmt.setString(1, this.staff_id);
             pstmt.setString(2, this.password);
@@ -49,6 +49,8 @@ public class Staff {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
         return false;
     }
@@ -83,14 +85,6 @@ public class Staff {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public Connection getConn() {
-        return conn;
-    }
-
-    public void setConn(Connection conn) {
-        this.conn = conn;
     }
     
 }
