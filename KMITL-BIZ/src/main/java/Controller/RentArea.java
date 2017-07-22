@@ -5,15 +5,12 @@
  */
 package Controller;
 
-import Listener.Constant;
-import Model.AreaModel;
+import Model.Customer;
+import Model.Order;
 import Model.Product;
 import Model.Staff;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,8 +23,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author BellKunG
  */
-@WebServlet(name = "Authentication", urlPatterns = {"/Authentication"})
-public class Authentication extends HttpServlet {
+@WebServlet(name = "RentArea", urlPatterns = {"/RentArea"})
+public class RentArea extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,53 +38,26 @@ public class Authentication extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
-        
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Connection conn = null;
-        
-        try {
-            conn = (Connection) Constant.dataSource.getConnection();
-        } catch (Exception ex) {
-            System.out.println("Eiei" + ex.getMessage());
-        }
         
         HttpSession session = request.getSession();
         
-        Staff staff = new Staff(username, password);
-        if (staff.isStaff()) {
-            
-            ArrayList<Product> allProduct = new ArrayList<>();
-            try {
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.PRODUCT");
-                ResultSet rs = pstmt.executeQuery();
-                
-                while (rs.next()) {
-                    Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
-                    allProduct.add(pro);
-                }
-                
-                pstmt.close();
-                rs.close();
-                
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
-            
-            session.setAttribute("staff", staff);
-            session.setAttribute("allProduct", allProduct);
-            session.setAttribute("allArea", AreaModel.allArea());
-            
-            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-            
-            response.sendRedirect("/KMITL-BIZ/index.jsp");
-            
-        } else {
-            response.sendRedirect("/KMITL-BIZ/Login.jsp");
+        Product product = (Product) session.getAttribute("product");
+        Customer customer = (Customer) session.getAttribute("customer");
+        Staff staff = (Staff) session.getAttribute("staff");
+        
+        String[] allArea = request.getParameter("allArea").split(",");
+        
+        ArrayList<Order> allOrder = new ArrayList<>();
+        for (String area: allArea) {
+            Order order = new Order(999, customer.getCust_id(), staff.getStaff_id(), area);
+            order.addOrder();
+            allOrder.add(order);
         }
-        return;
+        
+        session.setAttribute("allOrder", allOrder);
+        session.setAttribute("product", product);
+        session.setAttribute("customer", customer);
+        session.setAttribute("status", "EMPTY");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

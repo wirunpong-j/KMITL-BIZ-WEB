@@ -5,6 +5,7 @@
  */
 package Model;
 
+import Listener.Constant;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
  */
 public class Customer {
     private int cust_id;
+    private String cust_id_str;
     private String fullname;
     private String tel;
     private String cust_type;
@@ -23,11 +25,8 @@ public class Customer {
     private String citizen_id;
     private String vehicle;
     private int product_id;
-    
-    private Connection conn;
 
-    public Customer(Connection conn, String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle) {
-        this.conn = conn;
+    public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle) {
         this.fullname = fullname;
         this.tel = tel;
         this.cust_type = cust_type;
@@ -36,14 +35,16 @@ public class Customer {
         this.vehicle = vehicle;
     }
 
-    public Customer(Connection conn, int cust_id, int product_id) {
-        this.conn = conn;
+    public Customer(int cust_id, int product_id) {
         this.cust_id = cust_id;
         this.product_id = product_id;
     }
     
     public void addCustomer() {
+        Connection conn = null;
         try {
+            conn = (Connection) Constant.dataSource.getConnection();
+            
             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO KMITLBIZ.CUSTOMER(fullname, tel, cust_type, student_id, citizen_id, vehicle) "
                     + "VALUES(?,?,?,?,?,?)");
             pstmt.setString(1, this.fullname);
@@ -58,11 +59,16 @@ public class Customer {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
     }
     
     public void addProductID() {
+        Connection conn = null;
         try {
+            conn = (Connection) Constant.dataSource.getConnection();
+            
             PreparedStatement pstmt = conn.prepareStatement("UPDATE KMITLBIZ.CUSTOMER SET product_id = ? WHERE cust_id = ?");
             pstmt.setInt(1, this.product_id);
             pstmt.setInt(2, this.cust_id);
@@ -72,11 +78,16 @@ public class Customer {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
     }
     
     public void searchCustomer() {
+        Connection conn = null;
         try {
+            conn = (Connection) Constant.dataSource.getConnection();
+            
             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.CUSTOMER WHERE fullname = ? AND cust_type = ?");
             pstmt.setString(1, this.fullname);
             pstmt.setString(2, this.cust_type);
@@ -97,11 +108,16 @@ public class Customer {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
     }
     
     public void searchCustomerByID() {
+        Connection conn = null;
         try {
+            conn = (Connection) Constant.dataSource.getConnection();
+            
             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.CUSTOMER WHERE cust_id = ?");
             pstmt.setInt(1, this.cust_id);
             
@@ -121,9 +137,30 @@ public class Customer {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
     }
+    
+    public String getCust_type_Str() {
+        String type = "";
+        switch (this.cust_type) {
+            case "STUDENT": type = "นักศึกษา"; break;
+            case "STAFF": type = "บุคลากรของสถาบัน"; break;
+            case "OUTSIDER": type = "บุคคลภายนอก"; break;
+        }
+        return type;
+    }
 
+    public String getCust_id_str() {
+        this.cust_id_str = AllFormat.toPadZero(this.cust_id);
+        return cust_id_str;
+    }
+
+    public void setCust_id_str(String cust_id_str) {
+        this.cust_id_str = cust_id_str;
+    }
+    
     public int getCust_id() {
         return cust_id;
     }

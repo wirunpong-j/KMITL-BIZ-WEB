@@ -5,13 +5,18 @@
  */
 package Controller;
 
+import Listener.Constant;
+import Model.AreaModel;
 import Model.Customer;
 import Model.Product;
+import Model.Zone;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -42,25 +47,26 @@ public class ProductServlet extends HttpServlet {
         
         String product = request.getParameter("product");
         String customer = request.getParameter("customer");
-        
-        Connection conn = (Connection) getServletContext().getAttribute("connection");
+
         HttpSession session = request.getSession();
         
+        Connection conn = null;
         Product pro = null;
         ArrayList<Product> allProduct = new ArrayList<>();
         PreparedStatement pstmt;
         ResultSet rs;
         
         try {
+            conn = (Connection) Constant.dataSource.getConnection();
             pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.PRODUCT WHERE product_name = ?");
             pstmt.setString(1, product);
             
             rs = pstmt.executeQuery();
             
             if (rs.next()) {
-                pro = new Product(conn, rs.getInt("product_id"), rs.getString("product_name"));
+                pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
             } else {
-                pro = new Product(conn, product);
+                pro = new Product(product);
                 pro.addToDB();
             }
             
@@ -70,24 +76,72 @@ public class ProductServlet extends HttpServlet {
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
-                Product p = new Product(conn, rs.getInt("product_id"), rs.getString("product_name"));
+                Product p = new Product(rs.getInt("product_id"), rs.getString("product_name"));
                 allProduct.add(p);
             }
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
-        
-        
-        
-        Customer cust = new Customer(conn, Integer.parseInt(customer), pro.getProduct_id());
+
+        Customer cust = new Customer(Integer.parseInt(customer), pro.getProduct_id());
         cust.addProductID();
         cust.searchCustomerByID();
+        
+        // set old Order
+        HashMap<Integer,Integer> allOrder = new HashMap<>();
+        try {
+            conn = (Connection) Constant.dataSource.getConnection();
+            pstmt = conn.prepareStatement("SELECT order_id, product_id FROM KMITLBIZ.CUSTOMER JOIN KMITLBIZ.`ORDER` USING (cust_id);");
+
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                allOrder.put(rs.getInt(1), rs.getInt(2));
+            }
+
+            rs.close();
+            pstmt.close();
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        // set Area
+        HashMap<String,Zone> allZone = new HashMap<>();
+        for (String[] area: AreaModel.allArea()) {
+            for (String a: area) {
+                try {
+                    conn = (Connection) Constant.dataSource.getConnection();
+                    pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.ZONE WHERE zone_id = ?");
+                    pstmt.setString(1, a);
+
+                    rs = pstmt.executeQuery();
+                    if (rs.next()) {
+                        allZone.put(a, new Zone(a, rs.getInt("order_id"), allOrder.get(rs.getInt("order_id"))));
+                    } else {
+                        allZone.put(a, new Zone(a, 0, 0));
+                    }
+
+                    rs.close();
+                    pstmt.close();
+
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                } finally {
+                    if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+                }
+            }
+        }
         
         session.setAttribute("product", pro);
         session.setAttribute("customer", cust);
         session.setAttribute("status", "RENT");
         session.setAttribute("allProduct", allProduct);
+        session.setAttribute("allZone", allZone);
         
         response.sendRedirect("/KMITL-BIZ/index.jsp");
         return;

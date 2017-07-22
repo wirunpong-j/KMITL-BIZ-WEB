@@ -10,32 +10,29 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 /**
- * Web application lifecycle listener.
  *
  * @author BellKunG
  */
-public class KMITLBIZListener implements ServletContextListener {
-    
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
+public class GetDBConnection {
+    public Connection getConnection(ServletContextEvent sce) {
+        Connection conn = (Connection) sce.getServletContext().getAttribute("connection");
         try {
-            Constant.dataSource = (DataSource) getKMITLBIZ();
+            if (conn.isClosed()) {
+                conn = getKMITLBIZ().getConnection();
+                sce.getServletContext().setAttribute("connection", conn);
+                return conn;
+            }     
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         
+        return conn;
     }
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        
-    }
-
-    private DataSource getKMITLBIZ() throws NamingException {
+    public DataSource getKMITLBIZ() throws NamingException {
         Context c = new InitialContext();
         return (DataSource) c.lookup("java:comp/env/KMITLBIZ");
     }

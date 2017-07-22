@@ -5,29 +5,21 @@
  */
 package Controller;
 
-import Listener.Constant;
-import Model.AreaModel;
-import Model.Product;
-import Model.Staff;
+import Model.PDFFile;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author BellKunG
  */
-@WebServlet(name = "Authentication", urlPatterns = {"/Authentication"})
-public class Authentication extends HttpServlet {
+@WebServlet(name = "ExportPDF", urlPatterns = {"/ExportPDF"})
+public class ExportPDF extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,53 +33,15 @@ public class Authentication extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
-        
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Connection conn = null;
-        
-        try {
-            conn = (Connection) Constant.dataSource.getConnection();
-        } catch (Exception ex) {
-            System.out.println("Eiei" + ex.getMessage());
-        }
-        
-        HttpSession session = request.getSession();
-        
-        Staff staff = new Staff(username, password);
-        if (staff.isStaff()) {
-            
-            ArrayList<Product> allProduct = new ArrayList<>();
+        try (PrintWriter out = response.getWriter()) {
             try {
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.PRODUCT");
-                ResultSet rs = pstmt.executeQuery();
+                PDFFile file = new PDFFile();
+                file.createPDF("file/test.pdf");
                 
-                while (rs.next()) {
-                    Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
-                    allProduct.add(pro);
-                }
-                
-                pstmt.close();
-                rs.close();
-                
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
-            
-            session.setAttribute("staff", staff);
-            session.setAttribute("allProduct", allProduct);
-            session.setAttribute("allArea", AreaModel.allArea());
-            
-            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-            
-            response.sendRedirect("/KMITL-BIZ/index.jsp");
-            
-        } else {
-            response.sendRedirect("/KMITL-BIZ/Login.jsp");
         }
-        return;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
