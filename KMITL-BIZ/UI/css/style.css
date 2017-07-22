@@ -15,3 +15,9 @@
 #login_top_items {
   text-align: center;
 }
+
+.back_panel {
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  padding: 25px;
+}
