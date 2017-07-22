@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>main</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>เพิ่มลูกค้า</h1>
+      </div>
+      <form>
+        <div class="form-group">
+          <label for="firstname">ชื่อ</label>
+          <input type="text" class="form-control" id="firstname" placeholder="ชื่อ">
+        </div>
+        <div class="form-group">
+          <label for="lastname">นามสกุล</label>
+          <input type="password" class="form-control" id="lastname" placeholder="นามสกุล">
+        </div>
+        <div class="form-group">
+          <label for="tel">เบอร์ติดต่อ</label>
+          <input type="text" class="form-control" id="tel" placeholder="เบอร์ติดต่อ">
+        </div>
+        <div class="form-group">
+          <label for="email">อีเมล</label>
+          <input type="email" class="form-control" id="email" placeholder="อีเมล">
+        </div>
+        <div class="form-group">
+          <label >ประเภทลูกค้า</label><br>
+          <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked> นักศึกษา
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> พนักงาน
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> บุคคลภายนอก
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="cid">รหัสนักศึกษา / รหัสบัตรประชาชน</label>
+          <input type="text" class="form-control" id="cid" placeholder="รหัสนักศึกษา / รหัสบัตรประชาชน">
+        </div>
+        <div class="form-group">
+          <label for="veh">เลขทะเบียนรถ (ถ้ามี)</label>
+          <input type="text" class="form-control" id="veh" placeholder="เลขทะเบียนรถ">
+        </div>
+        <br><button type="submit" class="btn btn-default">ยืนยัน</button>
+      </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/211152dd25.js"></script>
+</body>
+
+</html>
