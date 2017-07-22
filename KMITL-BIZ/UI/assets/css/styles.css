@@ -22,8 +22,28 @@
   background-color: #f1c40f;
 }
 
+#user_add {
+  background-color: #1976D2;
+}
+
+#user_view {
+  background-color: #1565C0;
+}
+#user_history {
+  background-color: #0D47A1;
+}
+
 #logout {
   background-color: #c0392b;
+  color: white;
+  padding: 10px;
+  margin: 10px;
+  float: right;
+  border-radius: 5px;
+}
+
+#back_to_main {
+  background-color: #34495e;
   color: white;
   padding: 10px;
   margin: 10px;
