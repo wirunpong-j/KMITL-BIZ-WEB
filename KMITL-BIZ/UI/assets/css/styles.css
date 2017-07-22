@@ -2,3 +2,31 @@
   border-radius:5px;
 }
 
+.admin_panel {
+  text-align: center;
+  padding: 50px;
+  margin: 10px;
+  border-radius: 5px;
+  color: white
+}
+
+#user_panel {
+  background-color: #2980b9;
+}
+
+#staff_panel {
+  background-color: #2ecc71;
+}
+
+#export_panel {
+  background-color: #f1c40f;
+}
+
+#logout {
+  background-color: #c0392b;
+  color: white;
+  padding: 10px;
+  margin: 10px;
+  float: right;
+  border-radius: 5px;
+}
