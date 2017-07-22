@@ -12,9 +12,17 @@
 
 <body>
     <div class="container">
-      <div class="jumbotron" style="background-color: #1976D2; color: white;">
-        <h1>เพิ่มลูกค้า</h1>
+      <div class="jumbotron" style="background-color: #1565C0; color: white;">
+        <h1>ดู/แก้ไขข้อมูล ลูกค้า</h1>
       </div>
+      <form>
+        <div class="form-group">
+          <label for="search_id">รหัสรับบริการ</label>
+          <input type="text" class="form-control" id="search_id" placeholder="รหัสรับบริการ">
+        </div>
+        <button type="submit" class="btn btn-default">เรียกดู</button>
+      </form>
+<br><br>
       <form>
         <div class="form-group">
           <label for="firstname">ชื่อ</label>
@@ -52,7 +60,7 @@
           <label for="veh">เลขทะเบียนรถ (ถ้ามี)</label>
           <input type="text" class="form-control" id="veh" placeholder="เลขทะเบียนรถ">
         </div>
-        <br><button type="submit" class="btn btn-default">ยืนยัน</button>
+        <button type="submit" class="btn btn-default">บันทึก</button>
       </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
