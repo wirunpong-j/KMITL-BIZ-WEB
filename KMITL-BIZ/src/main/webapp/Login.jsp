@@ -31,7 +31,9 @@
                 <button class="btn btn-primary btn-block" type="submit" style="background-color:#d84315;">เข้าสู่ระบบ </button>
             </div>
         </form>
+            <a type="button" class="btn btn-warning" href="${SITE_URL}/ExportPDF">PDF!!!!</a>
     </div>
+        
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
