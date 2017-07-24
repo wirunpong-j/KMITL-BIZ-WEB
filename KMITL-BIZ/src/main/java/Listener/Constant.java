@@ -5,12 +5,25 @@
  */
 package Listener;
 
-import javax.sql.DataSource;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  *
  * @author BellKunG
  */
 public class Constant {
-    public static DataSource dataSource;
+    public static Connection getConnection() throws URISyntaxException, SQLException {
+        String url = "";
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            url ="jdbc:mysql://kmtil-biz-way-db.mysql.database.azure.com:3306/KMITLBIZ?useUnicode=true&characterEncoding=UTF8";
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return DriverManager.getConnection(url, "kmitlbizadmin@kmtil-biz-way-db", "3hX-Mxx-gzq-QTV");
+    }
 }

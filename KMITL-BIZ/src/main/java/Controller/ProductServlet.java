@@ -15,7 +15,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -57,8 +66,8 @@ public class ProductServlet extends HttpServlet {
         ResultSet rs;
         
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
-            pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.PRODUCT WHERE product_name = ?");
+            conn = (Connection) Constant.getConnection();
+            pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ?");
             pstmt.setString(1, product);
             
             rs = pstmt.executeQuery();
@@ -72,7 +81,7 @@ public class ProductServlet extends HttpServlet {
             
             pstmt.close();
             
-            pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.PRODUCT");
+            pstmt = conn.prepareStatement("SELECT * FROM product");
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
@@ -90,58 +99,89 @@ public class ProductServlet extends HttpServlet {
         cust.addProductID();
         cust.searchCustomerByID();
         
-        // set old Order
-        HashMap<Integer,Integer> allOrder = new HashMap<>();
-        try {
-            conn = (Connection) Constant.dataSource.getConnection();
-            pstmt = conn.prepareStatement("SELECT order_id, product_id FROM KMITLBIZ.CUSTOMER JOIN KMITLBIZ.`ORDER` USING (cust_id);");
-
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                allOrder.put(rs.getInt(1), rs.getInt(2));
-            }
-
-            rs.close();
-            pstmt.close();
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        } finally {
-            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-        }
         
-        // set Area
-        HashMap<String,Zone> allZone = new HashMap<>();
-        for (String[] area: AreaModel.allArea()) {
-            for (String a: area) {
-                try {
-                    conn = (Connection) Constant.dataSource.getConnection();
-                    pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.ZONE WHERE zone_id = ?");
-                    pstmt.setString(1, a);
+        ArrayList<String> allRentType = new ArrayList<>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        System.out.println(dateFormat.format(date));
+        session.setAttribute("allRentType", allRentType);
+        
+        LocalDateTime currentTime = LocalDateTime.now();
+   
+        ZoneId id = ZoneId.of("Asia/Bangkok");
+        ZonedDateTime zonedTime = currentTime.atZone(id);
+        Month thisMonth = zonedTime.getMonth();
+        Month nextMonth = thisMonth.plus(1);
 
-                    rs = pstmt.executeQuery();
-                    if (rs.next()) {
-                        allZone.put(a, new Zone(a, rs.getInt("order_id"), allOrder.get(rs.getInt("order_id"))));
-                    } else {
-                        allZone.put(a, new Zone(a, 0, 0));
-                    }
+        System.out.println(thisMonth);
+        System.out.println(nextMonth);
 
-                    rs.close();
-                    pstmt.close();
-
-                } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
-                } finally {
-                    if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-                }
-            }
+        ZonedDateTime thisThursday = zonedTime;
+        while (thisThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
+            thisThursday = thisThursday.plusDays(1);
         }
+
+        ZonedDateTime nextThursday = thisThursday.plusDays(1);
+        while (nextThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
+            nextThursday = nextThursday.plusDays(1);
+        }
+
+
+        System.out.println(thisThursday);
+        System.out.println(nextThursday);
+        
+//        // set old Order
+//        HashMap<Integer,Integer> allOrder = new HashMap<>();
+//        try {
+//            conn = (Connection) Constant.dataSource.getConnection();
+//            pstmt = conn.prepareStatement("SELECT order_id, product_id FROM KMITLBIZ.CUSTOMER JOIN KMITLBIZ.`ORDER` USING (cust_id);");
+//
+//            rs = pstmt.executeQuery();
+//            while (rs.next()) {
+//                allOrder.put(rs.getInt(1), rs.getInt(2));
+//            }
+//
+//            rs.close();
+//            pstmt.close();
+//
+//        } catch (SQLException ex) {
+//            System.out.println(ex.getMessage());
+//        } finally {
+//            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+//        }
+//        
+//        // set Area
+//        HashMap<String,Zone> allZone = new HashMap<>();
+//        for (String[] area: AreaModel.allArea()) {
+//            for (String a: area) {
+//                try {
+//                    conn = (Connection) Constant.dataSource.getConnection();
+//                    pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.ZONE WHERE zone_id = ?");
+//                    pstmt.setString(1, a);
+//
+//                    rs = pstmt.executeQuery();
+//                    if (rs.next()) {
+//                        allZone.put(a, new Zone(a, rs.getInt("order_id"), allOrder.get(rs.getInt("order_id"))));
+//                    } else {
+//                        allZone.put(a, new Zone(a, 0, 0));
+//                    }
+//
+//                    rs.close();
+//                    pstmt.close();
+//
+//                } catch (SQLException ex) {
+//                    System.out.println(ex.getMessage());
+//                } finally {
+//                    if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+//                }
+//            }
+//        }
         
         session.setAttribute("product", pro);
         session.setAttribute("customer", cust);
         session.setAttribute("status", "RENT");
         session.setAttribute("allProduct", allProduct);
-        session.setAttribute("allZone", allZone);
+//        session.setAttribute("allZone", allZone);
         
         response.sendRedirect("/KMITL-BIZ/index.jsp");
         return;

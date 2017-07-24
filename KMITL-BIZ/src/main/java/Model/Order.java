@@ -26,6 +26,10 @@ public class Order {
     private String staff_id;
     private String zone_id;
     
+    private double extra_price;
+    private String note;
+    private String rent_date;
+    
     public Order(int order_id) {
         this.order_id = order_id;
     }
@@ -51,9 +55,9 @@ public class Order {
         PreparedStatement pstmt;
         Connection conn = null;
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
+            conn = (Connection) Constant.getConnection();
             
-            pstmt = conn.prepareStatement("INSERT INTO KMITLBIZ.ORDER(order_date, price, cust_id, staff_id) VALUES(?,?,?,?)");
+            pstmt = conn.prepareStatement("INSERT INTO `order`(order_date, price, cust_id, staff_id) VALUES(?,?,?,?)");
             pstmt.setTimestamp(1, new Timestamp(calendar.getTime().getTime()));
             pstmt.setDouble(2, this.price);
             pstmt.setInt(3, this.cust_id);
@@ -62,7 +66,7 @@ public class Order {
             
             pstmt.close();
             
-            pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.ORDER WHERE cust_id = ?");
+            pstmt = conn.prepareStatement("SELECT * FROM `order` WHERE cust_id = ?");
             pstmt.setInt(1, this.cust_id);
             ResultSet rs = pstmt.executeQuery();
             
@@ -77,7 +81,7 @@ public class Order {
             rs.close();
             pstmt.close();
             
-            pstmt = conn.prepareStatement("INSERT INTO KMITLBIZ.ZONE VALUES(?,?)");
+            pstmt = conn.prepareStatement("INSERT INTO zone VALUES(?,?)");
             pstmt.setString(1, this.zone_id);
             pstmt.setInt(2, this.order_id);
             pstmt.executeUpdate();
@@ -85,7 +89,7 @@ public class Order {
             pstmt.close();
             
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
@@ -145,5 +149,30 @@ public class Order {
     public void setZone_id(String zone_id) {
         this.zone_id = zone_id;
     }
+
+    public double getExtra_price() {
+        return extra_price;
+    }
+
+    public void setExtra_price(double extra_price) {
+        this.extra_price = extra_price;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getRent_date() {
+        return rent_date;
+    }
+
+    public void setRent_date(String rent_date) {
+        this.rent_date = rent_date;
+    }
+    
 
 }

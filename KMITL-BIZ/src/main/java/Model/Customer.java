@@ -43,9 +43,9 @@ public class Customer {
     public void addCustomer() {
         Connection conn = null;
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
+            conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO KMITLBIZ.CUSTOMER(fullname, tel, cust_type, student_id, citizen_id, vehicle) "
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO customer(fullname, tel, cust_type, student_id, citizen_id, vehicle) "
                     + "VALUES(?,?,?,?,?,?)");
             pstmt.setString(1, this.fullname);
             pstmt.setString(2, this.tel);
@@ -57,7 +57,7 @@ public class Customer {
             pstmt.executeUpdate();
             pstmt.close();
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
@@ -67,16 +67,16 @@ public class Customer {
     public void addProductID() {
         Connection conn = null;
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
+            conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("UPDATE KMITLBIZ.CUSTOMER SET product_id = ? WHERE cust_id = ?");
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE customer SET product_id = ? WHERE cust_id = ?");
             pstmt.setInt(1, this.product_id);
             pstmt.setInt(2, this.cust_id);
             
             pstmt.executeUpdate();
             pstmt.close();
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
@@ -86,9 +86,9 @@ public class Customer {
     public void searchCustomer() {
         Connection conn = null;
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
+            conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.CUSTOMER WHERE fullname = ? AND cust_type = ?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer WHERE fullname = ? AND cust_type = ?");
             pstmt.setString(1, this.fullname);
             pstmt.setString(2, this.cust_type);
             
@@ -106,7 +106,7 @@ public class Customer {
             
             pstmt.close();
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
@@ -116,9 +116,9 @@ public class Customer {
     public void searchCustomerByID() {
         Connection conn = null;
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
+            conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.CUSTOMER WHERE cust_id = ?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer WHERE cust_id = ?");
             pstmt.setInt(1, this.cust_id);
             
             ResultSet rs = pstmt.executeQuery();
@@ -135,7 +135,7 @@ public class Customer {
             
             pstmt.close();
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}

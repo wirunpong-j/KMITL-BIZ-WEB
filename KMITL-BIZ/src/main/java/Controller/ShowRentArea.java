@@ -7,14 +7,13 @@ package Controller;
 
 import Listener.Constant;
 import Model.AreaModel;
-import Model.Product;
-import Model.Staff;
+import Model.Zone;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,8 +25,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author BellKunG
  */
-@WebServlet(name = "Authentication", urlPatterns = {"/Authentication"})
-public class Authentication extends HttpServlet {
+@WebServlet(name = "ShowRentArea", urlPatterns = {"/ShowRentArea"})
+public class ShowRentArea extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,51 +42,64 @@ public class Authentication extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Connection conn = null;
-        
-        try {
-            conn = (Connection) Constant.getConnection();
-        } catch (Exception ex) {
-            System.out.println("Eiei" + ex.getMessage());
-        }
+        String selectRent = request.getParameter("selectRent");
         
         HttpSession session = request.getSession();
         
-        Staff staff = new Staff(username, password);
-        if (staff.isStaff()) {
-            
-            ArrayList<Product> allProduct = new ArrayList<>();
-            try {
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product");
-                ResultSet rs = pstmt.executeQuery();
-                
-                while (rs.next()) {
-                    Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
-                    allProduct.add(pro);
-                }
-                
-                pstmt.close();
-                rs.close();
-                
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        // set old Order
+        HashMap<Integer,Integer> allOrder = new HashMap<>();
+        try {
+            conn = (Connection) Constant.getConnection();
+            pstmt = conn.prepareStatement("SELECT order_id, product_id FROM customer JOIN `order` USING (cust_id);");
+
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                allOrder.put(rs.getInt(1), rs.getInt(2));
             }
-            
-            session.setAttribute("staff", staff);
-            session.setAttribute("allProduct", allProduct);
-            session.setAttribute("allArea", AreaModel.allArea());
-            
+
+            rs.close();
+            pstmt.close();
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-            
-            response.sendRedirect("/KMITL-BIZ/index.jsp");
-            
-        } else {
-            response.sendRedirect("/KMITL-BIZ/Login.jsp");
         }
-        return;
+        
+        // set Area
+        HashMap<String,Zone> allZone = new HashMap<>();
+        for (String[] area: AreaModel.allArea()) {
+            for (String a: area) {
+                try {
+                    conn = (Connection) Constant.getConnection();
+                    pstmt = conn.prepareStatement("SELECT * FROM zone WHERE zone_id = ?");
+                    pstmt.setString(1, a);
+
+                    rs = pstmt.executeQuery();
+                    if (rs.next()) {
+                        allZone.put(a, new Zone(a, rs.getInt("order_id"), allOrder.get(rs.getInt("order_id"))));
+                    } else {
+                        allZone.put(a, new Zone(a, 0, 0));
+                    }
+
+                    rs.close();
+                    pstmt.close();
+
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                } finally {
+                    if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+                }
+            }
+        }
+        session.setAttribute("allZone", allZone);
+        session.setAttribute("typeRent", selectRent);
+        session.setAttribute("statusShow", "true");
+        response.sendRedirect("/KMITL-BIZ/index.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

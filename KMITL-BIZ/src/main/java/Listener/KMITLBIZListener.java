@@ -22,22 +22,12 @@ public class KMITLBIZListener implements ServletContextListener {
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        try {
-            Constant.dataSource = (DataSource) getKMITLBIZ();
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
         
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         
-    }
-
-    private DataSource getKMITLBIZ() throws NamingException {
-        Context c = new InitialContext();
-        return (DataSource) c.lookup("java:comp/env/KMITLBIZ");
     }
     
     

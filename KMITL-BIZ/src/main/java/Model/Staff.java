@@ -30,9 +30,9 @@ public class Staff {
     public boolean isStaff() {
         Connection conn = null;
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
+            conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.STAFF WHERE staff_id = ? AND password = ?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM staff WHERE staff_id = ? AND password = ?");
             pstmt.setString(1, this.staff_id);
             pstmt.setString(2, this.password);
             
@@ -47,7 +47,7 @@ public class Staff {
                 return false;
             }
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}

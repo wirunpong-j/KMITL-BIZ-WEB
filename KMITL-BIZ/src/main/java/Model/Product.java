@@ -35,14 +35,14 @@ public class Product {
     public void addToDB() {
         Connection conn = null;
         try {
-            conn = (Connection) Constant.dataSource.getConnection();
+            conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO KMITLBIZ.PRODUCT(product_name) VALUES(?)");
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO product(product_name) VALUES(?)");
             pstmt.setString(1, product_name);
             pstmt.executeUpdate();
             pstmt.close();
             
-            pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.PRODUCT WHERE product_name = ?");
+            pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ?");
             pstmt.setString(1, product_name);
             
             ResultSet rs = pstmt.executeQuery();
@@ -51,7 +51,7 @@ public class Product {
             }
             pstmt.close();
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
