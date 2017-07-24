@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Listener.Constant;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -40,9 +41,10 @@ public class ExportData extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-         try{
+        
+        try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) getServletContext().getAttribute("connection");
+            Connection conn = (Connection) Constant.getConnection();
             HttpSession session = request.getSession();
             Statement statement = conn.createStatement();
             Statement statement1 = conn.createStatement();
@@ -101,9 +103,9 @@ public class ExportData extends HttpServlet {
             Row row6 ;
             ResultSet rs2 = statement2.executeQuery("SELECT cus.cust_id as cust_id, cust.start_date as start_date, zo.zone_id as zone_id, pro.product_name as product_name"
                     + "FROM KMITLBIZ.CUSTOMER as cus"
-                    + "INNER JOIN KMITLBIZ.ORDER as ord ON cus.cust_id = ord.CUSTOMER_cust_id"
-                    + "INNER JOIN KMITLBIZ.ZONE as zon ON ord.order_id = zon.ORDER_order_id"
-                    + "INNER JOIN KMITLBIZ.PRODUCT as pro ON cus.PRODUCT_product_id = pro.product_id");
+                    + "INNER JOIN KMITLBIZ.ORDER as ord ON cus.cust_id = ord.ust_id"
+                    + "INNER JOIN KMITLBIZ.ZONE as zon ON ord.order_id = zon.order_id"
+                    + "INNER JOIN KMITLBIZ.PRODUCT as pro ON cus.product_id = pro.product_id");
             while(rs2.next()){
                 int c = rs2.getRow();
                 row6 = worksheet2.createRow((short)c);
@@ -123,8 +125,9 @@ public class ExportData extends HttpServlet {
             statement2.close();
             conn.close();
             System.out.println("Export Success");
-        }catch(ClassNotFoundException | SQLException e){
-            System.out.println(e);
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
 
     }
