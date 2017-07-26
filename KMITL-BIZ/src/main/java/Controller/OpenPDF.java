@@ -5,7 +5,6 @@
  */
 package Controller;
 
-import Model.PDFFile;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,8 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author BellKunG
  */
-@WebServlet(name = "ExportPDF", urlPatterns = {"/ExportPDF"})
-public class ExportPDF extends HttpServlet {
+@WebServlet(name = "OpenPDF", urlPatterns = {"/OpenPDF/*"})
+public class OpenPDF extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,18 +33,20 @@ public class ExportPDF extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setHeader("Content-Disposition", "inline; filename=\"test.pdf\"");
         response.setContentType("text/html;charset=UTF-8");
-        
-        try (PrintWriter outer = response.getWriter()) {
-            try {
-                PDFFile file = new PDFFile();
-                file.createPDF("file/test.pdf");
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            } 
-            
-            
+        response.setContentType("application/pdf");
+
+        OutputStream out = response.getOutputStream(); 
+        try (FileInputStream in = new FileInputStream("file/test.pdf")) {
+            int content;
+            while ((content = in.read()) != -1) {
+                out.write(content);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        out.close();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -43,24 +43,27 @@ public class Authentication extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Connection conn = null;
-        
-        try {
-            conn = (Connection) Constant.getConnection();
-        } catch (Exception ex) {
-            System.out.println("Eiei" + ex.getMessage());
-        }
-        
+        String username = "", password = "";
+        Staff staff = null;
         HttpSession session = request.getSession();
         
-        Staff staff = new Staff(username, password);
+        if (session.getAttribute("staff") == null) {
+            username = request.getParameter("username");
+            password = request.getParameter("password");
+            staff = new Staff(username, password);
+        } else {
+            staff = (Staff) session.getAttribute("staff");
+        }
+        
+        session.invalidate();
+        session = request.getSession();
+        
         if (staff.isStaff()) {
             
             ArrayList<Product> allProduct = new ArrayList<>();
+            Connection conn = null;
             try {
+                conn = (Connection) Constant.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product");
                 ResultSet rs = pstmt.executeQuery();
                 
@@ -72,15 +75,15 @@ public class Authentication extends HttpServlet {
                 pstmt.close();
                 rs.close();
                 
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
+            } finally {
+                if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
             }
             
             session.setAttribute("staff", staff);
             session.setAttribute("allProduct", allProduct);
             session.setAttribute("allArea", AreaModel.allArea());
-            
-            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
             
             response.sendRedirect("/KMITL-BIZ/index.jsp");
             
@@ -88,7 +91,7 @@ public class Authentication extends HttpServlet {
             response.sendRedirect("/KMITL-BIZ/Login.jsp");
         }
         return;
-    }
+}
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

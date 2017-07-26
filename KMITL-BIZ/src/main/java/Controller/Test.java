@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.Formating;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -17,8 +18,11 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -27,6 +31,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -48,30 +53,15 @@ public class Test extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        
-      LocalDateTime currentTime = LocalDateTime.now();
-   
-      ZoneId id = ZoneId.of("Asia/Bangkok");
-      ZonedDateTime zonedTime = currentTime.atZone(id);
-      Month thisMonth = zonedTime.getMonth();
-      Month nextMonth = thisMonth.plus(1);
-      
-      System.out.println(thisMonth);
-      System.out.println(nextMonth);
-      
-      ZonedDateTime thisThursday = zonedTime;
-      while (thisThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
-          thisThursday = thisThursday.plusDays(1);
-      }
-      
-      ZonedDateTime nextThursday = thisThursday.plusDays(1);
-      while (nextThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
-          nextThursday = nextThursday.plusDays(1);
-      }
-      
-
-      System.out.println(thisThursday);
-      System.out.println(nextThursday);
+        HttpSession session = request.getSession();
+        session.setAttribute("a", "test");
+        session.setAttribute("b", "test2");
+        Enumeration keys = session.getAttributeNames();
+        while (keys.hasMoreElements())
+        {
+          String key = (String)keys.nextElement();
+          System.out.println("Key : " + key);
+        }
       
         
     }

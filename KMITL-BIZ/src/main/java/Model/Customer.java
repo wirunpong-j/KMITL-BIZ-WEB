@@ -24,15 +24,18 @@ public class Customer {
     private String student_id;
     private String citizen_id;
     private String vehicle;
+    private String email;
     private int product_id;
+    private int price;
 
-    public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle) {
+    public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle, String email) {
         this.fullname = fullname;
         this.tel = tel;
         this.cust_type = cust_type;
         this.student_id = student_id;
         this.citizen_id = citizen_id;
         this.vehicle = vehicle;
+        this.email = email;
     }
 
     public Customer(int cust_id, int product_id) {
@@ -45,7 +48,7 @@ public class Customer {
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO customer(fullname, tel, cust_type, student_id, citizen_id, vehicle) "
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email) "
                     + "VALUES(?,?,?,?,?,?)");
             pstmt.setString(1, this.fullname);
             pstmt.setString(2, this.tel);
@@ -53,25 +56,7 @@ public class Customer {
             pstmt.setString(4, this.student_id);
             pstmt.setString(5, this.citizen_id);
             pstmt.setString(6, this.vehicle);
-            
-            pstmt.executeUpdate();
-            pstmt.close();
-            
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        } finally {
-            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-        }
-    }
-    
-    public void addProductID() {
-        Connection conn = null;
-        try {
-            conn = (Connection) Constant.getConnection();
-            
-            PreparedStatement pstmt = conn.prepareStatement("UPDATE customer SET product_id = ? WHERE cust_id = ?");
-            pstmt.setInt(1, this.product_id);
-            pstmt.setInt(2, this.cust_id);
+            pstmt.setString(7, this.email);
             
             pstmt.executeUpdate();
             pstmt.close();
@@ -101,7 +86,6 @@ public class Customer {
                 this.student_id = rs.getString("student_id");
                 this.citizen_id = rs.getString("citizen_id");
                 this.vehicle = rs.getString("vehicle");
-                this.product_id = rs.getInt("product_id");
             }
             
             pstmt.close();
@@ -130,7 +114,7 @@ public class Customer {
                 this.student_id = rs.getString("student_id");
                 this.citizen_id = rs.getString("citizen_id");
                 this.vehicle = rs.getString("vehicle");
-                this.product_id = rs.getInt("product_id");
+                this.email = rs.getString("email");
             }
             
             pstmt.close();
@@ -224,7 +208,21 @@ public class Customer {
     public void setProduct_id(int product_id) {
         this.product_id = product_id;
     }
-    
-    
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
     
 }

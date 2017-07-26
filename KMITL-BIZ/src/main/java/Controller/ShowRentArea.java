@@ -7,12 +7,15 @@ package Controller;
 
 import Listener.Constant;
 import Model.AreaModel;
+import Model.Customer;
 import Model.Zone;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,23 +45,52 @@ public class ShowRentArea extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
+        HttpSession session = request.getSession();
+        HashMap<String, Object> allRentDate = (HashMap<String, Object>) session.getAttribute("allRentDate");
         String selectRent = request.getParameter("selectRent");
         
-        HttpSession session = request.getSession();
+        ZonedDateTime thursday = null;
+        ArrayList<ZonedDateTime> thursdayOnMonth = null;
+        String query = "";
+        // set price area
+        Customer cust = (Customer) session.getAttribute("customer");
+        
+        if (selectRent.equals("R1") || selectRent.equals("R2")) {
+            thursday = (ZonedDateTime) allRentDate.get(selectRent);
+            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN product USING (product_id) "
+                    + "WHERE DAY(rent_date) = "+ thursday.getDayOfMonth() +" AND MONTH(rent_date) = "+ thursday.getMonthValue() +" AND YEAR(rent_date) = "+ thursday.getYear() +" ORDER BY zone_id;";
+            
+            switch (cust.getCust_type()) {
+                case "STUDENT": cust.setPrice(100); break;
+                case "STAFF": cust.setPrice(160); break;
+                case "OUTSIDER": cust.setPrice(200); break;
+            }
+            
+        } else {
+            thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(selectRent);
+            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN product USING (product_id) "
+                    + "WHERE MONTH(rent_date) = "+ thursdayOnMonth.get(0).getMonthValue() +" ORDER BY zone_id;";
+            
+            switch (cust.getCust_type()) {
+                case "STUDENT": cust.setPrice(90); break;
+                case "STAFF": cust.setPrice(150); break;
+                case "OUTSIDER": cust.setPrice(190); break;
+            }
+        }
         
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
-        // set old Order
-        HashMap<Integer,Integer> allOrder = new HashMap<>();
+        // set Area
+        HashMap<String,Zone> allZone = new HashMap<>();
         try {
             conn = (Connection) Constant.getConnection();
-            pstmt = conn.prepareStatement("SELECT order_id, product_id FROM customer JOIN `order` USING (cust_id);");
-
+            pstmt = conn.prepareStatement(query);
+            
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                allOrder.put(rs.getInt(1), rs.getInt(2));
+                allZone.put(rs.getString("zone_id"), new Zone(rs.getString("zone_id"), rs.getInt("order_id"), rs.getInt("product_id")));
             }
 
             rs.close();
@@ -70,36 +102,12 @@ public class ShowRentArea extends HttpServlet {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
         
-        // set Area
-        HashMap<String,Zone> allZone = new HashMap<>();
-        for (String[] area: AreaModel.allArea()) {
-            for (String a: area) {
-                try {
-                    conn = (Connection) Constant.getConnection();
-                    pstmt = conn.prepareStatement("SELECT * FROM zone WHERE zone_id = ?");
-                    pstmt.setString(1, a);
-
-                    rs = pstmt.executeQuery();
-                    if (rs.next()) {
-                        allZone.put(a, new Zone(a, rs.getInt("order_id"), allOrder.get(rs.getInt("order_id"))));
-                    } else {
-                        allZone.put(a, new Zone(a, 0, 0));
-                    }
-
-                    rs.close();
-                    pstmt.close();
-
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                } finally {
-                    if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-                }
-            }
-        }
         session.setAttribute("allZone", allZone);
         session.setAttribute("typeRent", selectRent);
         session.setAttribute("statusShow", "true");
+        session.setAttribute("customer", cust);
         response.sendRedirect("/KMITL-BIZ/index.jsp");
+        return;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
