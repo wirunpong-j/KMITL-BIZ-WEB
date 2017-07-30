@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -24,35 +26,92 @@ public class Customer {
     private String student_id;
     private String citizen_id;
     private String vehicle;
+    private String email;
     private int product_id;
+    
+    public Customer(String tel){
+        this.tel = tel;
+    }
+    
+    public Customer(int cust_id){
+        this.cust_id = cust_id;
+    }
 
-    public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle) {
+    public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle, String email) {
         this.fullname = fullname;
         this.tel = tel;
         this.cust_type = cust_type;
         this.student_id = student_id;
         this.citizen_id = citizen_id;
         this.vehicle = vehicle;
+        this.email = email;
     }
 
     public Customer(int cust_id, int product_id) {
         this.cust_id = cust_id;
         this.product_id = product_id;
     }
+
     
     public void addCustomer() {
         Connection conn = null;
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO customer(fullname, tel, cust_type, student_id, citizen_id, vehicle) "
-                    + "VALUES(?,?,?,?,?,?)");
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email) "
+                    + "VALUES(?,?,?,?,?,?,?)");
             pstmt.setString(1, this.fullname);
             pstmt.setString(2, this.tel);
             pstmt.setString(3, this.cust_type);
             pstmt.setString(4, this.student_id);
             pstmt.setString(5, this.citizen_id);
             pstmt.setString(6, this.vehicle);
+            pstmt.setString(7, this.email);
+            
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+    }
+    
+    public void updateCustomer() {
+        Connection conn = null;
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE customer "
+                    + "SET fullname = ?, tel = ?, cust_type = ?, student_id = ?, citizen_id = ?, vehicle = ?, email = ?"
+                    + "WHERE tel = ?");
+            pstmt.setString(1, this.fullname);
+            pstmt.setString(2, this.tel);
+            pstmt.setString(3, this.cust_type);
+            pstmt.setString(4, this.student_id);
+            pstmt.setString(5, this.citizen_id);
+            pstmt.setString(6, this.vehicle);
+            pstmt.setString(7, this.email);
+            pstmt.setString(8, this.tel);
+            
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+    }
+    
+    public void deleteCustomer(){
+        Connection conn = null;
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM customer WHERE tel = ?");
+            pstmt.setString(1, this.tel);
             
             pstmt.executeUpdate();
             pstmt.close();
@@ -88,20 +147,18 @@ public class Customer {
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer WHERE fullname = ? AND cust_type = ?");
-            pstmt.setString(1, this.fullname);
-            pstmt.setString(2, this.cust_type);
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer WHERE cust_id = ?");
+            pstmt.setInt(1, cust_id);
             
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                this.cust_id = rs.getInt("cust_id");
                 this.fullname = rs.getString("fullname");
                 this.tel = rs.getString("tel");
                 this.cust_type = rs.getString("cust_type");
                 this.student_id = rs.getString("student_id");
                 this.citizen_id = rs.getString("citizen_id");
                 this.vehicle = rs.getString("vehicle");
-                this.product_id = rs.getInt("product_id");
+                this.email = rs.getString("email");
             }
             
             pstmt.close();
@@ -130,7 +187,7 @@ public class Customer {
                 this.student_id = rs.getString("student_id");
                 this.citizen_id = rs.getString("citizen_id");
                 this.vehicle = rs.getString("vehicle");
-                this.product_id = rs.getInt("product_id");
+                this.email = rs.getString("email");
             }
             
             pstmt.close();
@@ -224,7 +281,13 @@ public class Customer {
     public void setProduct_id(int product_id) {
         this.product_id = product_id;
     }
-    
-    
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
 }

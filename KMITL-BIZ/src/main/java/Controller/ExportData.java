@@ -70,7 +70,7 @@ public class ExportData extends HttpServlet {
                 row2.createCell(2).setCellValue(rs.getString("cust_type"));
                 row2.createCell(3).setCellValue(rs.getString("tel"));
                 row2.createCell(4).setCellValue(rs.getString("email"));
-                row2.createCell(5).setCellValue(rs.getString("vehicle_num"));
+                row2.createCell(5).setCellValue(rs.getString("vehicle"));
             }
             HSSFSheet worksheet1 = workbook.createSheet("ข้อมูลการชำระเงิน");
             Row row3 = worksheet1.createRow((short)0);

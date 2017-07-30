@@ -5,14 +5,9 @@
  */
 package Controller;
 
-import Listener.Constant;
 import Model.Customer;
-import Model.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author fluke
  */
-@WebServlet(name = "AddCustomer", urlPatterns = {"/AddCustomer"})
-public class AddCustomer extends HttpServlet {
+@WebServlet(name = "UpdateCustomer", urlPatterns = {"/UpdateCustomer"})
+public class UpdateCustomer extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,7 +33,6 @@ public class AddCustomer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
         
         String fname = request.getParameter("fname");
         String lname = request.getParameter("lname");
@@ -67,8 +61,8 @@ public class AddCustomer extends HttpServlet {
         
         Customer cust = new Customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email);
         
-        cust.addCustomer();
-        response.sendRedirect("admin_cust_add.jsp");
+        cust.updateCustomer();
+        response.sendRedirect("admin_cust_edit.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

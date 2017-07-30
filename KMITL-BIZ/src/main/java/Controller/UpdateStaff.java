@@ -5,14 +5,9 @@
  */
 package Controller;
 
-import Listener.Constant;
-import Model.Customer;
-import Model.Product;
+import Model.Staff;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author fluke
  */
-@WebServlet(name = "AddCustomer", urlPatterns = {"/AddCustomer"})
-public class AddCustomer extends HttpServlet {
+@WebServlet(name = "UpdateStaff", urlPatterns = {"/UpdateStaff"})
+public class UpdateStaff extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,37 +33,17 @@ public class AddCustomer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
         
+        String staff_id = request.getParameter("staff_id");
+        String password = request.getParameter("password");
         String fname = request.getParameter("fname");
         String lname = request.getParameter("lname");
-        String tel = request.getParameter("tel");
-        String email = request.getParameter("email");
-        String plate = request.getParameter("plate");
-        String cust_type = request.getParameter("cust_type");
-        String id = request.getParameter("id");
-        String fullname = String.join(" ", fname, lname);
-        String student_id = null;
-        String citizen_id = null;
-        String vehicle = null;
-        if (plate.equals(""))
-            vehicle = null;
-        else
-            vehicle = plate;
+        String role = request.getParameter("role");
         
-        if (cust_type.equals("STUDENT")){
-            student_id = id;
-            citizen_id = null;
-        }
-        else {
-            citizen_id = id;
-            student_id = null;
-        }
+        Staff staf = new Staff(staff_id, password, fname, lname, role);
         
-        Customer cust = new Customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email);
-        
-        cust.addCustomer();
-        response.sendRedirect("admin_cust_add.jsp");
+        staf.updateStaff();
+        response.sendRedirect("admin_cust_edit.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

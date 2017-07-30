@@ -19,12 +19,14 @@
       <h1>สรุปข้อมูลการใช้งาน</h1>
     </div>
     <div class="row">
-      <div class="col-md-12">
-        <div class="admin_panel" id="admin_data_export">
-          <i class="fa fa-user-plus fa-5x" aria-hidden="true"></i>
-          <h3>ส่งออกข้อมูลเป็น Excel</h3>
+      <a href="ExportData">
+        <div class="col-md-12">
+          <div class="admin_panel" id="admin_data_export">
+            <i class="fa fa-user-plus fa-5x" aria-hidden="true"></i>
+            <h3>ส่งออกข้อมูลเป็น Excel</h3>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 

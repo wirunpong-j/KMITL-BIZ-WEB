@@ -19,39 +19,55 @@
       <h1>เพิ่มพนักงานใหม่</h1>
     </div>
 
-    <form>
+    <form action="AddStaff">
       <div class="form-group">
         <label for="fname">ชื่อจริง</label>
-        <input type="text" class="form-control" id="fname" placeholder="ชื่อจริง">
+        <input type="text" class="form-control" id="fname" name="fname" placeholder="ชื่อจริง">
       </div>
       <div class="form-group">
         <label for="lname">นามสกุล</label>
-        <input type="text" class="form-control" id="lname" placeholder="นามสกุล">
+        <input type="text" class="form-control" id="lname" name="lname" placeholder="นามสกุล">
       </div>
       <div class="form-group">
         <label for="username">ชื่อผู้ใช้</label>
-        <input type="text" class="form-control" id="username" placeholder="ชื่อผู้ใช้">
+        <input type="text" class="form-control" id="username" name="username" placeholder="ชื่อผู้ใช้">
       </div>
       <div class="form-group">
         <label for="password">รหัสผ่าน</label>
-        <input type="password" class="form-control" id="password" placeholder="รหัสผ่าน">
+        <input type="password" class="form-control" id="password" name="password" placeholder="รหัสผ่าน">
       </div>
       <div class="form-group">
         <label for="password">ยืนยันรหัสผ่าน</label>
-        <input type="password" class="form-control" id="password" placeholder="ยืนยันรหัสผ่าน">
+        <input type="password" class="form-control" id="confirm-password" placeholder="ยืนยันรหัสผ่าน">
       </div>
       <div class="form-group">
         <label for="type">ประเภท</label>
         <label class="radio-inline">
-          <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> Staff
+          <input type="radio" name="role" id="inlineRadio1" value="ST"> Staff
         </label>
                 <label class="radio-inline">
-          <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> Admin
+          <input type="radio" name="role" id="inlineRadio2" value="AD"> Admin
         </label>
       </div>
       <button type="submit" class="btn btn-default">เพิ่ม</button>
     </form>
   </div>
+    
+    <script type="text/javascript">
+        window.onload = function () {
+            document.getElementById("password").onchange = validatePassword;
+            document.getElementById("confirm-password").onchange = validatePassword;
+        }
+        function validatePassword(){
+            var pass2=document.getElementById("confirm-password").value;
+            var pass1=document.getElementById("password").value;
+            if(pass1!=pass2)
+                document.getElementById("confirm-password").setCustomValidity("รหัสผ่านไม่ตรงกัน");
+            else
+                document.getElementById("confirm-password").setCustomValidity('');	 
+        //empty string means no validation error
+        }
+    </script>
 
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src="https://use.fontawesome.com/211152dd25.js"></script>
