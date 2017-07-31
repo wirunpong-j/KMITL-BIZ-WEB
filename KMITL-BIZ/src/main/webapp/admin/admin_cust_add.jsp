@@ -42,7 +42,7 @@
             <input type="text" class="form-control information" id="id" name="id" placeholder="เลขบัตรประชาชน/รหัสนักศึกษา">
         </div>
         
-        <button type="submit" class="btn btn-info" id="confirmBtn">บันทึก</button>
+        <button type="submit" class="btn btn-info" id="confirmBtn"><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
         
     </form>
 
