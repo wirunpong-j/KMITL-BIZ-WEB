@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.Staff;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -19,6 +20,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -43,6 +45,34 @@ public class AuthenFilter implements Filter {
             log("AuthenFilter:DoBeforeProcessing");
         }
         
+                HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+        
+        System.out.println(httpRequest.getRequestURI());
+        String url = httpRequest.getRequestURI();
+        System.out.println("Filter Invoked");
+        
+        if(url.charAt(url.length()-1) == '/' || url.contains("Authentication")){
+            System.out.println("Authen Bypass");
+        } else {
+            //check for loginn
+            String username = "", password = "";
+            Staff staff = null;
+            HttpSession session = httpRequest.getSession();
+            
+            if (session.getAttribute("staff") == null) {
+            res.sendRedirect("/KMITL-BIZ/");
+            return;
+            } else {
+                staff = (Staff) session.getAttribute("staff");
+                if(!staff.isStaff()) {
+                res.sendRedirect("/KMITL-BIZ/");
+                return;
+                
+            }
+            }
+        }
+        
     }    
     
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
@@ -50,24 +80,7 @@ public class AuthenFilter implements Filter {
         if (debug) {
             log("AuthenFilter:DoAfterProcessing");
         }
-
-        // Write code here to process the request and/or response after
-        // the rest of the filter chain is invoked.
-        // For example, a logging filter might log the attributes on the
-        // request object after the request has been processed. 
-        /*
-	for (Enumeration en = request.getAttributeNames(); en.hasMoreElements(); ) {
-	    String name = (String)en.nextElement();
-	    Object value = request.getAttribute(name);
-	    log("attribute: " + name + "=" + value.toString());
-
-	}
-         */
-        // For example, a filter might append something to the response.
-        /*
-	PrintWriter respOut = new PrintWriter(response.getWriter());
-	respOut.println("<P><B>This has been appended by an intrusive filter.</B>");
-         */
+        
     }
 
     /**
@@ -99,28 +112,10 @@ public class AuthenFilter implements Filter {
             problem = t;
             t.printStackTrace();
         }
-        
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-//        System.out.println(httpRequest.getRequestURI());
-        String url = httpRequest.getRequestURI();
-//        System.out.println("Filter Invoked");
-        
-        if(url.charAt(url.length()-1) == '/' || url.contains("Authentication")){
-//            System.out.println("Authen Bypass");
-        } else {
-            //check for loginn
-            if(true) {
-//                RequestDispatcher page = request.getRequestDispatcher("/KMITL-BIZ/");
-//                page.forward(request, response);
-                
-            }
-        }
+
         
         doAfterProcessing(request, response);
 
-        // If there was a problem, we want to rethrow it if it is
-        // a known type, otherwise log it.
         if (problem != null) {
             if (problem instanceof ServletException) {
                 throw (ServletException) problem;
