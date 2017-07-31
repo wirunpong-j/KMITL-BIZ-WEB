@@ -48,3 +48,47 @@ body {
     width: 50px;
     background-color: black;
 }
+
+.admin_panel {
+  background-color: grey;
+  border-radius: 5px;
+  padding: 5px;
+  color: white;
+  text-align: center;
+  padding: 25px 0;
+}
+
+#admin_cust_add {
+  background-color: #0D47A1;
+  color: white;
+}
+
+#admin_cust_edit {
+  background-color: #1976D2;
+  color: white;
+}
+
+#admin_cust_history {
+  background-color: #2196F3;
+  color: white;
+}
+
+#admin_staff_add {
+  background-color: #1B5E20;
+  color: white;
+}
+
+#admin_staff_edit {
+  background-color: #388E3C;
+  color: white;
+}
+
+#admin_staff_history {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#admin_data_export {
+  background-color: #004D40;
+  color: white;
+}

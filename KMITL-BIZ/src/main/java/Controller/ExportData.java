@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Listener.Constant;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -40,9 +41,10 @@ public class ExportData extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-         try{
+        
+        try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) getServletContext().getAttribute("connection");
+            Connection conn = (Connection) Constant.getConnection();
             HttpSession session = request.getSession();
             Statement statement = conn.createStatement();
             Statement statement1 = conn.createStatement();
@@ -68,7 +70,7 @@ public class ExportData extends HttpServlet {
                 row2.createCell(2).setCellValue(rs.getString("cust_type"));
                 row2.createCell(3).setCellValue(rs.getString("tel"));
                 row2.createCell(4).setCellValue(rs.getString("email"));
-                row2.createCell(5).setCellValue(rs.getString("vehicle_num"));
+                row2.createCell(5).setCellValue(rs.getString("vehicle"));
             }
             HSSFSheet worksheet1 = workbook.createSheet("ข้อมูลการชำระเงิน");
             Row row3 = worksheet1.createRow((short)0);
@@ -78,18 +80,18 @@ public class ExportData extends HttpServlet {
             row3.createCell(3).setCellValue("ประเภทการชำระ");
             row3.createCell(4).setCellValue("จำนวนล็อค");
             Row row4 ;
-            ResultSet rs1 = statement1.executeQuery("SELECT ord.cust_id as cust_id, ord.order_date as order_date, ord.price as price, ord.payment as payment, COUNT(ord.order_id) as zone_count"
-                    + "FROM KMITLBIZ.ORDER as ord"
-                    + "INNER JOIN KMITLBIZ.ZONE as zo ON ord.order_id = zo.ORDER_order_id"
-                    + "WHERE order_date = @order_date"
+            ResultSet rs1 = statement1.executeQuery("SELECT cust_id, order_date, price, order_type, COUNT(order_id) as zone_count "
+                    + "FROM kmitlbiz.order "
+                    + "JOIN zone "
+                    + "USING (order_id) "
                     + "GROUP BY cust_id");
             while(rs1.next()){
                 int b = rs1.getRow();
                 row4 = worksheet1.createRow((short)b);
                 row4.createCell(0).setCellValue(rs.getString("cust_id"));
                 row4.createCell(1).setCellValue(rs.getString("order_date"));
-                row4.createCell(2).setCellValue(rs.getString("price"));
-                row4.createCell(3).setCellValue(rs.getString("payment"));
+                row4.createCell(2).setCellValue(rs.getInt("price"));
+                row4.createCell(3).setCellValue(rs.getString("order_type"));
                 row4.createCell(4).setCellValue(rs.getString("zone_count"));
             }
             HSSFSheet worksheet2 = workbook.createSheet("ข้อมูลการจองล็อค");
@@ -99,16 +101,17 @@ public class ExportData extends HttpServlet {
             row5.createCell(2).setCellValue("รหัสล็อค");
             row5.createCell(3).setCellValue("สินค้า");
             Row row6 ;
-            ResultSet rs2 = statement2.executeQuery("SELECT cus.cust_id as cust_id, cust.start_date as start_date, zo.zone_id as zone_id, pro.product_name as product_name"
-                    + "FROM KMITLBIZ.CUSTOMER as cus"
-                    + "INNER JOIN KMITLBIZ.ORDER as ord ON cus.cust_id = ord.CUSTOMER_cust_id"
-                    + "INNER JOIN KMITLBIZ.ZONE as zon ON ord.order_id = zon.ORDER_order_id"
-                    + "INNER JOIN KMITLBIZ.PRODUCT as pro ON cus.PRODUCT_product_id = pro.product_id");
+            ResultSet rs2 = statement2.executeQuery("SELECT cust_id, rent_date, zone_id, product_name "
+                    + "FROM kmitlbiz.order "
+                    + "JOIN product "
+                    + "USING (product_id) "
+                    + "JOIN kmitlbiz.zone "
+                    + "USING (order_id)");
             while(rs2.next()){
                 int c = rs2.getRow();
                 row6 = worksheet2.createRow((short)c);
                 row6.createCell(0).setCellValue(rs.getString("cust_id"));
-                row6.createCell(1).setCellValue(rs.getString("start_date"));
+                row6.createCell(1).setCellValue(rs.getString("rent_date"));
                 row6.createCell(2).setCellValue(rs.getString("zone"));
                 row6.createCell(3).setCellValue(rs.getString("product_name"));
             }
@@ -116,15 +119,17 @@ public class ExportData extends HttpServlet {
             fileOut.flush();
             fileOut.close();
             rs.close();
-            rs1.close();
-            rs2.close();
             statement.close();
+            rs1.close();
             statement1.close();
+            rs2.close();
             statement2.close();
             conn.close();
             System.out.println("Export Success");
-        }catch(ClassNotFoundException | SQLException e){
-            System.out.println(e);
+            response.sendRedirect("admin_data.jsp");
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
 
     }

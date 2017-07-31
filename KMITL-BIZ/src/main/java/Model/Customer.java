@@ -26,6 +26,15 @@ public class Customer {
     private String vehicle;
     private String email;
     private int product_id;
+    
+    public Customer(String tel){
+        this.tel = tel;
+    }
+    
+    public Customer(int cust_id){
+        this.cust_id = cust_id;
+    }
+    
     private int price;
 
     public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle, String email) {
@@ -42,6 +51,7 @@ public class Customer {
         this.cust_id = cust_id;
         this.product_id = product_id;
     }
+
     
     public void addCustomer() {
         Connection conn = null;
@@ -49,7 +59,7 @@ public class Customer {
             conn = (Connection) Constant.getConnection();
             
             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email) "
-                    + "VALUES(?,?,?,?,?,?)");
+                    + "VALUES(?,?,?,?,?,?,?)");
             pstmt.setString(1, this.fullname);
             pstmt.setString(2, this.tel);
             pstmt.setString(3, this.cust_type);
@@ -68,21 +78,87 @@ public class Customer {
         }
     }
     
+    public void updateCustomer() {
+        Connection conn = null;
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE customer "
+                    + "SET fullname = ?, tel = ?, cust_type = ?, student_id = ?, citizen_id = ?, vehicle = ?, email = ?"
+                    + "WHERE tel = ?"
+                    + "VALUES(?,?,?,?,?,?)");
+            pstmt.setString(1, this.fullname);
+            pstmt.setString(2, this.tel);
+            pstmt.setString(3, this.cust_type);
+            pstmt.setString(4, this.student_id);
+            pstmt.setString(5, this.citizen_id);
+            pstmt.setString(6, this.vehicle);
+            pstmt.setString(7, this.email);
+            pstmt.setString(8, this.tel);
+            
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+    }
+    
+    public void deleteCustomer(){
+        Connection conn = null;
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM customer WHERE tel = ?");
+            pstmt.setString(1, this.tel);
+            
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+    }
+    
+    public void addProductID() {
+        Connection conn = null;
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE customer SET product_id = ? WHERE cust_id = ?");
+            pstmt.setInt(1, this.product_id);
+            pstmt.setInt(2, this.cust_id);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+    }
+    
     public void searchCustomer() {
         Connection conn = null;
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer WHERE fullname = ? AND cust_type = ?");
-            pstmt.setString(1, this.fullname);
-            pstmt.setString(2, this.cust_type);
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer WHERE cust_id = ?");
+            pstmt.setInt(1, cust_id);
             
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                this.cust_id = rs.getInt("cust_id");
                 this.fullname = rs.getString("fullname");
                 this.tel = rs.getString("tel");
                 this.cust_type = rs.getString("cust_type");
+                this.student_id = rs.getString("student_id");
+                this.citizen_id = rs.getString("citizen_id");
+                this.vehicle = rs.getString("vehicle");
+                this.email = rs.getString("email");
                 this.student_id = ((rs.getString("student_id") != null && !rs.getString("student_id").equals(""))) ? rs.getString("student_id") : "-";
                 this.citizen_id = ((rs.getString("citizen_id") != null && !rs.getString("citizen_id").equals(""))) ? rs.getString("citizen_id") : "-";
                 this.vehicle = ((rs.getString("vehicle") != null && !rs.getString("vehicle").equals(""))) ? rs.getString("vehicle") : "-";
@@ -112,6 +188,10 @@ public class Customer {
                 this.fullname = rs.getString("fullname");
                 this.tel = rs.getString("tel");
                 this.cust_type = rs.getString("cust_type");
+                this.student_id = rs.getString("student_id");
+                this.citizen_id = rs.getString("citizen_id");
+                this.vehicle = rs.getString("vehicle");
+                this.email = rs.getString("email");
                 this.student_id = ((rs.getString("student_id") != null && !rs.getString("student_id").equals(""))) ? rs.getString("student_id") : "-";
                 this.citizen_id = ((rs.getString("citizen_id") != null && !rs.getString("citizen_id").equals(""))) ? rs.getString("citizen_id") : "-";
                 this.vehicle = ((rs.getString("vehicle") != null && !rs.getString("vehicle").equals(""))) ? rs.getString("vehicle") : "-";
@@ -215,6 +295,7 @@ public class Customer {
     }
 
     public void setEmail(String email) {
+        this.email = email;
         this.email = ((email != null) && (!email.equals(""))) ? email : "-";
     }
 
