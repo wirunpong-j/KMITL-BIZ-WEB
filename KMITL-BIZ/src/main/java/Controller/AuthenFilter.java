@@ -9,15 +9,16 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import static java.lang.System.out;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -100,17 +101,18 @@ public class AuthenFilter implements Filter {
         }
         
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        System.out.println(httpRequest.getRequestURI());
+        HttpServletResponse res = (HttpServletResponse) response;
+//        System.out.println(httpRequest.getRequestURI());
         String url = httpRequest.getRequestURI();
-        System.out.println("Filter Invoked");
+//        System.out.println("Filter Invoked");
         
         if(url.charAt(url.length()-1) == '/' || url.contains("Authentication")){
-            System.out.println("Authen Bypass");
+//            System.out.println("Authen Bypass");
         } else {
             //check for loginn
             if(true) {
-            //no login
-            //redorect
+//                RequestDispatcher page = request.getRequestDispatcher("/KMITL-BIZ/");
+//                page.forward(request, response);
                 
             }
         }

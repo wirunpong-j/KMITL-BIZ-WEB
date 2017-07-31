@@ -83,9 +83,10 @@ public class Customer {
                 this.fullname = rs.getString("fullname");
                 this.tel = rs.getString("tel");
                 this.cust_type = rs.getString("cust_type");
-                this.student_id = rs.getString("student_id");
-                this.citizen_id = rs.getString("citizen_id");
-                this.vehicle = rs.getString("vehicle");
+                this.student_id = ((rs.getString("student_id") != null && !rs.getString("student_id").equals(""))) ? rs.getString("student_id") : "-";
+                this.citizen_id = ((rs.getString("citizen_id") != null && !rs.getString("citizen_id").equals(""))) ? rs.getString("citizen_id") : "-";
+                this.vehicle = ((rs.getString("vehicle") != null && !rs.getString("vehicle").equals(""))) ? rs.getString("vehicle") : "-";
+                this.email = ((rs.getString("email") != null && !rs.getString("email").equals(""))) ? rs.getString("email") : "-";
             }
             
             pstmt.close();
@@ -111,10 +112,10 @@ public class Customer {
                 this.fullname = rs.getString("fullname");
                 this.tel = rs.getString("tel");
                 this.cust_type = rs.getString("cust_type");
-                this.student_id = rs.getString("student_id");
-                this.citizen_id = rs.getString("citizen_id");
-                this.vehicle = rs.getString("vehicle");
-                this.email = rs.getString("email");
+                this.student_id = ((rs.getString("student_id") != null && !rs.getString("student_id").equals(""))) ? rs.getString("student_id") : "-";
+                this.citizen_id = ((rs.getString("citizen_id") != null && !rs.getString("citizen_id").equals(""))) ? rs.getString("citizen_id") : "-";
+                this.vehicle = ((rs.getString("vehicle") != null && !rs.getString("vehicle").equals(""))) ? rs.getString("vehicle") : "-";
+                this.email = ((rs.getString("email") != null && !rs.getString("email").equals(""))) ? rs.getString("email") : "-";
             }
             
             pstmt.close();
@@ -182,7 +183,7 @@ public class Customer {
     }
 
     public void setStudent_id(String student_id) {
-        this.student_id = student_id;
+        this.student_id = ((student_id != null) && (!student_id.equals(""))) ? student_id : "-";
     }
 
     public String getCitizen_id() {
@@ -190,7 +191,7 @@ public class Customer {
     }
 
     public void setCitizen_id(String citizen_id) {
-        this.citizen_id = citizen_id;
+        this.citizen_id = ((citizen_id != null) && (!citizen_id.equals(""))) ? citizen_id : "-";
     }
 
     public String getVehicle() {
@@ -198,7 +199,7 @@ public class Customer {
     }
 
     public void setVehicle(String vehicle) {
-        this.vehicle = vehicle;
+        this.vehicle = ((vehicle != null) && (!vehicle.equals(""))) ? vehicle : "-";
     }
 
     public int getProduct_id() {
@@ -214,7 +215,7 @@ public class Customer {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = ((email != null) && (!email.equals(""))) ? email : "-";
     }
 
     public int getPrice() {
