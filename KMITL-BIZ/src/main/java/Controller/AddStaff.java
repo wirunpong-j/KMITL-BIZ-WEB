@@ -43,7 +43,7 @@ public class AddStaff extends HttpServlet {
         Staff staf = new Staff(username, password, fname, lname, role);
         
         staf.addStaff();
-        response.sendRedirect("admin_staff_add");
+        response.sendRedirect("/KMITL-BIZ/admin/admin_staff_add");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -30,6 +30,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     
+    <script src="https://use.fontawesome.com/211152dd25.js"></script>
+    
 </head>
 
 <body>
@@ -39,10 +41,10 @@
                 <a class="navbar-brand" href="#">KMITL BIZ WAY</a>
             </div>
             <ul class="nav navbar-nav navbar-left">
-                <li class="active"><a href="index.jsp">หน้าหลัก</a></li>
-                <li><a href="admin_cust.jsp">จัดการลูกค้า</a></li>
-                <li><a href="admin_staff.jsp">จัดการพนักงาน</a></li>
-                <li><a href="admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
+                <li class="active"><a href="${SITE_URL}/index.jsp">หน้าหลัก</a></li>
+                <li><a href="${SITE_URL}/admin/admin_cust.jsp">จัดการลูกค้า</a></li>
+                <li><a href="${SITE_URL}/admin/admin_staff.jsp">จัดการพนักงาน</a></li>
+                <li><a href="${SITE_URL}/admin/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

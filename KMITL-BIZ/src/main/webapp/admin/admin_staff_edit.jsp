@@ -1,25 +1,14 @@
 <%@page import="Model.Staff"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:include page="template/header.jsp" />
+<jsp:include page="/template/header.jsp" />
 
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta charset="utf-8">
-  <title>KMITL Biz Way</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
   <div class="container">
     <div class="jumbotron" id="admin_staff_edit">
       <h1>ดู/แก้ไข ข้อมูลพนักงาน</h1>
     </div>
 
-    <form class="" method="post">
+    <form method="POST">
       <div class="form-group">
         <label for="search_username">ชื่อผู้ใช้</label>
         <input type="text" class="form-control" id="search-staff" name="search" placeholder="ชื่อผู้ใช้">
@@ -42,7 +31,7 @@
                 case "AD" : case2 = "checked"; break;
             }
     %>
-    <form action="UpdateStaff">
+    <form action="${SITE_URL}/UpdateStaff" method="POST">
       <div class="form-group">
         <label for="fname">ชื่อจริง</label>
         <input type="text" class="form-control" id="fname" name="fname" value="<%= staf.getFirst_name()%>" placeholder="ชื่อจริง">
@@ -78,7 +67,7 @@
     }
     %>
 
-    <form class="" action="DeleteStaff" method="post" id="deleteuser">
+    <form action="${SITE_URL}/DeleteStaff" method="POST" id="deleteuser">
       <div class="form-group">
         <label for="plate">ใส่ชื่อผู้ใช้ที่ต้องการลบ</label>
         <input type="text" class="form-control" id="staff" name="staff_id" placeholder="ชื่อผู้ใช้">
@@ -87,24 +76,20 @@
     </form>
 
   </div>
-    <script type="text/javascript">
-        window.onload = function () {
-            document.getElementById("password").onchange = validatePassword;
-            document.getElementById("confirm-password").onchange = validatePassword;
-        }
-        function validatePassword(){
-            var pass2=document.getElementById("confirm-password").value;
-            var pass1=document.getElementById("password").value;
-            if(pass1!=pass2)
-                document.getElementById("confirm-password").setCustomValidity("รหัสผ่านไม่ตรงกัน");
-            else
-                document.getElementById("confirm-password").setCustomValidity('');	 
-        //empty string means no validation error
-        }
-    </script>
-  <script src="https://use.fontawesome.com/211152dd25.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-</body>
+<script type="text/javascript">
+    window.onload = function () {
+        document.getElementById("password").onchange = validatePassword;
+        document.getElementById("confirm-password").onchange = validatePassword;
+    }
+    function validatePassword(){
+        var pass2=document.getElementById("confirm-password").value;
+        var pass1=document.getElementById("password").value;
+        if(pass1!=pass2)
+            document.getElementById("confirm-password").setCustomValidity("รหัสผ่านไม่ตรงกัน");
+        else
+            document.getElementById("confirm-password").setCustomValidity('');	 
+    //empty string means no validation error
+    }
+</script>
 
-</html>
-<jsp:include page="template/footer.jsp" />
+<jsp:include page="/template/footer.jsp" />

@@ -38,7 +38,7 @@ public class DeleteCustomer extends HttpServlet {
         Customer cust = new Customer(tel);
         
         cust.deleteCustomer();
-        response.sendRedirect("admin_cust_edit.jsp");
+        response.sendRedirect("/KMITL-BIZ/admin/admin_cust_edit.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -5,9 +5,9 @@
  */
 package Controller;
 
-import Model.Staff;
+import Model.Customer;
 import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,10 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author fluke
+ * @author BellKunG
  */
-@WebServlet(name = "UpdateStaff", urlPatterns = {"/UpdateStaff"})
-public class UpdateStaff extends HttpServlet {
+@WebServlet(name = "SearchCustomer", urlPatterns = {"/SearchCustomer"})
+public class SearchCustomer extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,17 +33,21 @@ public class UpdateStaff extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
-        String staff_id = request.getParameter("staff_id");
-        String password = request.getParameter("password");
-        String fname = request.getParameter("fname");
-        String lname = request.getParameter("lname");
-        String role = request.getParameter("role");
+        int cust_id = (!request.getParameter("search").equals("")) ? Integer.parseInt(request.getParameter("search")) : 0;
+        Customer cust = new Customer(cust_id);
+        if (cust.searchCustomerByID()) {
+            request.setAttribute("cust", cust);
+            request.setAttribute("status", "true");
+        } else {
+            request.setAttribute("status", "false");
+        }
         
-        Staff staf = new Staff(staff_id, password, fname, lname, role);
+        RequestDispatcher page = request.getRequestDispatcher("/admin/admin_cust_edit.jsp");
+        page.forward(request, response);
         
-        staf.updateStaff();
-        response.sendRedirect("/KMITL-BIZ/admin/admin_cust_edit.jsp");
+        return;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

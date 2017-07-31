@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author fluke
  */
-@WebServlet(name = "UpdateCustomer", urlPatterns = {"/UpdateCustomer"})
+@WebServlet(name = "UpdateCustomer", urlPatterns = {"/UpdateCustomer/"})
 public class UpdateCustomer extends HttpServlet {
 
     /**
@@ -33,36 +33,38 @@ public class UpdateCustomer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
-        String fname = request.getParameter("fname");
-        String lname = request.getParameter("lname");
+        String fullname = request.getParameter("fullname");
         String tel = request.getParameter("tel");
         String email = request.getParameter("email");
         String plate = request.getParameter("plate");
         String cust_type = request.getParameter("cust_type");
         String id = request.getParameter("id");
-        String fullname = String.join(" ", fname, lname);
-        String student_id = null;
-        String citizen_id = null;
-        String vehicle = null;
-        if (plate.equals(""))
-            vehicle = null;
-        else
-            vehicle = plate;
+        int cust_id = Integer.parseInt(request.getParameter("custid"));
         
-        if (cust_type.equals("STUDENT")){
-            student_id = id;
-            citizen_id = null;
+        String student_id = (cust_type.equals("STUDENT")) ? id : "";
+        String citizen_id = (!cust_type.equals("STUDENT")) ? id : "";
+        String vehicle = (plate.equals("")) ? plate : "";
+        
+        Customer cust = new Customer(cust_id);
+        cust.setFullname(fullname);
+        cust.setTel(tel);
+        cust.setEmail(email);
+        cust.setVehicle(vehicle);
+        cust.setCust_type(cust_type);
+        cust.setCitizen_id(citizen_id);
+        cust.setStudent_id(student_id);
+        
+        try (PrintWriter out = response.getWriter()) {
+            if (cust.updateCustomer()) {
+                out.println("SUCCESS");
+            } else {
+                out.println("FAILED");
+            }
         }
-        else {
-            citizen_id = id;
-            student_id = null;
-        }
-        
-        Customer cust = new Customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email);
-        
-        cust.updateCustomer();
-        response.sendRedirect("admin_cust_edit.jsp");
+ 
+        return;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
