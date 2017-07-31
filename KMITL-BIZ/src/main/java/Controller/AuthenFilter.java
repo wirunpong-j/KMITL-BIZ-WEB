@@ -45,7 +45,7 @@ public class AuthenFilter implements Filter {
             log("AuthenFilter:DoBeforeProcessing");
         }
         
-                HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         
         System.out.println(httpRequest.getRequestURI());
