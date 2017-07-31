@@ -35,9 +35,9 @@ public class DeleteCustomer extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String tel = request.getParameter("tel");
-        Customer cust = new Customer(tel);
+        //Customer cust = new Customer(tel);
         
-        cust.deleteCustomer();
+        //cust.deleteCustomer();
         response.sendRedirect("/KMITL-BIZ/admin/admin_cust_edit.jsp");
     }
 
