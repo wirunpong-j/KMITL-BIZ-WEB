@@ -53,14 +53,27 @@ public class Test extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        HttpSession session = request.getSession();
-        session.setAttribute("a", "test");
-        session.setAttribute("b", "test2");
-        Enumeration keys = session.getAttributeNames();
-        while (keys.hasMoreElements())
-        {
-          String key = (String)keys.nextElement();
-          System.out.println("Key : " + key);
+        LocalDateTime currentTime = LocalDateTime.now();
+   
+        ZoneId id = ZoneId.of("Asia/Bangkok");
+        ZonedDateTime zonedTime = currentTime.atZone(id);
+        ZonedDateTime dateIncrementor = zonedTime;
+        
+        // This Month Day : R3
+        ArrayList<ZonedDateTime> thisMonthDays = new ArrayList<>();
+        int count = 1;
+        while (count <= 8) {
+            if (dateIncrementor.getDayOfWeek() == DayOfWeek.THURSDAY) {
+                thisMonthDays.add(dateIncrementor);
+                dateIncrementor = dateIncrementor.plusDays(7);
+                count++;
+            } else {
+                dateIncrementor = dateIncrementor.plusDays(1);
+            } 
+        }
+        
+        for (ZonedDateTime dt: thisMonthDays) {
+            System.out.println(dt.format(DateTimeFormatter.ISO_LOCAL_DATE));
         }
       
         

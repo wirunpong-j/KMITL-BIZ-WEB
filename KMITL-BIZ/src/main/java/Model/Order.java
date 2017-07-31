@@ -25,6 +25,7 @@ public class Order {
     private String order_date;
     private int price;
     private int cust_id;
+    private String cust_id_str;
     private String staff_id;
     private String zone_id;
     
@@ -35,12 +36,14 @@ public class Order {
     private int product_id;
     private ZonedDateTime rent_date_obj;
 
+    public Order() {
+    }
+
     public Order(ZonedDateTime rentDate, int price, int cust_id, String staff_id) {
         this.rent_date_obj = rentDate;
         this.price = price;
         this.cust_id = cust_id;
         this.staff_id = staff_id;
-        this.zone_id = zone_id;
     }
     
     public void addOrder() {
@@ -180,6 +183,14 @@ public class Order {
 
     public void setProduct_id(int product_id) {
         this.product_id = product_id;
+    }
+
+    public String getCust_id_str() {
+        return cust_id_str;
+    }
+
+    public void setCust_id_str(String cust_id_str) {
+        this.cust_id_str = cust_id_str;
     }
 
 }

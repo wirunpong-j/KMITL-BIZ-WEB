@@ -88,7 +88,7 @@ public class Authentication extends HttpServlet {
             response.sendRedirect("/KMITL-BIZ/index.jsp");
             
         } else {
-            response.sendRedirect("/KMITL-BIZ/Login.jsp");
+            response.sendRedirect("/KMITL-BIZ/");
         }
         return;
 }

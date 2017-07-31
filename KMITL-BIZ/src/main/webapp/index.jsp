@@ -155,7 +155,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-default btn-rent" type="button" style="width:100%;">เรียกดูข้อมูล </button>
+                        <a href="#" type="button" class="btn btn-default" style="width:100%;" onclick="window.open('${SITE_URL}/ShowAllArea/?type=R1', '_blank', 'fullscreen=yes'); return false;">เรียกดูข้อมูล </a>
                     </div>
                     </c:when>
                     <c:otherwise>
@@ -168,7 +168,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-default" type="button" style="width:100%;" disabled>เรียกดูข้อมูล </button>
+                            <a href="#" type="button" class="btn btn-default" style="width:100%;" onclick="window.open('${SITE_URL}/ShowAllArea/?type=0', '_blank', 'fullscreen=yes'); return false;">เรียกดูข้อมูล </a>
                         </div>
                     </c:otherwise>
                 </c:choose>

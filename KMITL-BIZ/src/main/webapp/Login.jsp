@@ -37,7 +37,7 @@
             <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
         </form>
         <a href="${SITE_URL}/Test" class="btn btn-primary">Test!!!!!</a>
-        <a href="#" onclick="window.open('${SITE_URL}/OpenPDF/test.pdf', '_blank', 'fullscreen=yes'); return false;">My PDF</a>
+        <a href="#" onclick="window.open('${SITE_URL}/ShowAllArea', '_blank', 'fullscreen=yes'); return false;">My PDF</a>
     </div>
 </body>
 
