@@ -9,9 +9,13 @@ import Model.Customer;
 import Model.Order;
 import Model.Product;
 import Model.Staff;
+import Model.Zone;
 import java.io.IOException;
 import java.sql.Connection;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,6 +42,7 @@ public class RentArea extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
         HttpSession session = request.getSession();
         
@@ -46,18 +51,48 @@ public class RentArea extends HttpServlet {
         Staff staff = (Staff) session.getAttribute("staff");
         
         String[] allArea = request.getParameter("allArea").split(",");
+        int addCost = Integer.parseInt(request.getParameter("addCost"));
+        String note = request.getParameter("note");
+        String rentType = request.getParameter("rentType");
         
-        ArrayList<Order> allOrder = new ArrayList<>();
-        for (String area: allArea) {
-            Order order = new Order(999, customer.getCust_id(), staff.getStaff_id(), area);
-            order.addOrder();
-            allOrder.add(order);
+        HashMap<String, Object> allRentDate = (HashMap<String, Object>) session.getAttribute("allRentDate");
+        
+        if (rentType.equals("R1") || rentType.equals("R2")) {
+            ZonedDateTime thursday = (ZonedDateTime) allRentDate.get(rentType);
+            Order order = new Order(thursday, customer.getPrice(), customer.getCust_id(), staff.getStaff_id());
+                order.setExtra_price(addCost);
+                order.setNote(note);
+                if (rentType.equals("R1")) {
+                    order.setOrder_type("NOR");
+                } else {
+                    order.setOrder_type("PRE");
+                }
+                order.setProduct_id(product.getProduct_id());
+                order.addOrder();
+                
+            for (String area: allArea) {
+                Zone zone = new Zone(area, order.getOrder_id());
+                zone.insertZoneToDB();
+            }
+            
+        } else {
+            ArrayList<ZonedDateTime> thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(rentType);
+            for (ZonedDateTime thursday: thursdayOnMonth) {
+                Order order = new Order(thursday, customer.getPrice(), customer.getCust_id(), staff.getStaff_id());
+                order.setExtra_price(addCost);
+                order.setNote(note);
+                order.setOrder_type("PRE");
+                order.setProduct_id(product.getProduct_id());
+                order.addOrder();
+                
+                for (String area: allArea) {
+                    Zone zone = new Zone(area, order.getOrder_id());
+                    zone.insertZoneToDB();
+                } 
+            }
         }
         
-        session.setAttribute("allOrder", allOrder);
-        session.setAttribute("product", product);
-        session.setAttribute("customer", customer);
-        session.setAttribute("status", "EMPTY");
+        return;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

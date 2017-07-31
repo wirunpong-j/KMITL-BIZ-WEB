@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.Formating;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -17,8 +18,11 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -27,6 +31,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -48,30 +53,28 @@ public class Test extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        
-      LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
    
-      ZoneId id = ZoneId.of("Asia/Bangkok");
-      ZonedDateTime zonedTime = currentTime.atZone(id);
-      Month thisMonth = zonedTime.getMonth();
-      Month nextMonth = thisMonth.plus(1);
-      
-      System.out.println(thisMonth);
-      System.out.println(nextMonth);
-      
-      ZonedDateTime thisThursday = zonedTime;
-      while (thisThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
-          thisThursday = thisThursday.plusDays(1);
-      }
-      
-      ZonedDateTime nextThursday = thisThursday.plusDays(1);
-      while (nextThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
-          nextThursday = nextThursday.plusDays(1);
-      }
-      
-
-      System.out.println(thisThursday);
-      System.out.println(nextThursday);
+        ZoneId id = ZoneId.of("Asia/Bangkok");
+        ZonedDateTime zonedTime = currentTime.atZone(id);
+        ZonedDateTime dateIncrementor = zonedTime;
+        
+        // This Month Day : R3
+        ArrayList<ZonedDateTime> thisMonthDays = new ArrayList<>();
+        int count = 1;
+        while (count <= 8) {
+            if (dateIncrementor.getDayOfWeek() == DayOfWeek.THURSDAY) {
+                thisMonthDays.add(dateIncrementor);
+                dateIncrementor = dateIncrementor.plusDays(7);
+                count++;
+            } else {
+                dateIncrementor = dateIncrementor.plusDays(1);
+            } 
+        }
+        
+        for (ZonedDateTime dt: thisMonthDays) {
+            System.out.println(dt.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        }
       
         
     }

@@ -6,25 +6,21 @@
 package Controller;
 
 import Listener.Constant;
-import Model.AreaModel;
 import Model.Customer;
+import Model.Formating;
 import Model.Product;
-import Model.Zone;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -65,6 +61,27 @@ public class ProductServlet extends HttpServlet {
         PreparedStatement pstmt;
         ResultSet rs;
         
+        try (PrintWriter out = response.getWriter()) {
+            try {
+                conn = (Connection) Constant.getConnection();
+                pstmt = conn.prepareStatement("SELECT * FROM customer WHERE cust_id = ?");
+                pstmt.setString(1, customer);
+                rs = pstmt.executeQuery();
+                
+                if (!rs.next()) {
+                    conn.close();
+                    out.println("NOT FOUND");
+                    return;
+                }
+                
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                
+            } finally {
+                if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+            }
+        }
+        
         try {
             conn = (Connection) Constant.getConnection();
             pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ?");
@@ -96,25 +113,34 @@ public class ProductServlet extends HttpServlet {
         }
 
         Customer cust = new Customer(Integer.parseInt(customer), pro.getProduct_id());
-        cust.addProductID();
         cust.searchCustomerByID();
         
-        
-        ArrayList<String> allRentType = new ArrayList<>();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        Date date = new Date();
-        System.out.println(dateFormat.format(date));
-        session.setAttribute("allRentType", allRentType);
-        
+        HashMap<String, String> allRentType = new HashMap<>();
+        HashMap<String, Object> allRentDate = new HashMap<>();
         LocalDateTime currentTime = LocalDateTime.now();
    
         ZoneId id = ZoneId.of("Asia/Bangkok");
         ZonedDateTime zonedTime = currentTime.atZone(id);
         Month thisMonth = zonedTime.getMonth();
         Month nextMonth = thisMonth.plus(1);
+       
+        ZonedDateTime dateIncrementor = zonedTime;
+              
+        ArrayList<ZonedDateTime> thisMonthDays = new ArrayList<>();
+        while(dateIncrementor.getMonth() == thisMonth) {
+            if(dateIncrementor.getDayOfWeek() == DayOfWeek.THURSDAY) {
+                thisMonthDays.add(dateIncrementor);
+            }
+            dateIncrementor = dateIncrementor.plusDays(1);
+        }
 
-        System.out.println(thisMonth);
-        System.out.println(nextMonth);
+        ArrayList<ZonedDateTime> nextMonthDays = new ArrayList<>();
+        while(dateIncrementor.getMonth() == nextMonth) {
+            if(dateIncrementor.getDayOfWeek() == DayOfWeek.THURSDAY) {
+                nextMonthDays.add(dateIncrementor);
+            }
+            dateIncrementor = dateIncrementor.plusDays(1);
+        }
 
         ZonedDateTime thisThursday = zonedTime;
         while (thisThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
@@ -125,65 +151,24 @@ public class ProductServlet extends HttpServlet {
         while (nextThursday.getDayOfWeek() != DayOfWeek.THURSDAY) {
             nextThursday = nextThursday.plusDays(1);
         }
-
-
-        System.out.println(thisThursday);
-        System.out.println(nextThursday);
         
-//        // set old Order
-//        HashMap<Integer,Integer> allOrder = new HashMap<>();
-//        try {
-//            conn = (Connection) Constant.dataSource.getConnection();
-//            pstmt = conn.prepareStatement("SELECT order_id, product_id FROM KMITLBIZ.CUSTOMER JOIN KMITLBIZ.`ORDER` USING (cust_id);");
-//
-//            rs = pstmt.executeQuery();
-//            while (rs.next()) {
-//                allOrder.put(rs.getInt(1), rs.getInt(2));
-//            }
-//
-//            rs.close();
-//            pstmt.close();
-//
-//        } catch (SQLException ex) {
-//            System.out.println(ex.getMessage());
-//        } finally {
-//            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-//        }
-//        
-//        // set Area
-//        HashMap<String,Zone> allZone = new HashMap<>();
-//        for (String[] area: AreaModel.allArea()) {
-//            for (String a: area) {
-//                try {
-//                    conn = (Connection) Constant.dataSource.getConnection();
-//                    pstmt = conn.prepareStatement("SELECT * FROM KMITLBIZ.ZONE WHERE zone_id = ?");
-//                    pstmt.setString(1, a);
-//
-//                    rs = pstmt.executeQuery();
-//                    if (rs.next()) {
-//                        allZone.put(a, new Zone(a, rs.getInt("order_id"), allOrder.get(rs.getInt("order_id"))));
-//                    } else {
-//                        allZone.put(a, new Zone(a, 0, 0));
-//                    }
-//
-//                    rs.close();
-//                    pstmt.close();
-//
-//                } catch (SQLException ex) {
-//                    System.out.println(ex.getMessage());
-//                } finally {
-//                    if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-//                }
-//            }
-//        }
+        allRentType.put("R1", "จองวันพฤหัสบดีที่ " + thisThursday.getDayOfMonth() + " " + Formating.monthFormat(thisThursday.getMonth().getValue()) + " " + thisThursday.getYear());
+        allRentType.put("R2", "จองล่วงหน้าวันพฤหัสบดีที่ " + nextThursday.getDayOfMonth() + " " + Formating.monthFormat(nextThursday.getMonth().getValue()) + " " + nextThursday.getYear());
+        allRentType.put("R3", "จองทั้งเดือน " + Formating.monthFormat(thisMonth.getValue()));
+        allRentType.put("R4", "จองล่วงหน้าทั้งเดือน " + Formating.monthFormat(nextMonth.getValue()));
         
+        allRentDate.put("R1", thisThursday);
+        allRentDate.put("R2", nextThursday);
+        allRentDate.put("R3", thisMonthDays);
+        allRentDate.put("R4", nextMonthDays);
+        
+        session.setAttribute("allRentType", allRentType);
+        session.setAttribute("allRentDate", allRentDate);
         session.setAttribute("product", pro);
         session.setAttribute("customer", cust);
         session.setAttribute("status", "RENT");
         session.setAttribute("allProduct", allProduct);
-//        session.setAttribute("allZone", allZone);
         
-        response.sendRedirect("/KMITL-BIZ/index.jsp");
         return;
     }
 

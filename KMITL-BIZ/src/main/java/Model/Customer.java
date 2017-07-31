@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
@@ -36,6 +34,8 @@ public class Customer {
     public Customer(int cust_id){
         this.cust_id = cust_id;
     }
+    
+    private int price;
 
     public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle, String email) {
         this.fullname = fullname;
@@ -85,7 +85,8 @@ public class Customer {
             
             PreparedStatement pstmt = conn.prepareStatement("UPDATE customer "
                     + "SET fullname = ?, tel = ?, cust_type = ?, student_id = ?, citizen_id = ?, vehicle = ?, email = ?"
-                    + "WHERE tel = ?");
+                    + "WHERE tel = ?"
+                    + "VALUES(?,?,?,?,?,?)");
             pstmt.setString(1, this.fullname);
             pstmt.setString(2, this.tel);
             pstmt.setString(3, this.cust_type);
@@ -131,7 +132,6 @@ public class Customer {
             PreparedStatement pstmt = conn.prepareStatement("UPDATE customer SET product_id = ? WHERE cust_id = ?");
             pstmt.setInt(1, this.product_id);
             pstmt.setInt(2, this.cust_id);
-            
             pstmt.executeUpdate();
             pstmt.close();
             
@@ -159,6 +159,10 @@ public class Customer {
                 this.citizen_id = rs.getString("citizen_id");
                 this.vehicle = rs.getString("vehicle");
                 this.email = rs.getString("email");
+                this.student_id = ((rs.getString("student_id") != null && !rs.getString("student_id").equals(""))) ? rs.getString("student_id") : "-";
+                this.citizen_id = ((rs.getString("citizen_id") != null && !rs.getString("citizen_id").equals(""))) ? rs.getString("citizen_id") : "-";
+                this.vehicle = ((rs.getString("vehicle") != null && !rs.getString("vehicle").equals(""))) ? rs.getString("vehicle") : "-";
+                this.email = ((rs.getString("email") != null && !rs.getString("email").equals(""))) ? rs.getString("email") : "-";
             }
             
             pstmt.close();
@@ -188,6 +192,10 @@ public class Customer {
                 this.citizen_id = rs.getString("citizen_id");
                 this.vehicle = rs.getString("vehicle");
                 this.email = rs.getString("email");
+                this.student_id = ((rs.getString("student_id") != null && !rs.getString("student_id").equals(""))) ? rs.getString("student_id") : "-";
+                this.citizen_id = ((rs.getString("citizen_id") != null && !rs.getString("citizen_id").equals(""))) ? rs.getString("citizen_id") : "-";
+                this.vehicle = ((rs.getString("vehicle") != null && !rs.getString("vehicle").equals(""))) ? rs.getString("vehicle") : "-";
+                this.email = ((rs.getString("email") != null && !rs.getString("email").equals(""))) ? rs.getString("email") : "-";
             }
             
             pstmt.close();
@@ -255,7 +263,7 @@ public class Customer {
     }
 
     public void setStudent_id(String student_id) {
-        this.student_id = student_id;
+        this.student_id = ((student_id != null) && (!student_id.equals(""))) ? student_id : "-";
     }
 
     public String getCitizen_id() {
@@ -263,7 +271,7 @@ public class Customer {
     }
 
     public void setCitizen_id(String citizen_id) {
-        this.citizen_id = citizen_id;
+        this.citizen_id = ((citizen_id != null) && (!citizen_id.equals(""))) ? citizen_id : "-";
     }
 
     public String getVehicle() {
@@ -271,7 +279,7 @@ public class Customer {
     }
 
     public void setVehicle(String vehicle) {
-        this.vehicle = vehicle;
+        this.vehicle = ((vehicle != null) && (!vehicle.equals(""))) ? vehicle : "-";
     }
 
     public int getProduct_id() {
@@ -288,6 +296,15 @@ public class Customer {
 
     public void setEmail(String email) {
         this.email = email;
+        this.email = ((email != null) && (!email.equals(""))) ? email : "-";
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
     
 }

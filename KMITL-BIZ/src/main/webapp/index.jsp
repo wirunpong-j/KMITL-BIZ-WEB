@@ -61,21 +61,23 @@
                     <div class="form-group">
                         <label for="selectRent" class="col-sm-2 control-label">เลือกรูปแบบการจองพื้นที่ : </label>
                         <div class="col-sm-4">
-                            <select class="form-control" style="width:300px" id="selectRent" name="selectRent">
-                                <c:forEach var="type" items="${sessionScope.allRentType}">
+                            <select class="form-control rented" style="width:300px" id="selectRent" name="selectRent">
+                                <c:forEach var="i" begin="1" end="4">
+                                    <c:set var="key" scope="session" value="R${i}"></c:set>
                                     <c:choose>
-                                        <c:when test='${type == sessionScope.typeRent}'>
-                                            <option selected="selected">${type}</option>
+                                        <c:when test="${key == sessionScope.typeRent}">
+                                            <option value="${key}" text="${sessionScope.allRentType[key]}" selected="selected">${sessionScope.allRentType[key]}</option>
                                         </c:when>
                                         <c:otherwise>
-                                            <option>${type}</option>
+                                            <option value="${key}" text="${sessionScope.allRentType[key]}">${sessionScope.allRentType[key]}</option>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>
+                                
                             </select>
                         </div>
                         <div class="col-sm-2">
-                            <button type="submit" class="btn btn-primary" id="changeRent">ยืนยัน</button>
+                            <button type="submit" class="btn btn-primary rented" id="changeRent">ยืนยัน</button>
                         </div>
                     </div>
                 </form>
@@ -99,7 +101,7 @@
                         <thead>
                             <tr>
                                 <c:forEach var="i" begin="1" end="165">
-                                    <th><button class="btn btn-danger btn-xs btn-area" type="button">X${i}</button></th>
+                                    <th><button class="btn btn-danger btn-xs btn-area rented" type="button">X${i}</button></th>
                                 </c:forEach>
                             </tr>
                         </thead>
@@ -117,14 +119,14 @@
                                         </c:when>    
                                         <c:otherwise>
                                             <c:choose>
-                                                <c:when test="${sessionScope.allZone[a].getOrder_id() == 0}">
-                                                    <td><button class="btn btn-success btn-xs btn-area btn-unselect" id="${a}" name="${a}" type="button">${a}</button></td>
+                                                <c:when test="${!sessionScope.allZone.containsKey(a)}">
+                                                    <td><button class="btn btn-success btn-xs btn-area btn-unselect rented" id="${a}" name="${a}" type="button">${a}</button></td>
                                                 </c:when>
                                                 <c:when test="${sessionScope.allZone[a].getProduct_id() == sessionScope.customer.getProduct_id()}">
-                                                    <td><button class="btn btn-warning btn-xs btn-area" type="button" disabled>${a}</button></td>
+                                                    <td><button class="btn btn-warning btn-xs btn-area rented" type="button" disabled>${a}</button></td>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td><button class="btn btn-danger btn-xs btn-area" type="button" disabled>${a}</button></td>
+                                                    <td><button class="btn btn-danger btn-xs btn-area rented" type="button" disabled>${a}</button></td>
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:otherwise>
@@ -145,15 +147,15 @@
                 <c:choose>
                     <c:when test="${sessionScope.status == 'RENT'}">
                       <div class="form-group">
-                        <button class="btn btn-primary btn-block" id="showArea" type="button" style="width:100%;">- </button>
+                        <button class="btn btn-primary btn-block btn-rent" id="showArea" type="button" style="width:100%;">- </button>
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-success" type="button" id="confirmBtn" style="width:100%;">ยืนยัน/พิมพ์ใบเสร็จ</button>
+                        <button class="btn btn-success btn-rent" type="button" id="confirmBtn" style="width:100%;" value="${sessionScope.customer.getPrice()}">ยืนยัน/พิมพ์ใบเสร็จ</button>
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-default" type="button" style="width:100%;">เรียกดูข้อมูล </button>
+                        <a href="#" type="button" class="btn btn-default" style="width:100%;" onclick="window.open('${SITE_URL}/ShowAllArea/?type=R1', '_blank', 'fullscreen=yes'); return false;">เรียกดูข้อมูล </a>
                     </div>
                     </c:when>
                     <c:otherwise>
@@ -166,7 +168,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-default" type="button" style="width:100%;" disabled>เรียกดูข้อมูล </button>
+                            <a href="#" type="button" class="btn btn-default" style="width:100%;" onclick="window.open('${SITE_URL}/ShowAllArea/?type=0', '_blank', 'fullscreen=yes'); return false;">เรียกดูข้อมูล </a>
                         </div>
                     </c:otherwise>
                 </c:choose>
@@ -186,67 +188,83 @@
 <script>
     var allArea = '';
     var count = 1;
+    var addCost;
 
     $('#confirmBtn').click(function() {
-        var text = '<h3>จองพื้นที่ : ' + allArea + ' </h3>\n\
+        var cost = parseInt($(this).val()) * allArea.split(',').length;
+        var text = '<h3><strong>จองพื้นที่ : ' + allArea + ' </strong></h3>\n\
+                    <h4>รูปแบบการจอง : ' + $("#selectRent option:selected").text() + '<h4>\n\
                     <h4>รหัสรับบริการ : ${sessionScope.customer.getCust_id_str()} </h4>\n\
                     <h4>ชื่อผู้ใช้บริการ : ${sessionScope.customer.getFullname()} </h4>\n\
                     <h4>ผู้ใช้บริการประเภท : ${sessionScope.customer.getCust_type_Str()} </h4>\n\
-                    <h4>ขายสินค้า : ${sessionScope.product.getProduct_name()} </h4>';
+                    <h4>ขายสินค้า : ${sessionScope.product.getProduct_name()} </h4>\n\
+                    <h4>จำนวนเงินที่ต้องชำระ : ' + cost + ' บาท </h4>\n\
+                    <label for="addCost">ค่าใช้จ่ายเพิ่มเติม</label> \n\
+                    <input style="display: inline-block; width: 50%;" class="form-control" type="text" id="addCost" value="0"> <strong>บาท<strong> <br><br>\n\
+                    <label for="note">รายละเอียดค่าใช้จ่ายเพิ่มเติม</label>\n\
+                    <textarea class="form-control" rows="5" id="note"></textarea><br><br>';
         
-        alertify.prompt( 'ยืนยันการทำรายการ', text, 'Prompt Value'
-            , function(evt, value) { 
-                alertify.success('You entered: ' + value); 
-            }
-            , function() { 
-                alertify.error('Cancel'); 
+        alertify.confirm('ยืนยันการทำรายการ', text,
+            function(){
+                $('.rented').attr("disabled", true);
+                $('#confirmBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
+                $('.btn-rent').attr("disabled", true);
+                $.ajax({
+                    type: "POST",
+                    url: "${SITE_URL}/RentArea",
+                    data: {'allArea': allArea, 'addCost': $('#addCost').val(), 'note': $('#note').val(), 'rentType': $('#selectRent').val()},
+                    success: function(data) {
+                        $('#confirmBtn').html('<i id="spinBtn"></i> จองพื้นที่สำเร็จ');
+                        setTimeout(function() {
+                            var total = cost + parseInt($('#addCost').val());
+                            var text2 = '<h3><strong>จองพื้นที่ : ' + allArea + ' </strong></h3>\n\
+                                         <h3>จำนวนเงินทั้งหมดที่ต้องชำระ : ' + total + ' บาท</h3>';
+                            alertify.alert('จองพื้นที่สำเร็จ', text2, function(){
+                                window.location = "${SITE_URL}/Authentication"; 
+                            });      
+                        }, 1000);
+                    }
+                });
+            }, 
+            function(){ 
+                alertify.error('Cancel');
         });
-
     });
-//        alertify.confirm("Do you want to save?", function () {
-//            $.ajax({
-//                type: "POST",
-//                url: "${SITE_URL}/RentArea",
-//                data: {'allArea': allArea},
-//                success: function(data) {
-//                    $('#confirmBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
-//
-//                    setTimeout(function() {
-//                        alertify.success('คุณได้ทำการเลือกสินค้า ${sessionScope.product.getProduct_name()} และจองพื้นที่ตำแหน่ง ' + allArea);
-//                        setTimeout(function() {
-//                            window.location = "${SITE_URL}/information.jsp";
-//                        }, 2000);
-//                    }, 2000);
-//                }
-//            });
-//        }, function() {
-//            alertify.error('คุณทำการยกเลิก');
-//        });
 
     $('#saveBtn').click(function() {
         var product = $('#product').val();
         var customer = $('#customer').val();
-        alertify.confirm("Do you want to save?", function () {
-            $.ajax({
-                type: "POST",
-                url: "${SITE_URL}/ProductServlet",
-                data: {'product': product, 'customer': customer},
-                success: function(data) {
-                    $('#saveBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
-                    $('#product').attr('readonly', true);
-                    $('#customer').attr('readonly', true);
-
-                    setTimeout(function() {
-                        alertify.success('คุณทำการเลือกสินค้า ' + product);
-                        setTimeout(function() {
-                            window.location = "${SITE_URL}/index.jsp";
-                        }, 2000);
-                    }, 2000);
-                }
-            });
-            }, function() {
+        var textDialog = '<h3>สินค้าที่เลือก : ' + product + ' </h3>\n\
+                          <h3>รหัสรับบริการ : ' + customer + ' </h3>';
+        alertify.confirm('ยืนยันการเลือกสินค้า', textDialog,
+            function(){
+                $('#saveBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
+                $('#product').attr('readonly', true);
+                $('#customer').attr('readonly', true);
+                $.ajax({
+                    type: "POST",
+                    url: "${SITE_URL}/ProductServlet",
+                    data: {'product': product, 'customer': customer},
+                    success: function(data) {
+                        if ($.trim(data) === 'NOT FOUND') {
+                            alertify.error('รหัสรับบริการไม่ถูกต้อง กรุณากรอกรหัสรับบริการใหม่อีกครั้ง');
+                            $('#saveBtn').attr("disabled", false).html('<i id="spinBtn"></i> บันทึก');
+                            $('#product').attr('readonly', false);
+                            $('#customer').attr('readonly', false);
+                        } else {
+                            setTimeout(function() {
+                                alertify.success('คุณทำการเลือกสินค้า ' + product);
+                                setTimeout(function() {
+                                    window.location = "${SITE_URL}/index.jsp";
+                                }, 2000);
+                            }, 2000);
+                        }
+                    }
+                });
+                
+            }, function(){ 
                 alertify.error('คุณทำการยกเลิก');
-            });
+        });
     });
 
     $('.btn-unselect').click(function() {
