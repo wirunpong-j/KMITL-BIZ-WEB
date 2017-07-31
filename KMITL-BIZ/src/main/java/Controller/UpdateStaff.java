@@ -31,8 +31,7 @@ public class UpdateStaff extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+            throws ServletException, IOException { 
         
         String staff_id = request.getParameter("staff_id");
         String password = request.getParameter("password");
@@ -42,8 +41,9 @@ public class UpdateStaff extends HttpServlet {
         
         Staff staf = new Staff(staff_id, password, fname, lname, role);
         
+        
         staf.updateStaff();
-        response.sendRedirect("/KMITL-BIZ/admin/admin_cust_edit.jsp");
+        response.sendRedirect("/KMITL-BIZ/admin_staff_edit.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

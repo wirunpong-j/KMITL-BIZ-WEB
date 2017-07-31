@@ -38,7 +38,7 @@ public class DeleteStaff extends HttpServlet {
         Staff staf = new Staff(staff_id);
         
         staf.deleteStaff();
-        response.sendRedirect("/KMITL-BIZ/admin/admin_staff_edit.jsp");
+        response.sendRedirect("/KMITL-BIZ/admin_staff_edit.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
