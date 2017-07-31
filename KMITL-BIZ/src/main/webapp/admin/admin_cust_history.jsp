@@ -42,7 +42,7 @@
                 HashMap<Integer, ArrayList<String>> map = new HashMap<Integer, ArrayList<String>>();
                 
                 Customer cust = new Customer(cust_id);
-                cust.searchCustomer();
+                cust.searchCustomerByID();
                 String fullname = cust.getFullname();
                 
                 PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer "

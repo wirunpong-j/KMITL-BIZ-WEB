@@ -13,7 +13,7 @@
             <label for="search_cust">รหัสรับบริการ</label>
             <input type="text" class="form-control information" id="search_cust" name="search" placeholder="รหัสรับบริการ" value="${requestScope.cust.getCust_id_str()}">
         </div>
-        <button type="submit" class="btn btn-info">ค้นหา</button>
+        <button type="submit" class="btn btn-info"><i class="fa fa-search" aria-hidden="true"></i> ค้นหา</button>
     </form>
     <br><br>
 
@@ -71,7 +71,8 @@
                     </c:choose>
                     
                 </div>
-                <button type="submit" class="btn btn-info" id="confirmBtn">บันทึก</button>
+                <button type="submit" class="btn btn-info" id="confirmBtn"><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
+                <button type="submit" class="btn btn-danger" id="deleteBtn" form="deleteUser"><i class="fa fa-trash" aria-hidden="true"></i> ลบข้อมูลของลูกค้า</button>
             </form>
         </c:when>
         <c:when test="${requestScope.status == 'false'}">
@@ -82,6 +83,7 @@
         </c:otherwise>
     </c:choose>
             <br>
+            <form action="#" method="POST" id="deleteUser"></form>
     
 
 <!--    <form action="${SITE_URL}/DeleteCustomer" method="POST" id="deleteuser">
@@ -115,7 +117,7 @@
                     } else {
                         alertify.error('ไม่สามารถแก้ไขได้');
                         $('.information').attr("readonly", false);
-                        $('#confirmBtn').attr("disabled", false).removeClass('btn-success').addClass('btn-info').html('<i id="spinBtn"></i> บันทึก');
+                        $('#confirmBtn').attr("disabled", false).removeClass('btn-success').addClass('btn-info').html('<i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก');
                     }
                 }
             });

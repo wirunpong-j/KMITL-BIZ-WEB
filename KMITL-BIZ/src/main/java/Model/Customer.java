@@ -121,9 +121,6 @@ public class Customer {
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
-        System.out.println("UPDATE customer SET fullname = "+this.fullname+", tel = "+this.tel+", cust_type = "+this.cust_type+", student_id = "+this.student_id+", "
-                + "citizen_id = "+this.citizen_id+", vehicle = "+this.vehicle+", email = "+this.email+" WHERE cust_id = "+this.cust_id);
-        System.out.println(status);
         
         return status;
     }
