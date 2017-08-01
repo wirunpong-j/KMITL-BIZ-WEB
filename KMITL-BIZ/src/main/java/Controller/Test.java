@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -76,7 +77,16 @@ public class Test extends HttpServlet {
             System.out.println(dt.format(DateTimeFormatter.ISO_LOCAL_DATE));
         }
       
-        
+        //add and remove zone
+        String in = "A2";
+        ArrayList<String> selectedZone = new ArrayList();
+        if(selectedZone.contains(in)) {
+            selectedZone.remove(selectedZone.indexOf(in));
+        } else {
+           selectedZone.add(in);
+        }
+        Collections.sort(selectedZone);
+        //end
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -176,7 +176,7 @@
                 <div class="form-group"></div>
 
                 <h5 class="text-center">พนักงาน: ${sessionScope.staff.getFirst_name()} ${sessionScope.staff.getLast_name()}</h5>
-                <h5 class="text-center">วันพฤหัสที่ 23 สิงหาคม 2560 เวลา 18:45</h5>
+                <h5 class="text-center"><div id="time_display"></div></h5>
             </div>
         </div>
     </div>
@@ -287,6 +287,12 @@
     $('.btn-product').click(function() {
         $('#product').val($(this).text());
     });
+    
+    var myVar=setInterval(function () {myTimer()}, 1000);
+    function myTimer() {
+        var current_local_time = new Date();
+        document.getElementById("time_display").innerHTML = current_local_time.getDate() + "/" + (current_local_time.getMonth()+1) + "/" + current_local_time.getFullYear() + " " + current_local_time.getHours() + ":" + current_local_time.getMinutes() + ":" +current_local_time.getSeconds();
+    }
 </script>
     
 <jsp:include page="template/footer.jsp" />
