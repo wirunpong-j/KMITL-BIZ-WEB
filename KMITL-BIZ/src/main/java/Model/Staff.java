@@ -94,6 +94,39 @@ public class Staff {
         return false;
     }
     
+    public boolean isAdmin() {
+                Connection conn = null;
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM staff WHERE staff_id = ? AND password = ?");
+            pstmt.setString(1, this.staff_id);
+            pstmt.setString(2, this.password);
+            
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                this.first_name = rs.getString("fname");
+                this.last_name = rs.getString("lname");
+                this.role = rs.getString("role");
+                
+                if(this.role.equals("AD")){
+                    return true;
+                } else {
+                    return false;
+                }
+                
+            } else {
+                return false;
+            }
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        return false;
+    }
+    
     public void addStaff() {
         Connection conn = null;
         try {
