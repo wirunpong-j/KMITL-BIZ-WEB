@@ -9,6 +9,7 @@ import Listener.Constant;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -42,89 +43,27 @@ public class ExportData extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
+        Connection conn = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) Constant.getConnection();
-            HttpSession session = request.getSession();
-            Statement statement = conn.createStatement();
-            Statement statement1 = conn.createStatement();
-            Statement statement2 = conn.createStatement();
-            FileOutputStream fileOut;
-            fileOut = new FileOutputStream("file.xls");
+            conn = (Connection) Constant.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer");
+            ResultSet rs = pstmt.executeQuery();
+            FileOutputStream fileOut = new FileOutputStream("ข้อมูลลูกค้า");
             HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet worksheet = workbook.createSheet("ข้อมูลลูกค้า");
-            Row row1 = worksheet.createRow((short)0);
-            row1.createCell(0).setCellValue("รหัสลูกค้า");
-            row1.createCell(1).setCellValue("ชื่อ-นามสกุล");
-            row1.createCell(2).setCellValue("ประเภท");
-            row1.createCell(3).setCellValue("เบอร์โทรศัพท์");
-            row1.createCell(4).setCellValue("Email");
-            row1.createCell(5).setCellValue("ทะเบียนรถยนตร์");
-            Row row2 ;
-            ResultSet rs = statement.executeQuery("SELECT * FROM KMITLBIZ.CUSTOMER");
+            HSSFSheet sheet = workbook.createSheet("ข้อมูลลูกค้า");
+            Row row = sheet.createRow(0);
+            
             while(rs.next()){
-                int a = rs.getRow();
-                row2 = worksheet.createRow((short)a);
-                row2.createCell(0).setCellValue(rs.getString("cust_id"));
-                row2.createCell(1).setCellValue(rs.getString("fullname"));
-                row2.createCell(2).setCellValue(rs.getString("cust_type"));
-                row2.createCell(3).setCellValue(rs.getString("tel"));
-                row2.createCell(4).setCellValue(rs.getString("email"));
-                row2.createCell(5).setCellValue(rs.getString("vehicle"));
-            }
-            HSSFSheet worksheet1 = workbook.createSheet("ข้อมูลการชำระเงิน");
-            Row row3 = worksheet1.createRow((short)0);
-            row3.createCell(0).setCellValue("รหัสลูกค้า");
-            row3.createCell(1).setCellValue("วันที่ชำระเงิน");
-            row3.createCell(2).setCellValue("จำนวนเงินที่ชำระ");
-            row3.createCell(3).setCellValue("ประเภทการชำระ");
-            row3.createCell(4).setCellValue("จำนวนล็อค");
-            Row row4 ;
-            ResultSet rs1 = statement1.executeQuery("SELECT cust_id, order_date, price, order_type, COUNT(order_id) as zone_count "
-                    + "FROM kmitlbiz.order "
-                    + "JOIN zone "
-                    + "USING (order_id) "
-                    + "GROUP BY cust_id");
-            while(rs1.next()){
-                int b = rs1.getRow();
-                row4 = worksheet1.createRow((short)b);
-                row4.createCell(0).setCellValue(rs.getString("cust_id"));
-                row4.createCell(1).setCellValue(rs.getString("order_date"));
-                row4.createCell(2).setCellValue(rs.getInt("price"));
-                row4.createCell(3).setCellValue(rs.getString("order_type"));
-                row4.createCell(4).setCellValue(rs.getString("zone_count"));
-            }
-            HSSFSheet worksheet2 = workbook.createSheet("ข้อมูลการจองล็อค");
-            Row row5 = worksheet2.createRow((short)0);
-            row5.createCell(0).setCellValue("รหัสลูกค้า");
-            row5.createCell(1).setCellValue("วันเปิดขาย");
-            row5.createCell(2).setCellValue("รหัสล็อค");
-            row5.createCell(3).setCellValue("สินค้า");
-            Row row6 ;
-            ResultSet rs2 = statement2.executeQuery("SELECT cust_id, rent_date, zone_id, product_name "
-                    + "FROM kmitlbiz.order "
-                    + "JOIN product "
-                    + "USING (product_id) "
-                    + "JOIN kmitlbiz.zone "
-                    + "USING (order_id)");
-            while(rs2.next()){
-                int c = rs2.getRow();
-                row6 = worksheet2.createRow((short)c);
-                row6.createCell(0).setCellValue(rs.getString("cust_id"));
-                row6.createCell(1).setCellValue(rs.getString("rent_date"));
-                row6.createCell(2).setCellValue(rs.getString("zone"));
-                row6.createCell(3).setCellValue(rs.getString("product_name"));
+                row.createCell(0).setCellValue(rs.getInt("cust_id"));
+                row.createCell(1).setCellValue(rs.getString("fullname"));
+                row.createCell(2).setCellValue(rs.getString("cust_type"));
+                row.createCell(3).setCellValue(rs.getString("tel"));
+                row.createCell(4).setCellValue(rs.getString("email"));
+                row.createCell(5).setCellValue(rs.getString("vehicle"));
             }
             workbook.write(fileOut);
-            fileOut.flush();
             fileOut.close();
-            rs.close();
-            statement.close();
-            rs1.close();
-            statement1.close();
-            rs2.close();
-            statement2.close();
-            conn.close();
+            
             System.out.println("Export Success");
             response.sendRedirect("admin_data.jsp");
             
