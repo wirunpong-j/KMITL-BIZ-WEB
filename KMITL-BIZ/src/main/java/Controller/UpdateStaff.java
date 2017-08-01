@@ -32,6 +32,8 @@ public class UpdateStaff extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException { 
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
         if (request.getParameter("action").equals("update")) {
             String staff_id = request.getParameter("user");
@@ -56,8 +58,6 @@ public class UpdateStaff extends HttpServlet {
         } else {
             String staff_id = request.getParameter("user");
             String newPassword = request.getParameter("newPass");
-            
-            System.out.println(newPassword);
             
             Staff staff = new Staff(staff_id);
             staff.searchStaff();

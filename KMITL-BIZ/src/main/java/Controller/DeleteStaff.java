@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author fluke
  */
-@WebServlet(name = "DeleteStaff", urlPatterns = {"/DeleteStaff"})
+@WebServlet(name = "DeleteStaff", urlPatterns = {"/DeleteStaff/"})
 public class DeleteStaff extends HttpServlet {
 
     /**
@@ -33,12 +33,21 @@ public class DeleteStaff extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
-        String staff_id = request.getParameter("staff_id");
-        Staff staf = new Staff(staff_id);
+        String staff_id = request.getParameter("user");
+        Staff staff = new Staff(staff_id);
         
-        staf.deleteStaff();
-        response.sendRedirect("/KMITL-BIZ/admin_staff_edit.jsp");
+        try (PrintWriter out = response.getWriter()) {
+            if (staff.deleteStaff()) {
+                out.println("SUCCESS");
+                
+            } else {
+                out.println("FALIED");
+            }
+        }
+        
+        return;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

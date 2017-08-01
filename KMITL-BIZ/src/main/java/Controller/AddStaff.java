@@ -33,6 +33,7 @@ public class AddStaff extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
         String fname = request.getParameter("fname");
         String lname = request.getParameter("lname");

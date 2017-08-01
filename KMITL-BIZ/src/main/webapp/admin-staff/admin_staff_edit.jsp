@@ -13,7 +13,7 @@
                 <label for="search_username">ชื่อผู้ใช้ของพนักงาน</label>
                 <input type="text" class="form-control information" id="search-staff" name="search" placeholder="ชื่อผู้ใช้" value="${requestScope.staff.getStaff_id()}">
             </div>
-            <button type="submit" class="btn btn-info" name="click"><i class="fa fa-search" aria-hidden="true"></i> ค้นหา</button>
+            <button type="submit" class="btn btn-info" name="click" id="clickSearch"><i class="fa fa-search" aria-hidden="true"></i> ค้นหา</button>
         </form>
         <br><br>
 
@@ -52,7 +52,9 @@
                         </label>
                     </div>
                     <button type="submit" class="btn btn-info" id="confirmBtn"><i class="fa fa-floppy-o" aria-hidden="true"></i> แก้ไขข้อมูล</button>
+                    <button type="submit" class="btn btn-danger" id="deleteBtn" form="deleteStaff"><i class="fa fa-trash" aria-hidden="true"></i> ลบพนักงาน</button>
                 </form>
+                <form action="#" method="POST" id="deleteStaff"></form>
                 <br><br>        
             <!---------------------------เปลี่ยนรหัสผ่าน--------------------------->
                 <form action="#" method="POST" id="changePassword">
@@ -76,15 +78,6 @@
             </c:otherwise>
         </c:choose>
                 <br><br>
-        
-
-<!--        <form action="${SITE_URL}/DeleteStaff" method="POST" id="deleteuser">
-          <div class="form-group">
-            <label for="plate">ใส่ชื่อผู้ใช้ที่ต้องการลบ</label>
-            <input type="text" class="form-control" id="staff" name="staff_id" placeholder="ชื่อผู้ใช้">
-          </div>
-          <button type="submit" class="btn btn-danger" form="deleteuser">ลบพนักงาน</button>
-        </form>-->
 
     </div>
 <script>
@@ -96,6 +89,7 @@
                 if (value === '${sessionScope.staff.getPassword()}') {
                     $('.information').attr("readonly", true);
                     $('#changePassBtn').attr("disabled", true);
+                    $('#clickSearch').attr("disabled", true);
                     $('#confirmBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
                     $.ajax({
                         type: "POST",
@@ -115,6 +109,7 @@
                                 $('.information').attr("readonly", false);
                                 $('#confirmBtn').attr("disabled", false).html('<i class="fa fa-floppy-o" aria-hidden="true"></i> แก้ไขข้อมูล');
                                 $('#changePassBtn').attr("disabled", false);
+                                $('#clickSearch').attr("disabled", false);
                             }
                         }
                     });
@@ -139,6 +134,7 @@
                     $('.information').attr("readonly", true);
                     $('#changePassBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
                     $('#confirmBtn').attr("disabled", true);
+                    $('#clickSearch').attr("disabled", true);
                     $.ajax({
                         type: "POST",
                         url: "${SITE_URL}/UpdateStaff/?action=changePass&user=${requestScope.staff.getStaff_id()}",
@@ -156,7 +152,8 @@
                                 alertify.error('ไม่สามารถเปลี่ยนรหัสผ่านได้');
                                 $('.information').attr("readonly", false);
                                 $('#confirmBtn').attr("disabled", false);
-                                $('#changePassBtn').attr("disabled", false).html('<i class="fa fa-key" aria-hidden="true"></i> เปลี่ยนรหัสผ่าน');;
+                                $('#changePassBtn').attr("disabled", false).html('<i class="fa fa-key" aria-hidden="true"></i> เปลี่ยนรหัสผ่าน');
+                                $('#clickSearch').attr("disabled", false);
                             }
                         }
                     });
@@ -171,6 +168,48 @@
         } else {
             alertify.error('กรุณากรอกรหัสผ่านใหม่ทั้ง 2 ช่องให้ตรงกัน');
         }
+    });
+    
+    $('#deleteStaff').submit(function(event){
+        event.preventDefault();
+        alertify.prompt('ยืนยันการทำรายการ', '<h3 style="color:red;">คุณต้องการจะลบพนักงานใช่หรือไม่ ?</h3><h4>กรุณาใส่รหัสผ่านเพื่อยืนยันการลบ</h4>', '', function(evt, value) { 
+            if (value === '${sessionScope.staff.getPassword()}') {
+                $('.information').attr("readonly", true);
+                $('#deleteBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังลบ');
+                $('#changePassBtn').attr("disabled", true);
+                $('#confirmBtn').attr("disabled", true);
+                $('#clickSearch').attr("disabled", true);
+                
+                $.ajax({
+                    type: "POST",
+                    url: "${SITE_URL}/DeleteStaff/?user=${requestScope.staff.getStaff_id()}",
+                    datatype: 'json',
+                    data: $('#deleteStaff').serialize(),
+                    success: function(data) {
+                        if ($.trim(data) === 'SUCCESS') {
+                            $('#deleteBtn').html('<i class="fa fa-check" aria-hidden="true"></i> Success');
+                            alertify.success('ลบสำเร็จ');
+                            setTimeout(function() {
+                                window.location = "${SITE_URL}/admin-staff/admin_staff_edit.jsp";
+                            }, 2000);
+
+                        } else {
+                            alertify.error('ไม่สามารถลบได้');
+                            $('.information').attr("readonly", false);
+                            $('#confirmBtn').attr("disabled", false);
+                            $('#changePassBtn').attr("disabled", false);
+                            $('#clickSearch').attr("disabled", false);
+                            $('#deleteBtn').attr("disabled", false).html('<i class="fa fa-trash" aria-hidden="true"></i> ลบพนักงาน');
+                        }
+                    }
+                });
+
+            } else {
+                alertify.error('รหัสผ่านยืนยันไม่ถูกต้อง');
+            }
+        }, function() { 
+            alertify.error('Cancel'); 
+        }).set('type', 'password');
     });
 </script>
 

@@ -176,8 +176,9 @@ public class Staff {
         return status;
     }
     
-    public void deleteStaff(){
+    public boolean deleteStaff(){
         Connection conn = null;
+        boolean status = true;
         try {
             conn = (Connection) Constant.getConnection();
             
@@ -189,9 +190,12 @@ public class Staff {
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            status = false;
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
+        
+        return status;
     }
 
     public String getStaff_id() {
