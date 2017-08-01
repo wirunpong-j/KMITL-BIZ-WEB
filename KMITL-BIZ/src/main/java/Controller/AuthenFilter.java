@@ -61,15 +61,21 @@ public class AuthenFilter implements Filter {
             HttpSession session = httpRequest.getSession();
             
             if (session.getAttribute("staff") == null) {
-            res.sendRedirect("/KMITL-BIZ/");
-            return;
-            } else {
-                staff = (Staff) session.getAttribute("staff");
-                if(!staff.isStaff()) {
                 res.sendRedirect("/KMITL-BIZ/");
                 return;
-                
-            }
+            } else {
+                staff = (Staff) session.getAttribute("staff");
+                if(url.contains("admin")){
+                    if(!staff.isAdmin()) {
+                        res.sendRedirect("/KMITL-BIZ/index.jsp");
+                        return;
+                    }
+                } else {
+                    if(!staff.isStaff()) {
+                        res.sendRedirect("/KMITL-BIZ/");
+                        return;
+                    }
+                }
             }
         }
         
