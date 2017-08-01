@@ -47,7 +47,8 @@ public class ExportData extends HttpServlet {
         Connection conn = null;
         try {
             conn = (Connection) Constant.getConnection();
-            FileOutputStream fileOut = new FileOutputStream("ข้อมูลลูกค้า.xls");
+            String path = System.getProperty("user.home");
+            FileOutputStream fileOut = new FileOutputStream(path + "/Desktop/ข้อมูลลูกค้า.xls");
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet worksheet = workbook.createSheet("ข้อมูลลูกค้า");
             HSSFRow rowhead = worksheet.createRow((short)0);
@@ -74,7 +75,7 @@ public class ExportData extends HttpServlet {
             workbook.write(fileOut);
             fileOut.close();
             
-            FileOutputStream fileOut1 = new FileOutputStream("ข้อมูลการชำระเงิน.xls");
+            FileOutputStream fileOut1 = new FileOutputStream(path + "/Desktop/ข้อมูลการชำระเงิน.xls");
             HSSFWorkbook workbook1 = new HSSFWorkbook();
             HSSFSheet worksheet1 = workbook1.createSheet("ข้อมูลการชำระเงิน");
             HSSFRow rowhead1 = worksheet1.createRow((short)0);
@@ -103,7 +104,7 @@ public class ExportData extends HttpServlet {
             workbook1.write(fileOut1);
             fileOut1.close();
             
-            FileOutputStream fileOut2 = new FileOutputStream("ข้อมูลการจองล็อค.xls");
+            FileOutputStream fileOut2 = new FileOutputStream(path + "/Desktop/ข้อมูลการจองล็อค.xls");
             HSSFWorkbook workbook2 = new HSSFWorkbook();
             HSSFSheet worksheet2 = workbook2.createSheet("ข้อมูลการจองล็อค");
             HSSFRow rowhead2 = worksheet2.createRow((short)0);
@@ -132,6 +133,7 @@ public class ExportData extends HttpServlet {
             fileOut2.close();
             
             System.out.println("Export Success");
+            response.sendRedirect("admin-data/admin_data.jsp");
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
