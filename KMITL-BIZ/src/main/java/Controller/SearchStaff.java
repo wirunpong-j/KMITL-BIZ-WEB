@@ -8,6 +8,7 @@ package Controller;
 import Model.Staff;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,10 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author fluke
+ * @author BellKunG
  */
-@WebServlet(name = "UpdateStaff", urlPatterns = {"/UpdateStaff/"})
-public class UpdateStaff extends HttpServlet {
+@WebServlet(name = "SearchStaff", urlPatterns = {"/SearchStaff"})
+public class SearchStaff extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,45 +32,22 @@ public class UpdateStaff extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException { 
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        if (request.getParameter("action").equals("update")) {
-            String staff_id = request.getParameter("user");
-            String fname = request.getParameter("fname");
-            String lname = request.getParameter("lname");
-            String role = request.getParameter("role");
-            
-            Staff staff = new Staff(staff_id);
-            staff.setFirst_name(fname);
-            staff.setLast_name(lname);
-            staff.setRole(role);
-            
-            try (PrintWriter out = response.getWriter()) {
-                if (staff.updateStaff()) {
-                    out.println("SUCCESS");
-                } else {
-                    out.println("FALIED");
-                }
-            }
-            
-            
+        String username = request.getParameter("search");
+        Staff staff = new Staff(username);
+        
+        if (staff.searchStaff()) {
+            request.setAttribute("status", "true");
+            request.setAttribute("staff", staff);
         } else {
-            String staff_id = request.getParameter("user");
-            String newPassword = request.getParameter("newPass");
-            
-            Staff staff = new Staff(staff_id);
-            staff.searchStaff();
-            
-            try (PrintWriter out = response.getWriter()) {
-                if (staff.changePassword(newPassword)) {
-                    out.println("SUCCESS");
-                } else {
-                    out.println("FALIED");
-                }
-            }
+            request.setAttribute("status", "false");
         }
+        
+        RequestDispatcher page = request.getRequestDispatcher("/admin-staff/admin_staff_edit.jsp");
+        page.forward(request, response);
         
         return;
     }
