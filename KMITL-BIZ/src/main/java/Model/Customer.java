@@ -27,6 +27,9 @@ public class Customer {
     private String email;
     private int product_id;
     private int price;
+
+    public Customer() {
+    }
     
     public Customer(int cust_id){
         this.cust_id = cust_id;
@@ -125,22 +128,26 @@ public class Customer {
         return status;
     }
     
-    public void deleteCustomer(){
+    public boolean deleteCustomer(){
         Connection conn = null;
+        boolean status = true;
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM customer WHERE tel = ?");
-            pstmt.setString(1, this.tel);
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM customer WHERE cust_id = ?");
+            pstmt.setInt(1, this.cust_id);
             
             pstmt.executeUpdate();
             pstmt.close();
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            status = false;
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
+        
+        return status;
     }
     
     public boolean searchCustomerByID() {

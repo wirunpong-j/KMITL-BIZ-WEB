@@ -52,7 +52,14 @@ public class AddCustomer extends HttpServlet {
         String citizen_id = (!cust_type.equals("STUDENT")) ? id : "";
         String vehicle = (plate.equals("")) ? plate : "";
         
-        Customer cust = new Customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email);
+        Customer cust = new Customer();
+        cust.setFullname(fullname);
+        cust.setTel(tel);
+        cust.setEmail(email);
+        cust.setVehicle(vehicle);
+        cust.setCust_type(cust_type);
+        cust.setStudent_id(student_id);
+        cust.setCitizen_id(citizen_id);
         cust.addCustomer();
         
         response.sendRedirect("/KMITL-BIZ/admin_cust_add.jsp");
