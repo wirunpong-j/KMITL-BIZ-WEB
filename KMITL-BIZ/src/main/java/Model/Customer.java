@@ -27,6 +27,9 @@ public class Customer {
     private String email;
     private int product_id;
     private int price;
+
+    public Customer() {
+    }
     
     public Customer(int cust_id){
         this.cust_id = cust_id;
