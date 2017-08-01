@@ -7,7 +7,7 @@
       <h1>จัดการพนักงาน</h1>
     </div>
     <div class="row">
-      <a href="${SITE_URL}/admin/admin_staff_add.jsp">
+      <a href="${SITE_URL}/admin-staff/admin_staff_add.jsp">
         <div class="col-md-4">
           <div class="admin_panel" id="admin_staff_add">
             <i class="fa fa-user-plus fa-5x" aria-hidden="true"></i>
@@ -15,7 +15,7 @@
           </div>
         </div>
       </a>
-      <a href="${SITE_URL}/admin/admin_staff_edit.jsp">
+      <a href="${SITE_URL}/admin-staff/admin_staff_edit.jsp">
         <div class="col-md-4">
           <div class="admin_panel" id="admin_staff_edit">
             <i class="fa fa-pencil fa-5x" aria-hidden="true"></i>
@@ -23,7 +23,7 @@
           </div>
         </div>
       </a>
-      <a href="${SITE_URL}/admin/admin_staff_list.jsp">  
+      <a href="${SITE_URL}/admin-staff/admin_staff_list.jsp">  
         <div class="col-md-4">
           <div class="admin_panel" id="admin_staff_history">
             <i class="fa fa-file-text fa-5x" aria-hidden="true"></i>

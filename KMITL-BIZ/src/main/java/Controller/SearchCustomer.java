@@ -44,7 +44,7 @@ public class SearchCustomer extends HttpServlet {
             request.setAttribute("status", "false");
         }
         
-        RequestDispatcher page = request.getRequestDispatcher("/admin/admin_cust_edit.jsp");
+        RequestDispatcher page = request.getRequestDispatcher("/admin-customer/admin_cust_edit.jsp");
         page.forward(request, response);
         
         return;

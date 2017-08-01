@@ -113,7 +113,7 @@
                         $('#confirmBtn').removeClass('btn-info').addClass('btn-success').html('<i id="spinBtn"></i> Success');
                         alertify.success('บันทึกข้อมูลสำเร็จ');
                         setTimeout(function() {
-                            window.location = "${SITE_URL}/admin/admin_cust_edit.jsp";
+                            window.location = "${SITE_URL}/admin-customer/admin_cust_edit.jsp";
                         }, 2000);
                     } else {
                         alertify.error('ไม่สามารถแก้ไขได้');
@@ -145,7 +145,7 @@
                         $('#deleteBtn').html('<i id="spinBtn"></i> Success');
                         alertify.success('ลบข้อมูลสำเร็จ');
                         setTimeout(function() {
-                            window.location = "${SITE_URL}/admin/admin_cust_edit.jsp";
+                            window.location = "${SITE_URL}/admin-customer/admin_cust_edit.jsp";
                         }, 2000);
                     } else {
                         alertify.error('ไม่สามารถลบได้');

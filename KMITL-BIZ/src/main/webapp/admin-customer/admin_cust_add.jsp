@@ -64,7 +64,7 @@
                     $('#confirmBtn').removeClass('btn-info').addClass('btn-success').html('<i id="spinBtn"></i> Success');
                     alertify.alert('ทำรายการสำเร็จ', '<h3>รหัสรับบริการที่ได้รับ คือ ' + $.trim(data) + ' </h3>', function(){ 
                         setTimeout(function() {
-                            window.location = "${SITE_URL}/admin/admin_cust_add.jsp";
+                            window.location = "${SITE_URL}/admin-customer/admin_cust_add.jsp";
                         }, 1000);
                     });
                 }

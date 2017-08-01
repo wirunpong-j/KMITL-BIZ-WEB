@@ -7,7 +7,7 @@
       <h1>จัดการลูกค้า</h1>
     </div>
     <div class="row">
-      <a href="${SITE_URL}/admin/admin_cust_add.jsp">
+      <a href="${SITE_URL}/admin-customer/admin_cust_add.jsp">
         <div class="col-md-4">
           <div class="admin_panel" id="admin_cust_add">
             <i class="fa fa-user-plus fa-5x" aria-hidden="true"></i>
@@ -15,7 +15,7 @@
           </div>
         </div>
       </a>
-      <a href="${SITE_URL}/admin/admin_cust_edit.jsp">
+      <a href="${SITE_URL}/admin-customer/admin_cust_edit.jsp">
         <div class="col-md-4">
           <div class="admin_panel" id="admin_cust_edit">
             <i class="fa fa-pencil fa-5x" aria-hidden="true"></i>
@@ -23,7 +23,7 @@
           </div>
         </div>
       </a>
-      <a href="${SITE_URL}/admin/admin_cust_history.jsp">
+      <a href="${SITE_URL}/admin-customer/admin_cust_history.jsp">
       <div class="col-md-4">
         <div class="admin_panel" id="admin_cust_history">
           <i class="fa fa-file fa-5x" aria-hidden="true"></i>

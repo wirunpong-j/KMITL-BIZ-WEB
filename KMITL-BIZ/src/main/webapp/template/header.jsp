@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:set var="SITE_URL" value="${pageContext.request.contextPath}" scope="request"/>
 
@@ -41,14 +42,33 @@
                 <a class="navbar-brand" href="#">KMITL BIZ WAY</a>
             </div>
             <ul class="nav navbar-nav navbar-left">
-                <li class="active"><a href="${SITE_URL}/index.jsp">หน้าหลัก</a></li>
-                <li><a href="${SITE_URL}/admin/admin_cust.jsp">จัดการลูกค้า</a></li>
-                <li><a href="${SITE_URL}/admin/admin_staff.jsp">จัดการพนักงาน</a></li>
-                <li><a href="${SITE_URL}/admin/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
+                
+                <c:set var="currentPath" scope="request" value="${fn:split(pageContext.request.servletPath, '/')}"></c:set>
+                <c:choose>
+                    <c:when test="${currentPath[0] == 'admin-customer'}">
+                        <c:set var="active2" scope="request" value="active"></c:set>
+                    </c:when>
+                    <c:when test="${currentPath[0] == 'admin-staff'}">
+                        <c:set var="active3" scope="request" value="active"></c:set>
+                    </c:when>
+                    <c:when test="${currentPath[0] == 'admin-data'}">
+                        <c:set var="active4" scope="request" value="active"></c:set>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="active1" scope="request" value="active"></c:set>
+                    </c:otherwise>
+                </c:choose>
+                
+                <li class="${active1}"><a href="${SITE_URL}/Authentication">หน้าหลัก</a></li>
+                <li class="${active2}"><a href="${SITE_URL}/admin-customer/admin_cust.jsp">จัดการลูกค้า</a></li>
+                <li class="${active3}"><a href="${SITE_URL}/admin-staff/admin_staff.jsp">จัดการพนักงาน</a></li>
+                <li class="${active4}"><a href="${SITE_URL}/admin-data/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="${SITE_URL}/LogoutServlet">ออกจากระบบ</a></li>
             </ul>
+            
+            <h3>${currentPath[0]}</h3>
         </div>
   </nav>
