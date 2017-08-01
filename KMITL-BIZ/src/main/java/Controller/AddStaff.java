@@ -40,10 +40,20 @@ public class AddStaff extends HttpServlet {
         String password = request.getParameter("password");
         String role = request.getParameter("role");
         
-        Staff staf = new Staff(username, password, fname, lname, role);
+        Staff staff = new Staff(username, password, fname, lname, role);
+        try (PrintWriter out = response.getWriter()) {
+            if (staff.searchStaff()) {
+                out.println("USERNAME");
+            } else {
+                if (staff.addStaff()) {
+                    out.println("SUCCESS");
+                } else {
+                    out.println("FAILED");
+                }
+            }
+        }
         
-        staf.addStaff();
-        response.sendRedirect("/KMITL-BIZ/admin_staff_add.jsp");
+        return;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

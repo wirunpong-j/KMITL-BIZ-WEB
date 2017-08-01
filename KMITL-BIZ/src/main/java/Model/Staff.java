@@ -41,8 +41,9 @@ public class Staff {
         this.password = password;
     }
     
-    public void searchStaff() {
+    public boolean searchStaff() {
         Connection conn = null;
+        boolean status = true;
         try {
             conn = (Connection) Constant.getConnection();
             
@@ -55,15 +56,20 @@ public class Staff {
                 this.first_name = rs.getString("fname");
                 this.last_name = rs.getString("lname");
                 this.role = rs.getString("role");
+            } else {
+                status = false;
             }
             
             pstmt.close();
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            status = false;
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
+        
+        return status;
     }
     
     public boolean isStaff() {
@@ -94,13 +100,13 @@ public class Staff {
         return false;
     }
     
-    public void addStaff() {
+    public boolean addStaff() {
         Connection conn = null;
+        boolean status = true;
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO staff(staff_id, password, fname, lname, role) "
-                    + "VALUES(?,?,?,?,?)");
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO staff VALUES(?,?,?,?,?)");
             pstmt.setString(1, this.staff_id);
             pstmt.setString(2, this.password);
             pstmt.setString(3, this.first_name);
@@ -112,9 +118,12 @@ public class Staff {
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            status = false;
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
+        
+        return status;
     }
     
     public void updateStaff(){
