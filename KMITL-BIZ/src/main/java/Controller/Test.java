@@ -77,8 +77,7 @@ public class Test extends HttpServlet {
             System.out.println(dt.format(DateTimeFormatter.ISO_LOCAL_DATE));
         }
       
-        //add
-        
+        //add and remove zone
         String in = "A2";
         ArrayList<String> selectedZone = new ArrayList();
         if(selectedZone.contains(in)) {
@@ -87,7 +86,7 @@ public class Test extends HttpServlet {
            selectedZone.add(in);
         }
         Collections.sort(selectedZone);
-        
+        //end
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
