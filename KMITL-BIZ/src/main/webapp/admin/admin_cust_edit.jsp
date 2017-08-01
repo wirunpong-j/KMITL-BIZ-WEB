@@ -102,6 +102,7 @@
         alertify.confirm('ยืนยันการทำรายการ', '<h4>คุณต้องการจะบันทึกการแก้ไขครั้งนี้ใช่หรือไม่ ?</h4>', function(){
             $('.information').attr("readonly", true);
             $('#confirmBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
+            $('#deleteBtn').attr("disabled", true);
             $.ajax({
                 type: "POST",
                 url: "${SITE_URL}/UpdateCustomer/?custid=${requestScope.cust.getCust_id()}",
@@ -118,6 +119,39 @@
                         alertify.error('ไม่สามารถแก้ไขได้');
                         $('.information').attr("readonly", false);
                         $('#confirmBtn').attr("disabled", false).removeClass('btn-success').addClass('btn-info').html('<i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก');
+                        $('#deleteBtn').attr("disabled", false);
+                    }
+                }
+            });
+        }, function(){ 
+            alertify.error('Cancel');
+        });
+    });
+    
+    $('#deleteUser').submit(function(event) {
+        event.preventDefault();
+        
+        alertify.confirm('ยืนยันการทำรายการ', '<h4>คุณต้องการจะลบข้อมูลของลูกค้าใช่หรือไม่ ?</h4>', function(){
+            $('.information').attr("readonly", true);
+            $('#deleteBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังลบ');
+            $('#confirmBtn').attr("disabled", true);
+            $.ajax({
+                type: "POST",
+                url: "${SITE_URL}/DeleteCustomer/?custid=${requestScope.cust.getCust_id()}",
+                datatype: 'json',
+                data: $('#deleteUser').serialize(),
+                success: function(data) {
+                    if ($.trim(data) === 'SUCCESS') {
+                        $('#deleteBtn').html('<i id="spinBtn"></i> Success');
+                        alertify.success('ลบข้อมูลสำเร็จ');
+                        setTimeout(function() {
+                            window.location = "${SITE_URL}/admin/admin_cust_edit.jsp";
+                        }, 2000);
+                    } else {
+                        alertify.error('ไม่สามารถลบได้');
+                        $('.information').attr("readonly", false);
+                        $('#deleteBtn').attr("disabled", false).html('<i class="fa fa-trash" aria-hidden="true"></i> ลบข้อมูลของลูกค้า');
+                        $('#confirmBtn').attr("disabled", false);
                     }
                 }
             });

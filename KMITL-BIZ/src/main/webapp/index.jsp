@@ -155,7 +155,7 @@
                     </div>
 
                     <div class="form-group">
-                        <a href="#" type="button" class="btn btn-default" style="width:100%;" onclick="window.open('${SITE_URL}/ShowAllArea/?type=R1', '_blank', 'fullscreen=yes'); return false;">เรียกดูข้อมูล </a>
+                        <a href="#" type="button" class="btn btn-default" style="width:100%;" onclick="window.open('${SITE_URL}/ShowAllArea/?type=0', '_blank', 'fullscreen=yes'); return false;">เรียกดูข้อมูล </a>
                     </div>
                     </c:when>
                     <c:otherwise>
