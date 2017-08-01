@@ -126,29 +126,54 @@ public class Staff {
         return status;
     }
     
-    public void updateStaff(){
+    public boolean updateStaff(){
         Connection conn = null;
+        boolean status = true;
+        
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("UPDATE staff "
-                    + "SET staff_id = ?, password = ?, fname = ?, lname = ?, role = ? "
-                    + "WHERE staff_id = ?");
-            pstmt.setString(1, this.staff_id);
-            pstmt.setString(2, this.password);
-            pstmt.setString(3, this.first_name);
-            pstmt.setString(4, this.last_name);
-            pstmt.setString(5, this.role);
-            pstmt.setString(6, this.staff_id);
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE staff SET fname = ?, lname = ?, role = ? WHERE staff_id = ?");
+            pstmt.setString(1, this.first_name);
+            pstmt.setString(2, this.last_name);
+            pstmt.setString(3, this.role);
+            pstmt.setString(4, this.staff_id);
             
             pstmt.executeUpdate();
             pstmt.close();
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            status = false;
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
+        
+        return status;
+    }
+    
+    public boolean changePassword(String newPassword) {
+        Connection conn = null;
+        boolean status = true;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE staff SET password = ? WHERE staff_id = ?");
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, this.staff_id);
+            
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        return status;
     }
     
     public void deleteStaff(){
