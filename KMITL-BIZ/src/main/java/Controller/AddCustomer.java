@@ -55,6 +55,8 @@ public class AddCustomer extends HttpServlet {
         Customer cust = new Customer(fullname, tel, cust_type, student_id, citizen_id, vehicle, email);
         cust.addCustomer();
         
+        response.sendRedirect("/KMITL-BIZ/admin_cust_add.jsp");
+        
         try (PrintWriter out = response.getWriter()) {
             out.println(cust.getCust_id_str());
         }

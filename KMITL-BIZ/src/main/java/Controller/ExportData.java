@@ -49,8 +49,9 @@ public class ExportData extends HttpServlet {
             Statement statement = conn.createStatement();
             Statement statement1 = conn.createStatement();
             Statement statement2 = conn.createStatement();
-            FileOutputStream fileOut;
-            fileOut = new FileOutputStream("file.xls");
+            FileOutputStream fileOut = new FileOutputStream("ข้อมูลลูกค้า.xls");
+            FileOutputStream fileOut1 = new FileOutputStream("ข้อมูลการชำระเงิน.xls");
+            FileOutputStream fileOut2 = new FileOutputStream("ข้อมูลการจองล็อค.xls");
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet worksheet = workbook.createSheet("ข้อมูลลูกค้า");
             Row row1 = worksheet.createRow((short)0);
@@ -72,6 +73,11 @@ public class ExportData extends HttpServlet {
                 row2.createCell(4).setCellValue(rs.getString("email"));
                 row2.createCell(5).setCellValue(rs.getString("vehicle"));
             }
+            workbook.write(fileOut);
+            fileOut.flush();
+            fileOut.close();
+            rs.close();
+            statement.close();
             HSSFSheet worksheet1 = workbook.createSheet("ข้อมูลการชำระเงิน");
             Row row3 = worksheet1.createRow((short)0);
             row3.createCell(0).setCellValue("รหัสลูกค้า");
@@ -94,6 +100,11 @@ public class ExportData extends HttpServlet {
                 row4.createCell(3).setCellValue(rs.getString("order_type"));
                 row4.createCell(4).setCellValue(rs.getString("zone_count"));
             }
+            workbook.write(fileOut1);
+            fileOut1.flush();
+            fileOut1.close();
+            rs1.close();
+            statement1.close();
             HSSFSheet worksheet2 = workbook.createSheet("ข้อมูลการจองล็อค");
             Row row5 = worksheet2.createRow((short)0);
             row5.createCell(0).setCellValue("รหัสลูกค้า");
@@ -115,18 +126,16 @@ public class ExportData extends HttpServlet {
                 row6.createCell(2).setCellValue(rs.getString("zone"));
                 row6.createCell(3).setCellValue(rs.getString("product_name"));
             }
-            workbook.write(fileOut);
-            fileOut.flush();
-            fileOut.close();
-            rs.close();
-            statement.close();
-            rs1.close();
-            statement1.close();
+            workbook.write(fileOut2);
+            fileOut2.flush();
+            fileOut2.close();
             rs2.close();
             statement2.close();
             conn.close();
             System.out.println("Export Success");
-            response.sendRedirect("admin_data.jsp");
+        
+            response.sendRedirect("/KMITL-BIZ/admin_data.jsp");
+            
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
