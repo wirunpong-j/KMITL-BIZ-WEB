@@ -52,7 +52,7 @@ public class AuthenFilter implements Filter {
         String url = httpRequest.getRequestURI();
         System.out.println("Filter Invoked");
         
-        if(url.charAt(url.length()-1) == '/' || url.contains("Authentication")){
+        if(url.charAt(url.length()-1) == '/' || url.contains("Authentication") || url.contains("css")){
             System.out.println("Authen Bypass");
         } else {
             //check for loginn
