@@ -124,11 +124,15 @@ public class Staff {
                 status = false;
             }
             
+            rs.close();
+            pstmt.close();
+            
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
+        
         return status;
     }
     
