@@ -146,12 +146,13 @@
             <div class="back_panel">
                 <c:choose>
                     <c:when test="${sessionScope.status == 'RENT'}">
-                      <div class="form-group">
-                        <button class="btn btn-primary btn-block btn-rent" id="showArea" type="button" style="width:100%;">- </button>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block btn-rent" id="showArea" type="button" style="width:80%; float:left">-</button>
+                        <button class="btn btn-danger btn-block btn-rent" id="clearBtn" type="button" style="width:20%;"><i class="fa fa-eraser" aria-hidden="true"></i></button>
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-success btn-rent" type="button" id="confirmBtn" style="width:100%;" value="${sessionScope.customer.getPrice()}">ยืนยัน/พิมพ์ใบเสร็จ</button>
+                        <button class="btn btn-success btn-rent" type="button" id="confirmBtn" style="width:100%;" value="${sessionScope.customer.getPrice()}" disabled>ยืนยัน/พิมพ์ใบเสร็จ</button>
                     </div>
 
                     <div class="form-group">
@@ -186,13 +187,13 @@
             
                         
 <script>
-    var allArea = '';
+    var allArea = [];
     var count = 1;
     var addCost;
 
     $('#confirmBtn').click(function() {
-        var cost = parseInt($(this).val()) * allArea.split(',').length;
-        var text = '<h3><strong>จองพื้นที่ : ' + allArea + ' </strong></h3>\n\
+        var cost = parseInt($(this).val()) * allArea.length;
+        var text = '<h3><strong>จองพื้นที่ : ' + allArea.toString() + ' </strong></h3>\n\
                     <h4>รูปแบบการจอง : ' + $("#selectRent option:selected").text() + '<h4>\n\
                     <h4>รหัสรับบริการ : ${sessionScope.customer.getCust_id_str()} </h4>\n\
                     <h4>ชื่อผู้ใช้บริการ : ${sessionScope.customer.getFullname()} </h4>\n\
@@ -212,12 +213,12 @@
                 $.ajax({
                     type: "POST",
                     url: "${SITE_URL}/RentArea",
-                    data: {'allArea': allArea, 'addCost': $('#addCost').val(), 'note': $('#note').val(), 'rentType': $('#selectRent').val()},
+                    data: {'allArea': allArea.toString(), 'addCost': $('#addCost').val(), 'note': $('#note').val(), 'rentType': $('#selectRent').val()},
                     success: function(data) {
                         $('#confirmBtn').html('<i id="spinBtn"></i> จองพื้นที่สำเร็จ');
                         setTimeout(function() {
                             var total = cost + parseInt($('#addCost').val());
-                            var text2 = '<h3><strong>จองพื้นที่ : ' + allArea + ' </strong></h3>\n\
+                            var text2 = '<h3><strong>จองพื้นที่ : ' + allArea.toString() + ' </strong></h3>\n\
                                          <h3>จำนวนเงินทั้งหมดที่ต้องชำระ : ' + total + ' บาท</h3>';
                             alertify.alert('จองพื้นที่สำเร็จ', text2, function(){
                                 window.location = "${SITE_URL}/Authentication"; 
@@ -268,21 +269,36 @@
     });
 
     $('.btn-unselect').click(function() {
-        if (count > 3) {
-            count = 1;
-            allArea = '';
-        }
         selectArea($(this).text());
-        $('#showArea').text(allArea);
+        
+        if (allArea.length === 0) {
+            $('#showArea').text('-');
+            $('#confirmBtn').attr('disabled', true);
+        } else {
+            $('#showArea').text(allArea.toString());
+            $('#confirmBtn').attr('disabled', false);
+        }
+
     });
 
     function selectArea(text) {
-        switch (count) {
-            case 1: allArea += text; break;
-            default: allArea += ',' + text;
+        if ($.inArray(text, allArea) > -1) {
+            var index = allArea.indexOf(text);
+            allArea.splice(index, 1);
+            
+        } else {
+            if (allArea.length <= 3) {
+                allArea.push(text);
+            }
         }
-        count++;
+        allArea.sort();
     }
+    
+    $('#clearBtn').click(function(){
+        allArea = [];
+        $('#showArea').text('-');
+        $('#confirmBtn').attr('disabled', true);
+    });
 
     $('.btn-product').click(function() {
         $('#product').val($(this).text());
