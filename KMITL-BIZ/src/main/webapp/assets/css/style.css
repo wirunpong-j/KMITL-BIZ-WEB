@@ -59,36 +59,91 @@ body {
 }
 
 #admin_cust_add {
-  background-color: #0D47A1;
+  background-color: #0FBEFF;
   color: white;
 }
 
 #admin_cust_edit {
-  background-color: #1976D2;
+  background-color: #0FBEFF;
   color: white;
 }
 
 #admin_cust_history {
-  background-color: #2196F3;
+  background-color: #0FBEFF;
+  color: white;
+}
+
+#admin_cust_add:hover {
+  background-color: #0D47A1;
+  color: white;
+}
+
+#admin_cust_edit:hover {
+  background-color: #0D47A1;
+  color: white;
+}
+
+#admin_cust_history:hover {
+  background-color: #0D47A1;
   color: white;
 }
 
 #admin_staff_add {
-  background-color: #1B5E20;
+  background-color: #8CDA95;
   color: white;
 }
 
 #admin_staff_edit {
-  background-color: #388E3C;
+  background-color: #8CDA95;
   color: white;
 }
 
 #admin_staff_history {
-  background-color: #4CAF50;
+  background-color: #8CDA95;
   color: white;
 }
 
-#admin_data_export {
-  background-color: #004D40;
+#admin_staff_add:hover {
+  background-color: #1B5E20;
+  color: white;
+}
+
+#admin_staff_edit:hover {
+  background-color: #1B5E20;
+  color: white;
+}
+
+#admin_staff_history:hover {
+  background-color: #1B5E20;
+  color: white;
+}
+
+#admin_data_1 {
+  background-color: #B6B6B6;
+  color: white;
+}
+
+#admin_data_2 {
+  background-color: #B6B6B6;
+  color: white;
+}
+
+#admin_data_3 {
+  background-color: #B6B6B6;
+  color: white;
+}
+
+#admin_data_1:hover {
+  background-color: #707B7C;
+  color: white;
+}
+
+#admin_data_2:hover {
+  background-color: #707B7C;
+  color: white;
+}
+
+#admin_data_3:hover {
+  background-color: #707B7C;
   color: white;
 }

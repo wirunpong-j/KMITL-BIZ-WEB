@@ -6,29 +6,30 @@
 package Controller;
 
 import Listener.Constant;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
 
 /**
  *
  * @author fluke
  */
-@WebServlet(name = "ExportData", urlPatterns = {"/ExportData"})
+@WebServlet(name = "ExportData", urlPatterns = {"/ExportData/"})
 public class ExportData extends HttpServlet {
 
     /**
@@ -42,103 +43,155 @@ public class ExportData extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
-        Connection conn = null;
+        String fileName = "";
+        
+        switch (request.getParameter("action")) {
+            // Customer Infomation
+            case "1":
+                {
+                    HashMap<Integer, String> header = new HashMap<>();
+                    header.put(0, "รหัสลูกค้า");
+                    header.put(1, "ชื่อ-นามสกุล");
+                    header.put(2, "ประเภท");
+                    header.put(3, "เบอร์โทรศัพท์");
+                    header.put(4, "Email");
+                    header.put(5, "ทะเบียนรถ");
+                    
+                    HashMap<Integer, String> result = new HashMap<>();
+                    result.put(0, "cust_id");
+                    result.put(1, "fullname");
+                    result.put(2, "cust_type");
+                    result.put(3, "tel");
+                    result.put(4, "email");
+                    result.put(5, "vehicle");
+                    
+                    String query = "SELECT * FROM customer";
+                    fileName = "สรุปข้อมูลลูกค้า";
+                    
+                    createExcel(fileName, 6, header, query, result);
+
+                    break;
+                }
+            // Transaction
+            case "2":
+                {
+                    HashMap<Integer, String> header = new HashMap<>();
+                    header.put(0, "รหัสลูกค้า");
+                    header.put(1, "วันที่ชำระเงิน");
+                    header.put(2, "จำนวนเงินที่ชำระ");
+                    header.put(3, "ประเภทการชำระ");
+                    header.put(4, "จำนวนล็อค");
+                    
+                    HashMap<Integer, String> result = new HashMap<>();
+                    result.put(0, "cust_id");
+                    result.put(1, "order_date");
+                    result.put(2, "s_price");
+                    result.put(3, "order_type");
+                    result.put(4, "c_zone");
+                    
+                    String query = "SELECT cust_id, order_date, SUM(price) as s_price, order_type, COUNT(*) as c_zone "
+                            + "FROM kmitlbiz.customer "
+                            + "JOIN kmitlbiz.order "
+                            + "USING (cust_id) "
+                            + "GROUP BY cust_id";
+                    fileName = "สรุปข้อมูลการชำระเงิน";
+                    
+                    createExcel(fileName, 5, header, query, result);
+
+                    break;
+                }
+            // Area Rent
+            default:
+                {
+                    HashMap<Integer, String> header = new HashMap<>();
+                    header.put(0, "รหัสลูกค้า");
+                    header.put(1, "วันที่เปิดขาย");
+                    header.put(2, "รหัสพื้นที่");
+                    header.put(3, "สินค้า");
+                    
+                    HashMap<Integer, String> result = new HashMap<>();
+                    result.put(0, "cust_id");
+                    result.put(1, "rent_date");
+                    result.put(2, "zone_id");
+                    result.put(3, "product_name");
+                    
+                    String query = "SELECT cust_id, rent_date, zone_id, product_name "
+                            + "FROM kmitlbiz.order "
+                            + "JOIN product "
+                            + "USING (product_id) "
+                            + "JOIN zone "
+                            + "USING (order_id)";
+                    fileName = "สรุปข้อมูลการจองพื้นที่ขาย";
+                    
+                    createExcel(fileName, 4, header, query, result);
+                    
+                    break;
+                }
+        }
+        
         try {
-            conn = (Connection) Constant.getConnection();
-            String path = System.getProperty("user.home");
-            FileOutputStream fileOut = new FileOutputStream(path + "/Desktop/ข้อมูลลูกค้า.xls");
-            HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet worksheet = workbook.createSheet("ข้อมูลลูกค้า");
-            HSSFRow rowhead = worksheet.createRow((short)0);
-            rowhead.createCell(0).setCellValue("รหัสลูกค้า");
-            rowhead.createCell(1).setCellValue("ชื่อ-นามสกุล");
-            rowhead.createCell(2).setCellValue("ประเภท");
-            rowhead.createCell(3).setCellValue("เบอร์โทรศัพท์");
-            rowhead.createCell(4).setCellValue("Email");
-            rowhead.createCell(5).setCellValue("ทะเบียนรถยนตร์");
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM customer");
-            ResultSet rs = pstmt.executeQuery();
-            int i = 1;
-            while(rs.next()){
-                HSSFRow row = worksheet.createRow((short)i);
-                row = worksheet.createRow((short)i);
-                row.createCell(0).setCellValue(rs.getString("cust_id"));
-                row.createCell(1).setCellValue(rs.getString("fullname"));
-                row.createCell(2).setCellValue(rs.getString("cust_type"));
-                row.createCell(3).setCellValue(rs.getString("tel"));
-                row.createCell(4).setCellValue(rs.getString("email"));
-                row.createCell(5).setCellValue(rs.getString("vehicle"));
-                i++;
-            }
-            workbook.write(fileOut);
-            fileOut.close();
+            String downloadPath = URLEncoder.encode(fileName,"UTF-8");
+            response.setHeader("Content-disposition","attachment; filename=" + downloadPath + ".xls");
             
-            FileOutputStream fileOut1 = new FileOutputStream(path + "/Desktop/ข้อมูลการชำระเงิน.xls");
-            HSSFWorkbook workbook1 = new HSSFWorkbook();
-            HSSFSheet worksheet1 = workbook1.createSheet("ข้อมูลการชำระเงิน");
-            HSSFRow rowhead1 = worksheet1.createRow((short)0);
-            rowhead1.createCell(0).setCellValue("รหัสลูกค้า");
-            rowhead1.createCell(1).setCellValue("วันที่ชำระเงิน");
-            rowhead1.createCell(2).setCellValue("จำนวนเงินที่ชำระ");
-            rowhead1.createCell(3).setCellValue("ประเภทการชำระ");
-            rowhead1.createCell(4).setCellValue("จำนวนล็อค");
-            PreparedStatement pstmt1 = conn.prepareStatement("SELECT cust_id, order_date, SUM(price) as s_price, order_type, COUNT(*) as c_zone "
-                    + "FROM kmitlbiz.customer "
-                    + "JOIN kmitlbiz.order "
-                    + "USING (cust_id) "
-                    + "GROUP BY cust_id");
-            ResultSet rs1 = pstmt1.executeQuery();
-            int j = 1;
-            while(rs1.next()){
-                HSSFRow row1 = worksheet1.createRow((short)j);
-                row1 = worksheet1.createRow((short)j);
-                row1.createCell(0).setCellValue(rs1.getString("cust_id"));
-                row1.createCell(1).setCellValue(rs1.getString("order_date"));
-                row1.createCell(2).setCellValue(rs1.getString("s_price"));
-                row1.createCell(3).setCellValue(rs1.getString("order_type"));
-                row1.createCell(4).setCellValue(rs1.getString("c_zone"));
-                j++;
-            }
-            workbook1.write(fileOut1);
-            fileOut1.close();
-            
-            FileOutputStream fileOut2 = new FileOutputStream(path + "/Desktop/ข้อมูลการจองล็อค.xls");
-            HSSFWorkbook workbook2 = new HSSFWorkbook();
-            HSSFSheet worksheet2 = workbook2.createSheet("ข้อมูลการจองล็อค");
-            HSSFRow rowhead2 = worksheet2.createRow((short)0);
-            rowhead2.createCell(0).setCellValue("รหัสลูกค้า");
-            rowhead2.createCell(1).setCellValue("วันเปิดขาย");
-            rowhead2.createCell(2).setCellValue("รหัสล็อค");
-            rowhead2.createCell(3).setCellValue("สินค้า");
-            PreparedStatement pstmt2 = conn.prepareStatement("SELECT cust_id, rent_date, zone_id, product_name "
-                    + "FROM kmitlbiz.order "
-                    + "JOIN product "
-                    + "USING (product_id) "
-                    + "JOIN zone "
-                    + "USING (order_id)");
-            ResultSet rs2 = pstmt2.executeQuery();
-            int k = 1;
-            while(rs2.next()){
-                HSSFRow row2 = worksheet2.createRow((short)k);
-                row2 = worksheet2.createRow((short)k);
-                row2.createCell(0).setCellValue(rs2.getString("cust_id"));
-                row2.createCell(1).setCellValue(rs2.getString("rent_date"));
-                row2.createCell(2).setCellValue(rs2.getString("zone_id"));
-                row2.createCell(3).setCellValue(rs2.getString("product_name"));
-                k++;
-            }
-            workbook2.write(fileOut2);
-            fileOut2.close();
-            
-            System.out.println("Export Success");
-            response.sendRedirect("admin-data/admin_data.jsp");
-            
-        } catch (Exception ex) {
+            OutputStream out = response.getOutputStream();
+            FileInputStream in = new FileInputStream("excel/" + fileName + ".xls");
+
+            byte[] buffer = new byte[4096];
+            while(in.read(buffer, 0, 4096) != -1)
+                out.write(buffer, 0, 4096);
+            in.close();
+            out.flush();
+            out.close();
+        } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
 
+        System.out.println("Export Success");
+        return;
+
+    }
+    
+    private void createExcel(String fileName, int numCell, HashMap<Integer, String> header, String query, HashMap<Integer, String> result) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            FileOutputStream fileOut = new FileOutputStream("excel/" + fileName + ".xls");
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            HSSFSheet worksheet = workbook.createSheet(fileName);
+            HSSFRow rowhead = worksheet.createRow((short)0);
+            
+            for (int i = 0; i < numCell; i++) {
+                rowhead.createCell(i).setCellValue(header.get(i));
+            }
+
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+            
+            int i = 1;
+            while(rs.next()){
+                HSSFRow row = worksheet.createRow((short) i);
+                
+                for (int k = 0; k < numCell; k++) {
+                    row.createCell(k).setCellValue(rs.getString(result.get(k)));
+                }
+                
+                i++;
+            }
+            
+            workbook.write(fileOut);
+            fileOut.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
