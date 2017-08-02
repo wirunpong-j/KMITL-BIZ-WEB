@@ -59,10 +59,19 @@
                     </c:otherwise>
                 </c:choose>
                 
+<!-------------------------------nav bar------------------------------->
                 <li class="${active1}"><a href="${SITE_URL}/Authentication">หน้าหลัก</a></li>
-                <li class="${active2}"><a href="${SITE_URL}/admin-customer/admin_cust.jsp">จัดการลูกค้า</a></li>
-                <li class="${active3}"><a href="${SITE_URL}/admin-staff/admin_staff.jsp">จัดการพนักงาน</a></li>
-                <li class="${active4}"><a href="${SITE_URL}/admin-data/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
+                <c:choose>
+                    <c:when test="${sessionScope.staff.getRole() == 'AD'}">
+                        <li class="${active2}"><a href="${SITE_URL}/admin-customer/admin_cust.jsp">จัดการลูกค้า</a></li>
+                        <li class="${active3}"><a href="${SITE_URL}/admin-staff/admin_staff.jsp">จัดการพนักงาน</a></li>
+                        <li class="${active4}"><a href="${SITE_URL}/admin-data/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        
+                    </c:otherwise>
+                </c:choose>
+                
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
