@@ -62,7 +62,6 @@ public class AddCustomer extends HttpServlet {
         cust.setCitizen_id(citizen_id);
         cust.addCustomer();
         
-        response.sendRedirect("/KMITL-BIZ/admin_cust_add.jsp");
         
         try (PrintWriter out = response.getWriter()) {
             out.println(cust.getCust_id_str());
