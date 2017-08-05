@@ -41,43 +41,43 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">KMITL BIZ WAY</a>
             </div>
-            <ul class="nav navbar-nav navbar-left">
-                
-                <c:set var="currentPath" scope="request" value="${fn:split(pageContext.request.servletPath, '/')}"></c:set>
-                <c:choose>
-                    <c:when test="${currentPath[0] == 'admin-customer'}">
-                        <c:set var="active2" scope="request" value="active"></c:set>
-                    </c:when>
-                    <c:when test="${currentPath[0] == 'admin-staff'}">
-                        <c:set var="active3" scope="request" value="active"></c:set>
-                    </c:when>
-                    <c:when test="${currentPath[0] == 'admin-data'}">
-                        <c:set var="active4" scope="request" value="active"></c:set>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="active1" scope="request" value="active"></c:set>
-                    </c:otherwise>
-                </c:choose>
-                
-<!-------------------------------nav bar------------------------------->
-                <li class="${active1}"><a href="${SITE_URL}/Authentication">หน้าหลัก</a></li>
-                <c:choose>
-                    <c:when test="${sessionScope.staff.getRole() == 'AD'}">
-                        <li class="${active2}"><a href="${SITE_URL}/admin-customer/admin_cust.jsp">จัดการลูกค้า</a></li>
-                        <li class="${active3}"><a href="${SITE_URL}/admin-staff/admin_staff.jsp">จัดการพนักงาน</a></li>
-                        <li class="${active4}"><a href="${SITE_URL}/admin-data/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
-                    </c:when>
-                    <c:otherwise>
-                        
-                    </c:otherwise>
-                </c:choose>
-                
-            </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="${SITE_URL}/LogoutServlet">ออกจากระบบ</a></li>
-            </ul>
             
-            <h3>${currentPath[0]}</h3>
+            <c:set var="currentPath" scope="request" value="${fn:split(pageContext.request.servletPath, '/')}"></c:set>
+            <c:if test="${currentPath[0] != 'lookup.jsp'}">
+                
+                <ul class="nav navbar-nav navbar-left">
+                    <c:choose>
+                        <c:when test="${currentPath[0] == 'admin-customer'}">
+                            <c:set var="active2" scope="request" value="active"></c:set>
+                        </c:when>
+                        <c:when test="${currentPath[0] == 'admin-staff'}">
+                            <c:set var="active3" scope="request" value="active"></c:set>
+                        </c:when>
+                        <c:when test="${currentPath[0] == 'admin-data'}">
+                            <c:set var="active4" scope="request" value="active"></c:set>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="active1" scope="request" value="active"></c:set>
+                        </c:otherwise>
+                    </c:choose>
+
+    <!-------------------------------nav bar------------------------------->
+                    <li class="${active1}"><a href="${SITE_URL}/Authentication">หน้าหลัก</a></li>
+                    <c:choose>
+                        <c:when test="${sessionScope.staff.getRole() == 'AD'}">
+                            <li class="${active2}"><a href="${SITE_URL}/admin-customer/admin_cust.jsp">จัดการลูกค้า</a></li>
+                            <li class="${active3}"><a href="${SITE_URL}/admin-staff/admin_staff.jsp">จัดการพนักงาน</a></li>
+                            <li class="${active4}"><a href="${SITE_URL}/admin-data/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
+                        </c:when>
+                        <c:otherwise>
+
+                        </c:otherwise>
+                    </c:choose>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="${SITE_URL}/LogoutServlet">ออกจากระบบ</a></li>
+                </ul>
+            </c:if>
         </div>
   </nav>
