@@ -76,7 +76,9 @@
             </form>
         </c:when>
         <c:when test="${requestScope.status == 'false'}">
-            <p>ไม่มีข้อมูล</p>
+            <script>
+                alertify.error("ไม่มีข้อมูล");
+            </script>
         </c:when>
         <c:otherwise>
             
