@@ -152,7 +152,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-success btn-rent" type="button" id="confirmBtn" style="width:100%;" value="${sessionScope.customer.getPrice()}" disabled>ยืนยัน/พิมพ์ใบเสร็จ</button>
+                        <button class="btn btn-success btn-rent" type="button" id="confirmBtn" style="width:100%;" value="${sessionScope.customer.getPrice()},${sessionScope.count}" disabled>ยืนยัน/พิมพ์ใบเสร็จ</button>
                     </div>
 
                     <div class="form-group">
@@ -192,7 +192,7 @@
     var addCost;
 
     $('#confirmBtn').click(function() {
-        var cost = parseInt($(this).val()) * allArea.length;
+        var cost = parseInt($(this).val().split(',')[0]) * allArea.length * parseInt($(this).val().split(',')[1]);
         var text = '<h3><strong>จองพื้นที่ : ' + allArea.toString() + ' </strong></h3>\n\
                     <h4>รูปแบบการจอง : ' + $("#selectRent option:selected").text() + '<h4>\n\
                     <h4>รหัสรับบริการ : ${sessionScope.customer.getCust_id_str()} </h4>\n\
@@ -287,7 +287,7 @@
             allArea.splice(index, 1);
             
         } else {
-            if (allArea.length <= 3) {
+            if (allArea.length < 3) {
                 allArea.push(text);
             }
         }

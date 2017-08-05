@@ -54,6 +54,7 @@ public class ShowRentArea extends HttpServlet {
         String query = "";
         // set price area
         Customer cust = (Customer) session.getAttribute("customer");
+        int count = 0;
         
         if (selectRent.equals("R1") || selectRent.equals("R2")) {
             thursday = (ZonedDateTime) allRentDate.get(selectRent);
@@ -66,6 +67,9 @@ public class ShowRentArea extends HttpServlet {
                 case "OUTSIDER": cust.setPrice(200); break;
             }
             
+            count = 1;
+
+            
         } else {
             thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(selectRent);
             query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN product USING (product_id) "
@@ -76,6 +80,9 @@ public class ShowRentArea extends HttpServlet {
                 case "STAFF": cust.setPrice(150); break;
                 case "OUTSIDER": cust.setPrice(190); break;
             }
+            
+            count = thursdayOnMonth.size();
+            
         }
         
         Connection conn = null;
@@ -102,6 +109,7 @@ public class ShowRentArea extends HttpServlet {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
         
+        session.setAttribute("count", count);
         session.setAttribute("allZone", allZone);
         session.setAttribute("typeRent", selectRent);
         session.setAttribute("statusShow", "true");
