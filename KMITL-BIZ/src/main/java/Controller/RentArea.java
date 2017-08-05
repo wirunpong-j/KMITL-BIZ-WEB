@@ -59,7 +59,7 @@ public class RentArea extends HttpServlet {
         
         if (rentType.equals("R1") || rentType.equals("R2")) {
             ZonedDateTime thursday = (ZonedDateTime) allRentDate.get(rentType);
-            Order order = new Order(thursday, customer.getPrice(), customer.getCust_id(), staff.getStaff_id());
+            Order order = new Order(thursday, customer.getPrice() * allArea.length, customer.getCust_id(), staff.getStaff_id());
                 order.setExtra_price(addCost);
                 order.setNote(note);
                 if (rentType.equals("R1")) {
@@ -78,7 +78,7 @@ public class RentArea extends HttpServlet {
         } else {
             ArrayList<ZonedDateTime> thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(rentType);
             for (ZonedDateTime thursday: thursdayOnMonth) {
-                Order order = new Order(thursday, customer.getPrice(), customer.getCust_id(), staff.getStaff_id());
+                Order order = new Order(thursday, customer.getPrice() * allArea.length, customer.getCust_id(), staff.getStaff_id());
                 order.setExtra_price(addCost);
                 order.setNote(note);
                 order.setOrder_type("PRE");

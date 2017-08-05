@@ -91,6 +91,32 @@ public class Order {
         }
         
     }
+    
+    public boolean deleteOrder() {
+        PreparedStatement pstmt;
+        Connection conn = null;
+        boolean status = true;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            pstmt = conn.prepareStatement("DELETE FROM `order` WHERE order_id = ?");
+            pstmt.setInt(1, this.order_id);
+            
+            pstmt.executeUpdate();
+            
+            pstmt.close();
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+            
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        } 
+        
+        return status;
+        
+    }
 
     public String getOrder_id_str() {
         this.order_id_str = AllFormat.toPadZero(this.order_id);
