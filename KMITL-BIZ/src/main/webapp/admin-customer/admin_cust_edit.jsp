@@ -10,8 +10,8 @@
 
     <form action="${SITE_URL}/SearchCustomer" method="POST">
         <div class="form-group">
-            <label for="search_cust">รหัสรับบริการ</label>
-            <input type="text" class="form-control information" id="search_cust" name="search" placeholder="รหัสรับบริการ" value="${requestScope.cust.getCust_id_str()}">
+            <label for="search_cust">ค้นหาข้อมูลของลูกค้า</label>
+            <input type="text" class="form-control information" id="search_cust" name="search" placeholder="รหัสรับบริการ / เบอร์โทรศัพท์ / เลขบัตรประชาชน / รหัสนักศึกษา" value="${requestScope.custText}">
         </div>
         <button type="submit" class="btn btn-info"><i class="fa fa-search" aria-hidden="true"></i> ค้นหา</button>
     </form>
@@ -76,7 +76,7 @@
             </form>
         </c:when>
         <c:when test="${requestScope.status == 'false'}">
-            <p>ไม่มีรหัสรับบริการนี้</p>
+            <p>ไม่มีข้อมูล</p>
         </c:when>
         <c:otherwise>
             
@@ -84,15 +84,6 @@
     </c:choose>
             <br>
             <form action="#" method="POST" id="deleteUser"></form>
-    
-
-<!--    <form action="${SITE_URL}/DeleteCustomer" method="POST" id="deleteuser">
-        <div class="form-group">
-            <label for="plate">ใส่เบอร์โทรศัพท์ลูกค้าเพื่อทำการลบ</label>
-            <input type="text" class="form-control" id="tele" name="tel" placeholder="เบอร์โทรศัพท์">
-        </div>
-        <button type="submit" class="btn btn-danger" form="deleteuser">ลบลูกค้า</button>
-    </form>-->
   </div>
 
 <script>

@@ -5,8 +5,13 @@
  */
 package Controller;
 
+import Listener.Constant;
 import Model.Customer;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,13 +40,46 @@ public class SearchCustomer extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        int cust_id = (!request.getParameter("search").equals("")) ? Integer.parseInt(request.getParameter("search")) : 0;
-        Customer cust = new Customer(cust_id);
-        if (cust.searchCustomerByID()) {
-            request.setAttribute("cust", cust);
-            request.setAttribute("status", "true");
-        } else {
-            request.setAttribute("status", "false");
+        String number = (!request.getParameter("search").equals("")) ? request.getParameter("search") : "0";
+        
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            pstmt = conn.prepareStatement("SELECT * FROM customer WHERE cust_id = ? OR tel = ? OR citizen_id = ? OR student_id = ?;");
+            pstmt.setInt(1, Integer.parseInt(number));
+            pstmt.setString(2, number);
+            pstmt.setString(3, number);
+            pstmt.setString(4, number);
+            
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                
+                Customer cust = new Customer();
+                cust.setCust_id(rs.getInt("cust_id"));
+                cust.setFullname(rs.getString("fullname"));
+                cust.setTel(rs.getString("tel"));
+                cust.setCust_type(rs.getString("cust_type"));
+                cust.setStudent_id(rs.getString("student_id"));
+                cust.setCitizen_id(rs.getString("citizen_id"));
+                cust.setVehicle(rs.getString("vehicle"));
+                cust.setEmail(rs.getString("email"));
+                
+                request.setAttribute("cust", cust);
+                request.setAttribute("status", "true");
+                
+            } else {
+                request.setAttribute("status", "false");
+            }
+            
+            request.setAttribute("custText", number);
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
         
         RequestDispatcher page = request.getRequestDispatcher("/admin-customer/admin_cust_edit.jsp");
