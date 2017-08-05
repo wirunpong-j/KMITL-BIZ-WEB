@@ -101,6 +101,7 @@ public class ShowAllArea extends HttpServlet {
                 ArrayList<Object> info = new ArrayList<>();
                 
                 Order order = new Order();
+                order.setOrder_id(rs.getInt("order_id"));
                 order.setCust_id_str(rs.getString("cust_id"));
                 order.setProduct_id(rs.getInt("product_id"));
                 order.setRent_date(rs.getString("rent_date"));
