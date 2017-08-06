@@ -51,10 +51,12 @@ public class Customer {
     }
 
     
-    public void addCustomer() {
+    public boolean addCustomer() {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+        boolean status = true;
+        
         try {
             conn = (Connection) Constant.getConnection();
             
@@ -90,9 +92,12 @@ public class Customer {
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            status = false;
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
+        
+        return status;
     }
     
     public boolean updateCustomer() {

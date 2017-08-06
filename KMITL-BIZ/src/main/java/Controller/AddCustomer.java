@@ -44,13 +44,10 @@ public class AddCustomer extends HttpServlet {
         String tel = request.getParameter("tel");
         String email = request.getParameter("email");
         String plate = request.getParameter("plate");
-        String cust_type = request.getParameter("cust_type");
-        String id = request.getParameter("id");
-        
-        
-        String student_id = (cust_type.equals("STUDENT")) ? id : "";
-        String citizen_id = (!cust_type.equals("STUDENT")) ? id : "";
         String vehicle = (plate.equals("")) ? plate : "";
+        String cust_type = request.getParameter("cust_type");
+        
+        
         
         Customer cust = new Customer();
         cust.setFullname(fullname);
@@ -58,15 +55,25 @@ public class AddCustomer extends HttpServlet {
         cust.setEmail(email);
         cust.setVehicle(vehicle);
         cust.setCust_type(cust_type);
-        cust.setStudent_id(student_id);
-        cust.setCitizen_id(citizen_id);
-        cust.addCustomer();
         
-        
-        try (PrintWriter out = response.getWriter()) {
-            out.println(cust.getCust_id_str());
+        if (cust_type.equals("STUDENT")) {
+            String student_id = request.getParameter("studentid");
+            cust.setStudent_id(student_id);
+            cust.setCitizen_id("");
+        } else {
+            String citizen_id = request.getParameter("citizenid");
+            cust.setStudent_id("");
+            cust.setCitizen_id(citizen_id);
         }
         
+        try (PrintWriter out = response.getWriter()) {
+            if (cust.addCustomer()) {
+                out.println(cust.getCust_id_str());
+            } else {
+                out.println("FAILED");
+            }
+            
+        }
         return;
     }
 

@@ -38,8 +38,11 @@
             </label>
         </div>
         <div class="form-group">
-            <label for="id">เลขบัตรประชาชน/รหัสนักศึกษา *</label>
-            <input type="text" class="form-control information" id="id" name="id" placeholder="เลขบัตรประชาชน/รหัสนักศึกษา">
+            <label class="student_id" for="studentid">รหัสนักศึกษา *</label>
+            <input type="text" class="form-control information student_id" id="studentid" name="studentid" placeholder="รหัสนักศึกษา (8 หลัก)" maxlength="8">
+            
+            <label class="citizen_id" for="citizenid">เลขบัตรประชาชน *</label>
+            <input type="text" class="form-control information citizen_id" id="citizenid" name="citizenid" placeholder="เลขบัตรประชาชน (13 หลัก)" maxlength="13">
         </div>
         
         <button type="submit" class="btn btn-info" id="confirmBtn"><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
@@ -49,6 +52,22 @@
   </div>
 
 <script>
+    $(document).ready(function() {
+        $('.student_id').hide();
+        $('.citizen_id').show();
+    });
+    
+    $('#addCustomer input').on('change', function() {
+        if ($('input[name=cust_type]:checked', '#addCustomer').val() === 'STUDENT') {
+            $('.student_id').show();
+            $('.citizen_id').hide();
+        } else {
+            $('.student_id').hide();
+            $('.citizen_id').show();
+        }
+         
+    });
+    
     $('#addCustomer').submit(function(event) {
         event.preventDefault();
         
@@ -61,12 +80,16 @@
                 datatype: 'json',
                 data: $('#addCustomer').serialize(),
                 success: function(data) {
-                    $('#confirmBtn').removeClass('btn-info').addClass('btn-success').html('<i id="spinBtn"></i> Success');
-                    alertify.alert('ทำรายการสำเร็จ', '<h3>รหัสรับบริการที่ได้รับ คือ ' + $.trim(data) + ' </h3>', function(){ 
-                        setTimeout(function() {
-                            window.location = "${SITE_URL}/admin-customer/admin_cust_add.jsp";
-                        }, 1000);
-                    });
+                    if ($.trim(data) !== 'FAILED') {
+                        $('#confirmBtn').removeClass('btn-info').addClass('btn-success').html('<i id="spinBtn"></i> Success');
+                        alertify.alert('ทำรายการสำเร็จ', '<h3>รหัสรับบริการที่ได้รับ คือ ' + $.trim(data) + ' </h3>', function(){ 
+                            setTimeout(function() {
+                                window.location = "${SITE_URL}/admin-customer/admin_cust_add.jsp";
+                            }, 1000);
+                        });
+                    } else {
+                        alertify.error('ไม่สามารถเพิ่มลูกค้าได้');
+                    }
                 }
             });
         }, function(){ 
