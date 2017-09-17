@@ -7,7 +7,7 @@
         <div class="col-md-9" id="allProduct">
             <div class="back_panel">
                 <div>
-                    <c:choose>
+                    <%-- <c:choose>
                         <c:when test="${sessionScope.status == 'RENT'}">
                             <c:forEach var="pro" items="${sessionScope.allProduct}">
                                 <button class="btn btn-default btn-product" type="button" style="margin:2px 0;" disabled>${pro.getProduct_name()}</button>
@@ -18,7 +18,31 @@
                                 <button class="btn btn-default btn-product" type="button" style="margin:2px 0;">${pro.getProduct_name()}</button>
                             </c:forEach>
                         </c:otherwise>
-                    </c:choose>
+                    </c:choose> --%>
+                    <ul class="nav nav-pills" id="myTab">
+                        <li class="active dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">เลือกกลุ่มสินค้า <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#group1" data-toggle="tab">1</a></li>
+                                <li><a href="#group2" data-toggle="tab">2</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in" id="group1">
+                            <h1>Group1</h1>
+                            <div class="row funkyradio">
+                                <c:forEach var="i" begin="1" end="20">
+                                    <span class="funkyradio-success col-sm-3">
+                                        <input type="checkbox" name="checkbox" id="checkbox3" checked/>
+                                        <label for="checkbox3">Third Option</label>
+                                    </span>
+                                </c:forEach>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade in" id="group2">
+                            <h1>Group2</h1>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
