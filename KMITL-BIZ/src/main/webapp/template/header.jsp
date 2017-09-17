@@ -34,6 +34,10 @@
     
     <script src="https://use.fontawesome.com/211152dd25.js"></script>
     
+    <!-- bootstarp tag-input -->
+    <link rel="stylesheet" href="${SITE_URL}/assets/css/bootstrap-tagsinput.css">
+    <script src="${SITE_URL}/assets/js/bootstrap-tagsinput.js"></script>
+    
 </head>
 
 <body>

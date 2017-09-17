@@ -30,12 +30,14 @@
                     <div class="tab-content">
                         <div class="tab-pane fade in" id="group1">
                             <h1>Group1</h1>
-                            <div class="row funkyradio">
-                                <c:forEach var="i" begin="1" end="20">
+                            <div class="row funkyradio" id="group1z">
+                                <c:set var="i" value="0"></c:set>
+                                <c:forEach var="pro" items="${sessionScope.allProduct}">
                                     <span class="funkyradio-success col-sm-3">
-                                        <input type="checkbox" name="checkbox" id="checkbox3" checked/>
-                                        <label for="checkbox3">Third Option</label>
+                                        <input class="checkbox1" type="checkbox" name="checkbox" id="pro${i}" value="${pro.getProduct_name()}"/>
+                                        <label for="pro${i}">${pro.getProduct_name()}</label>
                                     </span>
+                                    <c:set var="i" value="${i+1}"></c:set>
                                 </c:forEach>
                             </div>
                         </div>
@@ -64,7 +66,7 @@
                     <c:otherwise>
                         <div class="form-group">
                             <label for="product">ชื่อสินค้า</label>
-                            <input class="form-control" type="text" name="product" id="product" placeholder="ชื่อสินค้า">
+                            <input disabled="disabled" class="form-control" type="text" name="product" id="product" data-role="tagsinput">
                         </div>
                         <div class="form-group">
                             <label for="customer">รหัสรับบริการ</label>
@@ -214,6 +216,13 @@
     var allArea = [];
     var count = 1;
     var addCost;
+    
+    $('input.checkbox1').on('change', function() {
+        var product = $('.checkbox1:checked').map(function() {return this.value;}).get().join(',');
+        $('#product').tagsinput('removeAll');
+        $('#product').tagsinput('add', product);
+        console.log(product.toString());
+    });
 
     $('#confirmBtn').click(function() {
         var cost = parseInt($(this).val().split(',')[0]) * allArea.length * parseInt($(this).val().split(',')[1]);
