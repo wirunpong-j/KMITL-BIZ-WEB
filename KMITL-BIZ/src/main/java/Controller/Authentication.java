@@ -8,6 +8,7 @@ package Controller;
 import Listener.Constant;
 import Model.AreaModel;
 import Model.Product;
+import Model.Product_Group;
 import Model.Staff;
 import java.io.IOException;
 import java.sql.Connection;
@@ -60,16 +61,39 @@ public class Authentication extends HttpServlet {
         
         if (staff.isStaff()) {
             
-            ArrayList<Product> allProduct = new ArrayList<>();
+//            ArrayList<Product> allProduct = new ArrayList<>();
+//            Connection conn = null;
+//            try {
+//                conn = (Connection) Constant.getConnection();
+//                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product");
+//                ResultSet rs = pstmt.executeQuery();
+//                
+//                while (rs.next()) {
+//                    Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
+//                    allProduct.add(pro);
+//                }
+//                
+//                pstmt.close();
+//                rs.close();
+//                
+//            } catch (Exception ex) {
+//                System.out.println(ex.getMessage());
+//            } finally {
+//                if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+//            }
+
+            ArrayList<Product_Group> allGroupPro = new ArrayList<>();
             Connection conn = null;
             try {
                 conn = (Connection) Constant.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product");
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product_group ORDER BY group_id");
                 ResultSet rs = pstmt.executeQuery();
                 
                 while (rs.next()) {
-                    Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
-                    allProduct.add(pro);
+                    Product_Group pGroup = new Product_Group(rs.getInt("group_id"), rs.getString("group_name"));
+                    pGroup.listProduct();
+                    
+                    allGroupPro.add(pGroup);
                 }
                 
                 pstmt.close();
@@ -81,8 +105,9 @@ public class Authentication extends HttpServlet {
                 if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
             }
             
+            session.setAttribute("allGroupPro", allGroupPro);
             session.setAttribute("staff", staff);
-            session.setAttribute("allProduct", allProduct);
+//            session.setAttribute("allProduct", allProduct);
             session.setAttribute("allArea", AreaModel.allArea());
             
             response.sendRedirect("/KMITL-BIZ/index.jsp");

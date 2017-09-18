@@ -22,28 +22,30 @@
                     <ul class="nav nav-pills" id="myTab">
                         <li class="active dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">เลือกกลุ่มสินค้า <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#group1" data-toggle="tab">1</a></li>
-                                <li><a href="#group2" data-toggle="tab">2</a></li>
+                                <c:forEach var="grPro" items="${sessionScope.allGroupPro}">
+                                    <li><a class="proGroup" href="#group${grPro.getGroup_id()}" data-toggle="tab">${grPro.getGroup_name()}</a></li>
+                                </c:forEach>
                             </ul>
                         </li>
                     </ul>
+                    
                     <div class="tab-content">
-                        <div class="tab-pane fade in" id="group1">
-                            <h1>Group1</h1>
-                            <div class="row funkyradio" id="group1z">
-                                <c:set var="i" value="0"></c:set>
-                                <c:forEach var="pro" items="${sessionScope.allProduct}">
-                                    <span class="funkyradio-success col-sm-3">
-                                        <input class="checkbox1" type="checkbox" name="checkbox" id="pro${i}" value="${pro.getProduct_name()}"/>
-                                        <label for="pro${i}">${pro.getProduct_name()}</label>
-                                    </span>
-                                    <c:set var="i" value="${i+1}"></c:set>
-                                </c:forEach>
+                        <c:forEach var="grPro" items="${sessionScope.allGroupPro}">
+                            <div class="tab-pane fade in" id="group${grPro.getGroup_id()}">
+                                <div>
+                                    <h1 style="display: inline-block;">${grPro.getGroup_name()}</h1>
+                                    <button class="btn btn-success btn-inline btn-addPro" style="float: right; margin-top: 20px" value="${grPro.getGroup_id()},${grPro.getGroup_name()}"><i class="fa fa-plus" aria-hidden="true"></i>  เพิ่มสินค้าใหม่ในกลุ่มนี้</button>
+                                </div>
+                                <div class="row funkyradio" id="funky${grPro.getGroup_id()}">
+                                    <c:forEach var="pro" items="${grPro.getAllProduct()}">
+                                        <span class="funkyradio-success col-sm-3">
+                                            <input class="checkbox1" type="checkbox" name="checkbox" id="pro-${pro.getProduct_id()}" value="${pro.getProduct_name()}"/>
+                                            <label for="pro-${pro.getProduct_id()}">${pro.getProduct_name()}</label>
+                                        </span>
+                                    </c:forEach>
+                                </div>
                             </div>
-                        </div>
-                        <div class="tab-pane fade in" id="group2">
-                            <h1>Group2</h1>
-                        </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>
@@ -217,11 +219,44 @@
     var count = 1;
     var addCost;
     
-    $('input.checkbox1').on('change', function() {
+    $('.btn-addPro').click(function() {
+        var btnVal = $(this).val().split(',');
+        alertify.prompt('เพิ่มสินค้าใหม่ ในกลุ่ม " ' + btnVal[1] + ' "', '<h3>ใส่ชื่อสินค้า</h3> ', ''
+               ,function(evt, value) { 
+                    $.ajax({
+                        type: "POST",
+                        url: "${SITE_URL}/AddProduct",
+                        data: {'group_id': btnVal[0], 'product_name': value},
+                        success: function(data) {
+                            if ($.trim(data) !== 'FAILED') {
+                                
+                                alertify.alert('เพิ่มสินค้าใหม่เสร็จสิ้น', 'ทำการเพิ่มสินค้า <strong>"' + value + '"</strong> ลงในกลุ่ม <strong>"' + btnVal[1] + '"</strong> เรียบร้อยแล้ว'
+                                    , function(){ 
+                                        alertify.success('Ok'); 
+                                    });
+                                
+                                $('#funky' + btnVal[0]).append('<span class="funkyradio-success col-sm-3">\n\
+                                <input class="checkbox1" type="checkbox" name="checkbox" id="pro-' + $.trim(data) + '" value="' + value + '"/> \n\
+                                <label for="pro-' + $.trim(data) + '">' + value + '</label></span>');
+                                
+                            } else {
+                                alertify.error('ERROR');
+                            }
+                        }
+                    });
+               }
+               ,function() { 
+                   alertify.error('Cancel');
+               });
+
+    });
+    
+    $('input.checkbox1').on('click', function() {
         var product = $('.checkbox1:checked').map(function() {return this.value;}).get().join(',');
         $('#product').tagsinput('removeAll');
         $('#product').tagsinput('add', product);
-        console.log(product.toString());
+        
+        console.log(product);
     });
 
     $('#confirmBtn').click(function() {

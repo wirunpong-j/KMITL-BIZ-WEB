@@ -18,6 +18,7 @@ import java.sql.SQLException;
 public class Product {
     private int product_id;
     private String product_name;
+    private int group_id;
 
     public Product() {
         
@@ -30,6 +31,12 @@ public class Product {
     public Product(int product_id, String product_name) {
         this.product_id = product_id;
         this.product_name = product_name;
+    }
+
+    public Product(int product_id, String product_name, int group_id) {
+        this.product_id = product_id;
+        this.product_name = product_name;
+        this.group_id = group_id;
     }
     
     public void addToDB() {
@@ -57,6 +64,39 @@ public class Product {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
     }
+    
+    public boolean addProduct() {
+        boolean status = true;
+        Connection conn = null;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO product(product_name, group_id) VALUES(?,?)");
+            pstmt.setString(1, product_name);
+            pstmt.setInt(2, group_id);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+            pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ?");
+            pstmt.setString(1, product_name);
+            
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                this.product_id = rs.getInt("product_id");
+            }
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+            
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        return status;
+    }
 
     public int getProduct_id() {
         return product_id;
@@ -73,6 +113,16 @@ public class Product {
     public void setProduct_name(String product_name) {
         this.product_name = product_name;
     }
+
+    public int getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(int group_id) {
+        this.group_id = group_id;
+    }
+
+    
     
     
 }
