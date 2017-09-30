@@ -61,6 +61,9 @@
                         <c:when test="${currentPath[0] == 'admin-data'}">
                             <c:set var="active4" scope="request" value="active"></c:set>
                         </c:when>
+                        <c:when test="${currentPath[0] == 'admin-product'}">
+                            <c:set var="active5" scope="request" value="active"></c:set>
+                        </c:when>
                         <c:otherwise>
                             <c:set var="active1" scope="request" value="active"></c:set>
                         </c:otherwise>
@@ -72,6 +75,7 @@
                         <c:when test="${sessionScope.staff.getRole() == 'AD'}">
                             <li class="${active2}"><a href="${SITE_URL}/admin-customer/admin_cust.jsp">จัดการลูกค้า</a></li>
                             <li class="${active3}"><a href="${SITE_URL}/admin-staff/admin_staff.jsp">จัดการพนักงาน</a></li>
+                            <li class="${active5}"><a href="${SITE_URL}/admin-product/admin_product.jsp">จัดการกลุ่มสินค้า</a></li>
                             <li class="${active4}"><a href="${SITE_URL}/admin-data/admin_data.jsp">สรุปข้อมูลการใช้งาน</a></li>
                         </c:when>
                         <c:otherwise>

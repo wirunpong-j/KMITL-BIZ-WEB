@@ -234,10 +234,14 @@
                                     , function(){ 
                                         alertify.success('Ok'); 
                                     });
+                                    
+                                setTimeout(function() {
+                                    window.location = "${SITE_URL}/Authentication";
+                                }, 2000);
                                 
-                                $('#funky' + btnVal[0]).append('<span class="funkyradio-success col-sm-3">\n\
-                                <input class="checkbox1" type="checkbox" name="checkbox" id="pro-' + $.trim(data) + '" value="' + value + '"/> \n\
-                                <label for="pro-' + $.trim(data) + '">' + value + '</label></span>');
+//                                $('#funky' + btnVal[0]).append('<span class="funkyradio-success col-sm-3">\n\
+//                                <input class="checkbox1" type="checkbox" name="checkbox" id="pro-' + $.trim(data) + '" value="' + value + '"/> \n\
+//                                <label for="pro-' + $.trim(data) + '">' + value + '</label></span>');
                                 
                             } else {
                                 alertify.error('ERROR');
