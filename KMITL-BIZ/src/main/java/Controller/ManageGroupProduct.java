@@ -5,18 +5,10 @@
  */
 package Controller;
 
-import Listener.Constant;
-import Model.AreaModel;
 import Model.FetchData;
-import Model.Product;
 import Model.Product_Group;
-import Model.Staff;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,8 +20,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author BellKunG
  */
-@WebServlet(name = "Authentication", urlPatterns = {"/Authentication"})
-public class Authentication extends HttpServlet {
+@WebServlet(name = "ManageGroupProduct", urlPatterns = {"/ManageGroupProduct/"})
+public class ManageGroupProduct extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,34 +37,25 @@ public class Authentication extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        String username = "", password = "";
-        Staff staff = null;
+        String action = request.getParameter("action");
         HttpSession session = request.getSession();
-        
-        if (session.getAttribute("staff") == null) {
-            username = request.getParameter("username");
-            password = request.getParameter("password");
-            staff = new Staff(username, password);
-        } else {
-            staff = (Staff) session.getAttribute("staff");
+        if (action.equals("addGroup")) {
+            String group_name = request.getParameter("gName");
+            Product_Group productGroup = new Product_Group(group_name);
+            
+            try (PrintWriter out = response.getWriter()) {
+                if (productGroup.addGroupProduct()) {
+                    out.println("ADDED");
+                } else {
+                    out.println("ADD ERROR");
+                }
+            }
         }
         
-        session.invalidate();
-        session = request.getSession();
-        
-        if (staff.isStaff()) {
-            
-            session.setAttribute("allGroupPro", FetchData.fetchGroupProduct());
-            session.setAttribute("staff", staff);
-            session.setAttribute("allArea", AreaModel.allArea());
-            
-            response.sendRedirect("/KMITL-BIZ/index.jsp");
-            
-        } else {
-            response.sendRedirect("/KMITL-BIZ/");
-        }
+        session.setAttribute("allGroupPro", FetchData.fetchGroupProduct());
         return;
-}
+        
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
