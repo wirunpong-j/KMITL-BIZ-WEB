@@ -58,6 +58,16 @@ body {
   padding: 25px 0;
 }
 
+.product_panel {
+  background-color: #ffbfbf;
+  border-radius: 5px;
+  padding: 5px;
+  color: white;
+  text-align: center;
+  padding: 25px 0;
+  margin-bottom: 30px;
+}
+
 #admin_cust_add {
   background-color: #0FBEFF;
   color: white;
@@ -147,3 +157,9 @@ body {
   background-color: #707B7C;
   color: white;
 }
+
+#product_data_1:hover {
+  background-color: #f74747;
+  color: white;
+}
+
