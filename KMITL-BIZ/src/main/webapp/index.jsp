@@ -7,18 +7,6 @@
         <div class="col-md-9" id="allProduct">
             <div class="back_panel">
                 <div>
-                    <%-- <c:choose>
-                        <c:when test="${sessionScope.status == 'RENT'}">
-                            <c:forEach var="pro" items="${sessionScope.allProduct}">
-                                <button class="btn btn-default btn-product" type="button" style="margin:2px 0;" disabled>${pro.getProduct_name()}</button>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="pro" items="${sessionScope.allProduct}">
-                                <button class="btn btn-default btn-product" type="button" style="margin:2px 0;">${pro.getProduct_name()}</button>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose> --%>
                     <ul class="nav nav-pills" id="myTab">
                         <li class="active dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">เลือกกลุ่มสินค้า <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -237,12 +225,7 @@
                                     
                                 setTimeout(function() {
                                     window.location = "${SITE_URL}/Authentication";
-                                }, 2000);
-                                
-//                                $('#funky' + btnVal[0]).append('<span class="funkyradio-success col-sm-3">\n\
-//                                <input class="checkbox1" type="checkbox" name="checkbox" id="pro-' + $.trim(data) + '" value="' + value + '"/> \n\
-//                                <label for="pro-' + $.trim(data) + '">' + value + '</label></span>');
-                                
+                                }, 2000);                        
                             } else {
                                 alertify.error('ERROR');
                             }

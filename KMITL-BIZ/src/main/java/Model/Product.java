@@ -23,6 +23,10 @@ public class Product {
     public Product() {
         
     }
+    
+    public Product(int product_id) {
+        this.product_id = product_id;
+    }
 
     public Product(String product_name) {
         this.product_name = product_name;
@@ -73,18 +77,43 @@ public class Product {
             conn = (Connection) Constant.getConnection();
             
             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO product(product_name, group_id) VALUES(?,?)");
-            pstmt.setString(1, product_name);
-            pstmt.setInt(2, group_id);
+            pstmt.setString(1, this.product_name);
+            pstmt.setInt(2, this.group_id);
             pstmt.executeUpdate();
             pstmt.close();
             
-            pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ?");
-            pstmt.setString(1, product_name);
+            pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ? AND group_id = ?");
+            pstmt.setString(1, this.product_name);
+            pstmt.setInt(2, this.group_id);
             
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 this.product_id = rs.getInt("product_id");
             }
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+            
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        return status;
+    }
+    
+    public boolean changeGroup() {
+        boolean status = true;
+        Connection conn = null;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE product SET group_id = ? WHERE product_id = ?");
+            pstmt.setInt(1, this.group_id);
+            pstmt.setInt(2, this.product_id);
+            pstmt.executeUpdate();
             pstmt.close();
             
         } catch (Exception ex) {

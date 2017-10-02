@@ -6,6 +6,7 @@
 package Controller;
 
 import Model.FetchData;
+import Model.Product;
 import Model.Product_Group;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -39,6 +40,8 @@ public class ManageGroupProduct extends HttpServlet {
         
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
+        
+        // Add Group
         if (action.equals("addGroup")) {
             String group_name = request.getParameter("gName");
             Product_Group productGroup = new Product_Group(group_name);
@@ -48,6 +51,43 @@ public class ManageGroupProduct extends HttpServlet {
                     out.println("ADDED");
                 } else {
                     out.println("ADD ERROR");
+                }
+            }
+        } // Add Product on Group
+        else if (action.equals("addProduct")) {
+            String product_name = request.getParameter("productName");
+            int group_id = Integer.parseInt(request.getParameter("groupID"));
+            
+            Product product = new Product(product_name);
+            product.setGroup_id(group_id);
+            
+            try (PrintWriter out = response.getWriter()) {
+                if (product.addProduct()) {
+                    out.println("ADDED");
+                } else {
+                    out.println("ADD ERROR");
+                }
+            }
+            
+        } // Move Product to another group
+        else if (action.equals("moveProduct")) {
+            String[] product = request.getParameter("product").split(",");
+            int group_id = Integer.parseInt(request.getParameter("groupID"));
+            int pass = 0;
+            
+            for (String proID: product) {
+                Product pro = new Product(Integer.parseInt(proID));
+                pro.setGroup_id(group_id);
+                if (pro.changeGroup()) {
+                    pass++;
+                }
+            }
+            
+            try (PrintWriter out = response.getWriter()) {
+                if (product.length == pass) {
+                    out.println("MOVED");
+                } else {
+                    out.println("MOVE ERROR");
                 }
             }
         }
