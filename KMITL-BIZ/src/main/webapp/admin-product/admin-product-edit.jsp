@@ -85,6 +85,30 @@
             });
     });
     
+    $('#removeProduct').click(function() {
+        alertify.confirm('ลบสินค้า', '<h3>คุณต้องการลบสินค้าที่เลือกใช่หรือไม่ ?</h3>'
+            , function(){
+                $.ajax({
+                     type: "POST",
+                     url: "${SITE_URL}/ManageGroupProduct/?action=removeProduct",
+                     data: {product:product},
+                     success: function(data) {
+                         if ($.trim(data) === 'REMOVED') {
+                            alertify.alert('ลบสินค้าที่เลือกเสร็จสิ้น', '<h3>ทำการลบสินค้าที่เลือกเรียบร้อย</h3>', 
+                                function() {
+                                    window.location = "${SITE_URL}/SelectGroupProduct/?product=" + groupID[0];
+                                });                       
+                         } else {
+                             alertify.error('ERROR');
+                         }
+                     }
+                 });
+            }
+            , function(){ 
+                alertify.error('Cancel');
+            });
+    });
+    
     $('#selectProduct').click(function() {
         this.checked = !this.checked;
         $('input:checkbox').prop('checked', this.checked);

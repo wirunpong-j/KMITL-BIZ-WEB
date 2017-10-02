@@ -126,6 +126,29 @@ public class Product {
         
         return status;
     }
+    
+    public boolean removeProduct() {
+        boolean status = true;
+        Connection conn = null;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM product WHERE product_id = ?");
+            pstmt.setInt(1, this.product_id);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+            
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        return status;
+    }
 
     public int getProduct_id() {
         return product_id;

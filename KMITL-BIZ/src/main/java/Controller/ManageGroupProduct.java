@@ -71,23 +71,44 @@ public class ManageGroupProduct extends HttpServlet {
             
         } // Move Product to another group
         else if (action.equals("moveProduct")) {
-            String[] product = request.getParameter("product").split(",");
+            String[] allProduct = request.getParameter("product").split(",");
             int group_id = Integer.parseInt(request.getParameter("groupID"));
             int pass = 0;
             
-            for (String proID: product) {
-                Product pro = new Product(Integer.parseInt(proID));
-                pro.setGroup_id(group_id);
-                if (pro.changeGroup()) {
+            for (String proID: allProduct) {
+                Product product = new Product(Integer.parseInt(proID));
+                product.setGroup_id(group_id);
+                if (product.changeGroup()) {
                     pass++;
                 }
             }
             
             try (PrintWriter out = response.getWriter()) {
-                if (product.length == pass) {
+                if (allProduct.length == pass) {
                     out.println("MOVED");
                 } else {
                     out.println("MOVE ERROR");
+                }
+            }
+        }
+        
+        // Remove Product
+        else if (action.equals("removeProduct")) {
+            String[] allProduct = request.getParameter("product").split(",");
+            int pass = 0;
+            
+            for (String proID: allProduct) {
+                Product product = new Product(Integer.parseInt(proID));
+                if (product.removeProduct()) {
+                    pass++;
+                }
+            }
+            
+            try (PrintWriter out = response.getWriter()) {
+                if (allProduct.length == pass) {
+                    out.println("REMOVED");
+                } else {
+                    out.println("REMOVE ERROR");
                 }
             }
         }
