@@ -10,19 +10,15 @@ import Model.Customer;
 import Model.Formating;
 import Model.Order;
 import Model.Product;
-import Model.Zone;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.servlet.RequestDispatcher;
@@ -31,8 +27,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 /**
  *
  * @author BellKunG
@@ -108,7 +102,7 @@ public class ShowAllArea extends HttpServlet {
                 
                 Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
                 
-                Customer cust = new Customer(rs.getInt("cust_id"), rs.getInt("product_id"));
+                Customer cust = new Customer(rs.getInt("cust_id"));
                 cust.setFullname(rs.getString("fullname"));
                 cust.setTel(rs.getString("tel"));
                 cust.setCust_type(rs.getString("cust_type"));

@@ -43,6 +43,34 @@ public class Product {
         this.group_id = group_id;
     }
     
+    public boolean searchProductByID() {
+        boolean status =  true;
+        Connection conn = null;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_id = ?");
+            pstmt.setInt(1, this.product_id);
+            
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                this.product_name = rs.getString("product_name");
+                this.group_id = rs.getInt("group_id");
+            }
+            rs.close();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+            
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        return status;
+    }
+    
     public void addToDB() {
         Connection conn = null;
         try {

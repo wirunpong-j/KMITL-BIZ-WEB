@@ -14,4 +14,5 @@ public class AllFormat {
         String numStr = String.format("%06d", num);
         return numStr;
     }
+    
 }

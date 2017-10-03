@@ -7,34 +7,41 @@
         <div class="col-md-9" id="allProduct">
             <div class="back_panel">
                 <div>
-                    <ul class="nav nav-pills" id="myTab">
-                        <li class="active dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">เลือกกลุ่มสินค้า <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <c:forEach var="grPro" items="${sessionScope.allGroupPro}">
-                                    <li><a class="proGroup" href="#group${grPro.getGroup_id()}" data-toggle="tab">${grPro.getGroup_name()}</a></li>
-                                </c:forEach>
-                            </ul>
-                        </li>
-                    </ul>
-                    
-                    <div class="tab-content">
-                        <c:forEach var="grPro" items="${sessionScope.allGroupPro}">
-                            <div class="tab-pane fade in" id="group${grPro.getGroup_id()}">
-                                <div>
-                                    <h1 style="display: inline-block;">${grPro.getGroup_name()}</h1>
-                                    <button class="btn btn-success btn-inline btn-addPro" style="float: right; margin-top: 20px" value="${grPro.getGroup_id()},${grPro.getGroup_name()}"><i class="fa fa-plus" aria-hidden="true"></i>  เพิ่มสินค้าใหม่ในกลุ่มนี้</button>
-                                </div>
-                                <div class="row funkyradio" id="funky${grPro.getGroup_id()}">
-                                    <c:forEach var="pro" items="${grPro.getAllProduct()}">
-                                        <span class="funkyradio-success col-sm-3">
-                                            <input class="checkbox1" type="checkbox" name="checkbox" id="pro-${pro.getProduct_id()}" value="${pro.getProduct_name()}"/>
-                                            <label for="pro-${pro.getProduct_id()}">${pro.getProduct_name()}</label>
-                                        </span>
+                    <c:choose>
+                    <c:when test="${sessionScope.status != 'RENT'}">
+                        <ul class="nav nav-pills" id="myTab">
+                            <li class="active dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">เลือกกลุ่มสินค้า <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <c:forEach var="grPro" items="${sessionScope.allGroupPro}">
+                                        <li><a class="proGroup" href="#group${grPro.getGroup_id()}" data-toggle="tab">${grPro.getGroup_name()}</a></li>
                                     </c:forEach>
+                                </ul>
+                            </li>
+                        </ul>
+                    
+                        <div class="tab-content">
+                            <c:forEach var="grPro" items="${sessionScope.allGroupPro}">
+                                <div class="tab-pane fade in" id="group${grPro.getGroup_id()}">
+                                    <div>
+                                        <h1 style="display: inline-block;">${grPro.getGroup_name()}</h1>
+                                        <button class="btn btn-success btn-inline btn-addPro" style="float: right; margin-top: 20px" value="${grPro.getGroup_id()},${grPro.getGroup_name()}"><i class="fa fa-plus" aria-hidden="true"></i>  เพิ่มสินค้าใหม่ในกลุ่มนี้</button>
+                                    </div>
+                                    <div class="row funkyradio" id="funky${grPro.getGroup_id()}">
+                                        <c:forEach var="pro" items="${grPro.getAllProduct()}">
+                                            <span class="funkyradio-success col-sm-3">
+                                                <input class="checkbox1" type="checkbox" name="checkbox" id="pro-${pro.getProduct_id()}" value="${pro.getProduct_id()}:${pro.getProduct_name()}"/>
+                                                <label for="pro-${pro.getProduct_id()}">${pro.getProduct_name()}</label>
+                                            </span>
+                                        </c:forEach>
+                                    </div>
                                 </div>
-                            </div>
-                        </c:forEach>
-                    </div>
+                            </c:forEach>
+                        </div>
+                    </c:when>
+                        <c:otherwise>
+                            <h1>ทำการเลือกสินค้าแล้ว</h1>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>
@@ -45,7 +52,7 @@
                     <c:when test="${sessionScope.status == 'RENT'}">
                         <div class="form-group">
                             <label for="product">ชื่อสินค้า</label>
-                            <input class="form-control" type="text" id="product" name="product" placeholder="ชื่อสินค้า" value="${sessionScope.product.getProduct_name()}" readonly>
+                            <input disabled="disabled" class="form-control" type="text" id="productRented" data-role="tagsinput">
                         </div>
                         <div class="form-group">
                             <label for="customer">รหัสรับบริการ</label>
@@ -56,7 +63,7 @@
                     <c:otherwise>
                         <div class="form-group">
                             <label for="product">ชื่อสินค้า</label>
-                            <input disabled="disabled" class="form-control" type="text" name="product" id="product" data-role="tagsinput">
+                            <input disabled="disabled" class="form-control" type="text" id="product" data-role="tagsinput">
                         </div>
                         <div class="form-group">
                             <label for="customer">รหัสรับบริการ</label>
@@ -138,7 +145,7 @@
                                                 <c:when test="${!sessionScope.allZone.containsKey(a)}">
                                                     <td><button class="btn btn-success btn-xs btn-area btn-unselect rented" id="${a}" name="${a}" type="button">${a}</button></td>
                                                 </c:when>
-                                                <c:when test="${sessionScope.allZone[a].getProduct_id() == sessionScope.customer.getProduct_id()}">
+                                                <c:when test="${sessionScope.allZone[a].isHasProduct()}">
                                                     <td><button class="btn btn-warning btn-xs btn-area rented" type="button" disabled>${a}</button></td>
                                                 </c:when>
                                                 <c:otherwise>
@@ -354,16 +361,18 @@
         $('#showArea').text('-');
         $('#confirmBtn').attr('disabled', true);
     });
-
-    $('.btn-product').click(function() {
-        $('#product').val($(this).text());
-    });
     
     var myVar=setInterval(function () {myTimer()}, 1000);
     function myTimer() {
         var current_local_time = new Date();
         document.getElementById("time_display").innerHTML = current_local_time.getDate() + "/" + (current_local_time.getMonth()+1) + "/" + current_local_time.getFullYear() + " " + current_local_time.getHours() + ":" + current_local_time.getMinutes() + ":" +current_local_time.getSeconds();
     }
+    
+    $("#productRented").ready(function() {
+        $('#productRented').tagsinput('add', '${sessionScope.customer.getStringAllProduct()}');
+        console.log("Yes");
+    });
+    
 </script>
     
 <jsp:include page="template/footer.jsp" />

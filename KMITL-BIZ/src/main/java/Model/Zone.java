@@ -9,6 +9,7 @@ import Listener.Constant;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,18 +18,16 @@ import java.sql.SQLException;
 public class Zone {
     private String zone_id;
     private int order_id;
-    private int product_id;
-
-    public Zone(String zone_id, int order_id, int pro_id) {
-        this.zone_id = zone_id;
-        this.order_id = order_id;
-        this.product_id = pro_id;
-    }
+    private ArrayList<Integer> allProductID;
     
+    private boolean hasProduct;
+
     public Zone(String zone_id, int order_id) {
         this.zone_id = zone_id;
         this.order_id = order_id;
+        this.allProductID = new ArrayList<>();
     }
+    
     
     public void insertZoneToDB() {
         PreparedStatement pstmt;
@@ -65,12 +64,21 @@ public class Zone {
         this.order_id = order_id;
     }
 
-    public int getProduct_id() {
-        return product_id;
+    public boolean isHasProduct() {
+        return hasProduct;
     }
 
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
+    public void setHasProduct(boolean hasProduct) {
+        this.hasProduct = hasProduct;
     }
 
+    public ArrayList<Integer> getAllProductID() {
+        return allProductID;
+    }
+
+    public void setAllProductID(ArrayList<Integer> allProductID) {
+        this.allProductID = allProductID;
+    }
+    
+    
 }

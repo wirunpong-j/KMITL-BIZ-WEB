@@ -50,14 +50,12 @@ public class ProductServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        String product = request.getParameter("product");
+        String[] product = request.getParameter("product").split(",");
         String customer = request.getParameter("customer");
 
         HttpSession session = request.getSession();
         
         Connection conn = null;
-        Product pro = null;
-        ArrayList<Product> allProduct = new ArrayList<>();
         PreparedStatement pstmt;
         ResultSet rs;
         
@@ -82,38 +80,41 @@ public class ProductServlet extends HttpServlet {
             }
         }
         
-        try {
-            conn = (Connection) Constant.getConnection();
-            pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ?");
-            pstmt.setString(1, product);
-            
-            rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
-            } else {
-                pro = new Product(product);
-                pro.addToDB();
-            }
-            
-            pstmt.close();
-            
-            pstmt = conn.prepareStatement("SELECT * FROM product");
-            rs = pstmt.executeQuery();
-            
-            while (rs.next()) {
-                Product p = new Product(rs.getInt("product_id"), rs.getString("product_name"));
-                allProduct.add(p);
-            }
-            
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        } finally {
-            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-        }
+//        try {
+//            conn = (Connection) Constant.getConnection();
+//            pstmt = conn.prepareStatement("SELECT * FROM product WHERE product_name = ?");
+//            pstmt.setString(1, product);
+//            
+//            rs = pstmt.executeQuery();
+//            
+//            if (rs.next()) {
+//                pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
+//            } else {
+//                pro = new Product(product);
+//                pro.addToDB();
+//            }
+//            
+//            pstmt.close();
+//            
+//            pstmt = conn.prepareStatement("SELECT * FROM product");
+//            rs = pstmt.executeQuery();
+//            
+//            while (rs.next()) {
+//                Product p = new Product(rs.getInt("product_id"), rs.getString("product_name"));
+//                allProduct.add(p);
+//            }
+//            
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        } finally {
+//            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+//        }
 
-        Customer cust = new Customer(Integer.parseInt(customer), pro.getProduct_id());
+        Customer cust = new Customer(Integer.parseInt(customer));
         cust.searchCustomerByID();
+        for (String pro: product) {
+            cust.setAllProduct(Integer.parseInt(pro.split(":")[0]));
+        }
         
         HashMap<String, String> allRentType = new HashMap<>();
         HashMap<String, Object> allRentDate = new HashMap<>();
@@ -164,10 +165,8 @@ public class ProductServlet extends HttpServlet {
         
         session.setAttribute("allRentType", allRentType);
         session.setAttribute("allRentDate", allRentDate);
-        session.setAttribute("product", pro);
         session.setAttribute("customer", cust);
         session.setAttribute("status", "RENT");
-        session.setAttribute("allProduct", allProduct);
         
         return;
     }

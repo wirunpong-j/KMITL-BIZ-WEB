@@ -8,6 +8,7 @@ package Controller;
 import Listener.Constant;
 import Model.AreaModel;
 import Model.Customer;
+import Model.Product;
 import Model.Zone;
 import java.io.IOException;
 import java.sql.Connection;
@@ -58,7 +59,7 @@ public class ShowRentArea extends HttpServlet {
         
         if (selectRent.equals("R1") || selectRent.equals("R2")) {
             thursday = (ZonedDateTime) allRentDate.get(selectRent);
-            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN product USING (product_id) "
+            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN order_product USING (order_id) JOIN product USING (product_id) "
                     + "WHERE DAY(rent_date) = "+ thursday.getDayOfMonth() +" AND MONTH(rent_date) = "+ thursday.getMonthValue() +" AND YEAR(rent_date) = "+ thursday.getYear() +" ORDER BY zone_id;";
             
             switch (cust.getCust_type()) {
@@ -72,7 +73,7 @@ public class ShowRentArea extends HttpServlet {
             
         } else {
             thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(selectRent);
-            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN product USING (product_id) "
+            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN order_product USING (order_id) JOIN product USING (product_id) "
                     + "WHERE MONTH(rent_date) = "+ thursdayOnMonth.get(0).getMonthValue() +" ORDER BY zone_id;";
             
             switch (cust.getCust_type()) {
@@ -96,8 +97,18 @@ public class ShowRentArea extends HttpServlet {
             pstmt = conn.prepareStatement(query);
             
             rs = pstmt.executeQuery();
+            
+            Zone zone;
             while (rs.next()) {
-                allZone.put(rs.getString("zone_id"), new Zone(rs.getString("zone_id"), rs.getInt("order_id"), rs.getInt("product_id")));
+                if (!allZone.containsKey(rs.getString("zone_id"))) {
+                    zone = new Zone(rs.getString("zone_id"), rs.getInt("order_id"));
+                    zone.setHasProduct(false);
+                    zone.getAllProductID().add(rs.getInt("product_id"));
+                } else {
+                    zone = allZone.get(rs.getString("zone_id"));
+                    zone.getAllProductID().add(rs.getInt("product_id"));
+                }               
+                allZone.put(rs.getString("zone_id"), zone);
             }
 
             rs.close();
@@ -107,6 +118,17 @@ public class ShowRentArea extends HttpServlet {
             System.out.println(ex.getMessage());
         } finally {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        for (String zoneID: allZone.keySet()) {
+            for (Product product: cust.getAllProduct()) {
+                for (int id: allZone.get(zoneID).getAllProductID()) {
+                    if (product.getProduct_id() == id) {
+                        allZone.get(zoneID).setHasProduct(true);
+                        break;
+                    }
+                }
+            }
         }
         
         session.setAttribute("count", count);

@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,14 +26,15 @@ public class Customer {
     private String citizen_id;
     private String vehicle;
     private String email;
-    private int product_id;
     private int price;
+    private ArrayList<Product> allProduct;
 
     public Customer() {
     }
     
     public Customer(int cust_id){
         this.cust_id = cust_id;
+        this.allProduct = new ArrayList<>();
     }
 
     public Customer(String fullname, String tel, String cust_type, String student_id, String citizen_id, String vehicle, String email) {
@@ -44,12 +46,6 @@ public class Customer {
         this.vehicle = vehicle;
         this.email = email;
     }
-
-    public Customer(int cust_id, int product_id) {
-        this.cust_id = cust_id;
-        this.product_id = product_id;
-    }
-
     
     public boolean addCustomer() {
         Connection conn = null;
@@ -193,6 +189,24 @@ public class Customer {
         return status;
     }
     
+    public boolean setAllProduct(int product_id) {
+        Product pro = new Product(product_id);
+        if (pro.searchProductByID()) {
+            this.allProduct.add(pro);
+            return true;
+        }
+        return false;
+    }
+    
+    public String getStringAllProduct() {
+        ArrayList<String> listAllProduct = new ArrayList<>();
+        for (Product pro: this.allProduct) {
+            listAllProduct.add(pro.getProduct_id()+":"+pro.getProduct_name());
+        }
+        
+        return String.join(",", listAllProduct);
+    }
+    
     public String getCust_type_Str() {
         String type = "";
         switch (this.cust_type) {
@@ -268,14 +282,6 @@ public class Customer {
         this.vehicle = ((vehicle != null) && (!vehicle.equals(""))) ? vehicle : "-";
     }
 
-    public int getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -291,6 +297,10 @@ public class Customer {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public ArrayList<Product> getAllProduct() {
+        return allProduct;
     }
     
 }
