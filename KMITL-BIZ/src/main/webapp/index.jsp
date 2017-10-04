@@ -249,8 +249,6 @@
         var product = $('.checkbox1:checked').map(function() {return this.value;}).get().join(',');
         $('#product').tagsinput('removeAll');
         $('#product').tagsinput('add', product);
-        
-        console.log(product);
     });
 
     $('#confirmBtn').click(function() {
@@ -260,7 +258,7 @@
                     <h4>รหัสรับบริการ : ${sessionScope.customer.getCust_id_str()} </h4>\n\
                     <h4>ชื่อผู้ใช้บริการ : ${sessionScope.customer.getFullname()} </h4>\n\
                     <h4>ผู้ใช้บริการประเภท : ${sessionScope.customer.getCust_type_Str()} </h4>\n\
-                    <h4>ขายสินค้า : ${sessionScope.product.getProduct_name()} </h4>\n\
+                    <h4>ขายสินค้า : ' + $('#productRented').val() + ' </h4>\n\
                     <h4>จำนวนเงินที่ต้องชำระ : ' + cost + ' บาท </h4>\n\
                     <label for="addCost">ค่าใช้จ่ายเพิ่มเติม</label> \n\
                     <input style="display: inline-block; width: 50%;" class="form-control" type="text" id="addCost" value="0"> <strong>บาท<strong> <br><br>\n\
@@ -274,8 +272,8 @@
                 $('.btn-rent').attr("disabled", true);
                 $.ajax({
                     type: "POST",
-                    url: "${SITE_URL}/RentArea",
-                    data: {'allArea': allArea.toString(), 'addCost': $('#addCost').val(), 'note': $('#note').val(), 'rentType': $('#selectRent').val()},
+                    url: "${SITE_URL}/RentArea/?rentType=" + $('#selectRent').val(),
+                    data: {'allArea': allArea.toString(), 'addCost': $('#addCost').val(), 'note': $('#note').val()},
                     success: function(data) {
                         $('#confirmBtn').html('<i id="spinBtn"></i> จองพื้นที่สำเร็จ');
                         setTimeout(function() {
@@ -370,7 +368,6 @@
     
     $("#productRented").ready(function() {
         $('#productRented').tagsinput('add', '${sessionScope.customer.getStringAllProduct()}');
-        console.log("Yes");
     });
     
 </script>

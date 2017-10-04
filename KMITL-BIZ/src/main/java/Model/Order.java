@@ -28,12 +28,12 @@ public class Order {
     private String cust_id_str;
     private String staff_id;
     private String zone_id;
+    private int product_id;
     
     private int extra_price;
     private String note;
     private String rent_date;
     private String order_type;
-    private int product_id;
     private ZonedDateTime rent_date_obj;
 
     public Order() {
@@ -47,14 +47,17 @@ public class Order {
     }
     
     public void addOrder() {
+        
         Calendar calendar = Calendar.getInstance();
         PreparedStatement pstmt;
         Connection conn = null;
+        ResultSet rs = null;
+        
         try {
             conn = (Connection) Constant.getConnection();
             
-            pstmt = conn.prepareStatement("INSERT INTO `order`(order_date, price, extra_price, note, rent_date, order_type, cust_id, product_id, staff_id) "
-                    + "VALUES(?,?,?,?,?,?,?,?,?)");
+            pstmt = conn.prepareStatement("INSERT INTO `order`(order_date, price, extra_price, note, rent_date, order_type, cust_id, staff_id) "
+                    + "VALUES(?,?,?,?,?,?,?,?)");
             pstmt.setTimestamp(1, new Timestamp(calendar.getTime().getTime()));
             pstmt.setInt(2, this.price);
             pstmt.setInt(3, this.extra_price);
@@ -62,8 +65,7 @@ public class Order {
             pstmt.setString(5, this.rent_date_obj.format(DateTimeFormatter.ISO_LOCAL_DATE));
             pstmt.setString(6, this.order_type);
             pstmt.setInt(7, this.cust_id);
-            pstmt.setInt(8, this.product_id);
-            pstmt.setString(9, this.staff_id);
+            pstmt.setString(8, this.staff_id);
             pstmt.executeUpdate();
             
             pstmt.close();
@@ -72,8 +74,8 @@ public class Order {
             pstmt.setInt(1, this.cust_id);
             pstmt.setString(2, this.rent_date_obj.format(DateTimeFormatter.ISO_LOCAL_DATE));
             pstmt.setString(3, this.order_type);
-            ResultSet rs = pstmt.executeQuery();
             
+            rs = pstmt.executeQuery();
             if (rs.next()) {
                 this.order_id = rs.getInt("order_id");
                 this.order_date = rs.getString("order_date");

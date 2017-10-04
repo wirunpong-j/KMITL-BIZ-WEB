@@ -7,6 +7,7 @@ package Controller;
 
 import Model.Customer;
 import Model.Order;
+import Model.OrderProduct;
 import Model.Product;
 import Model.Staff;
 import Model.Zone;
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author BellKunG
  */
-@WebServlet(name = "RentArea", urlPatterns = {"/RentArea"})
+@WebServlet(name = "RentArea", urlPatterns = {"/RentArea/"})
 public class RentArea extends HttpServlet {
 
     /**
@@ -46,53 +47,60 @@ public class RentArea extends HttpServlet {
         
         HttpSession session = request.getSession();
         
-        Product product = (Product) session.getAttribute("product");
         Customer customer = (Customer) session.getAttribute("customer");
         Staff staff = (Staff) session.getAttribute("staff");
         
         String[] allArea = request.getParameter("allArea").split(",");
-        int addCost = Integer.parseInt(request.getParameter("addCost"));
         String note = request.getParameter("note");
         String rentType = request.getParameter("rentType");
+        int addCost = Integer.parseInt(request.getParameter("addCost"));
         
         HashMap<String, Object> allRentDate = (HashMap<String, Object>) session.getAttribute("allRentDate");
         
         if (rentType.equals("R1") || rentType.equals("R2")) {
             ZonedDateTime thursday = (ZonedDateTime) allRentDate.get(rentType);
             Order order = new Order(thursday, customer.getPrice() * allArea.length, customer.getCust_id(), staff.getStaff_id());
-                order.setExtra_price(addCost);
-                order.setNote(note);
-                if (rentType.equals("R1")) {
-                    order.setOrder_type("NOR");
-                } else {
-                    order.setOrder_type("PRE");
-                }
-                order.setProduct_id(product.getProduct_id());
-                order.addOrder();
-                
-            for (String area: allArea) {
-                Zone zone = new Zone(area, order.getOrder_id());
-                zone.insertZoneToDB();
+            order.setExtra_price(addCost);
+            order.setNote(note);
+
+            if (rentType.equals("R1")) {
+                order.setOrder_type("NOR");
+            } else {
+                order.setOrder_type("PRE");
+            }
+            order.addOrder();
+            
+            for (Product pro: customer.getAllProduct()) {
+                addProductOrder(thursday, pro.getProduct_id(), order, allArea);
             }
             
         } else {
             ArrayList<ZonedDateTime> thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(rentType);
+            
             for (ZonedDateTime thursday: thursdayOnMonth) {
                 Order order = new Order(thursday, customer.getPrice() * allArea.length, customer.getCust_id(), staff.getStaff_id());
                 order.setExtra_price(addCost);
                 order.setNote(note);
                 order.setOrder_type("PRE");
-                order.setProduct_id(product.getProduct_id());
                 order.addOrder();
-                
-                for (String area: allArea) {
-                    Zone zone = new Zone(area, order.getOrder_id());
-                    zone.insertZoneToDB();
-                } 
+                    
+                for (Product pro: customer.getAllProduct()) {
+                    addProductOrder(thursday, pro.getProduct_id(), order, allArea);
+                }
             }
+            
         }
-        
         return;
+    }
+    
+    private void addProductOrder(ZonedDateTime thursday, int product_id, Order order, String[] allArea) {
+        for (String area: allArea) {
+            Zone zone = new Zone(area, order.getOrder_id());
+            zone.insertZoneToDB();
+            
+            OrderProduct orderProduct = new OrderProduct(order.getOrder_id(), product_id);
+            orderProduct.addOrderProduct();
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
