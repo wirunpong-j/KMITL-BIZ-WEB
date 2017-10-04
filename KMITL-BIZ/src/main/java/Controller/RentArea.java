@@ -69,10 +69,7 @@ public class RentArea extends HttpServlet {
                 order.setOrder_type("PRE");
             }
             order.addOrder();
-            
-            for (Product pro: customer.getAllProduct()) {
-                addProductOrder(thursday, pro.getProduct_id(), order, allArea);
-            }
+            addProductOrder(thursday, customer.getAllProduct(), order, allArea);
             
         } else {
             ArrayList<ZonedDateTime> thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(rentType);
@@ -83,24 +80,24 @@ public class RentArea extends HttpServlet {
                 order.setNote(note);
                 order.setOrder_type("PRE");
                 order.addOrder();
-                    
-                for (Product pro: customer.getAllProduct()) {
-                    addProductOrder(thursday, pro.getProduct_id(), order, allArea);
-                }
+                addProductOrder(thursday, customer.getAllProduct(), order, allArea);
             }
             
         }
         return;
     }
     
-    private void addProductOrder(ZonedDateTime thursday, int product_id, Order order, String[] allArea) {
+    private void addProductOrder(ZonedDateTime thursday, ArrayList<Product> allProduct, Order order, String[] allArea) {
         for (String area: allArea) {
             Zone zone = new Zone(area, order.getOrder_id());
             zone.insertZoneToDB();
-            
-            OrderProduct orderProduct = new OrderProduct(order.getOrder_id(), product_id);
+        }
+        
+        for (Product product: allProduct) {
+            OrderProduct orderProduct = new OrderProduct(order.getOrder_id(), product.getProduct_id());
             orderProduct.addOrderProduct();
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
