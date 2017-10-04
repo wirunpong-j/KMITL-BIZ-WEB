@@ -5,18 +5,11 @@
  */
 package Controller;
 
-import Listener.Constant;
+import Model.AllFormat;
 import Model.AreaModel;
 import Model.FetchData;
-import Model.Product;
-import Model.Product_Group;
 import Model.Staff;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -65,6 +58,7 @@ public class Authentication extends HttpServlet {
             session.setAttribute("allGroupPro", FetchData.fetchGroupProduct());
             session.setAttribute("staff", staff);
             session.setAttribute("allArea", AreaModel.allArea());
+            session.setAttribute("allFormat", new AllFormat());
             
             response.sendRedirect("/KMITL-BIZ/index.jsp");
             

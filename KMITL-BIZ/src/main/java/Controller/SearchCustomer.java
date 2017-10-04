@@ -6,6 +6,7 @@
 package Controller;
 
 import Listener.Constant;
+import Model.AllFormat;
 import Model.Customer;
 import java.io.IOException;
 import java.sql.Connection;
@@ -74,7 +75,7 @@ public class SearchCustomer extends HttpServlet {
                 request.setAttribute("status", "false");
             }
             
-            request.setAttribute("custText", number);
+            request.setAttribute("custText", AllFormat.toPadZero(Integer.parseInt(number)));
             
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

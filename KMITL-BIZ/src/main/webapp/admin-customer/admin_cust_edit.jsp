@@ -19,7 +19,12 @@
 
     <c:choose>
         <c:when test="${requestScope.status == 'true'}">
+            
             <form action="#" method="POST" id="updateCustomer">
+                <div class="form-group">
+                    <label for="fname">รหัสรับบริการ</label>
+                    <input type="text" class="form-control information" id="custid" name="custid" value="${sessionScope.allFormat.toPadZero(requestScope.cust.getCust_id())}" disabled>
+                </div>
                 <div class="form-group">
                     <label for="fname">ชื่อ - นามสกุล *</label>
                     <input type="text" class="form-control information" id="fullname" name="fullname" value="${requestScope.cust.getFullname()}" placeholder="ชื่อ - นามสกุล">
