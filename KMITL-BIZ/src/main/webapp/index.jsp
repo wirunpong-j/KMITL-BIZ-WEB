@@ -66,6 +66,9 @@
                             <input disabled="disabled" class="form-control" type="text" id="product" data-role="tagsinput">
                         </div>
                         <div class="form-group">
+                            <button class="btn btn-danger" type="button" id="clearProductBtn" style="width:100%;">ล้างข้อมูล </button>
+                        </div>
+                        <div class="form-group">
                             <label for="customer">รหัสรับบริการ</label>
                             <input class="form-control" type="text" name="customer" id="customer" placeholder="รหัสรับบริการ">
                         </div>
@@ -368,6 +371,11 @@
     
     $("#productRented").ready(function() {
         $('#productRented').tagsinput('add', '${sessionScope.customer.getStringAllProduct()}');
+    });
+    
+    $('#clearProductBtn').click(function() {
+        $('#product').tagsinput('removeAll');
+        $('.checkbox1').attr('checked', false);
     });
     
 </script>
