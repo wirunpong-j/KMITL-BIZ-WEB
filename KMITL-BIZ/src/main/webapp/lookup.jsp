@@ -60,7 +60,7 @@
                                                 <c:otherwise>
                                                     <td><button type="button" class="btn btn-danger btn-xs btn-area rented c-hide" id="${a}" name="${a}">${a}</button></td>
                                                     <input type="hidden" id="info-${a}" 
-                                                        value="${a},${requestScope.allZone[a][1].getProduct_name()},${requestScope.allZone[a][2].getCust_id_str()},${requestScope.allZone[a][2].getFullname()},${requestScope.allZone[a][2].getCust_type_Str()},${requestScope.allZone[a][2].getStudent_id()},${requestScope.allZone[a][2].getCitizen_id()},${requestScope.allZone[a][2].getTel()},${requestScope.allZone[a][2].getEmail()},${requestScope.allZone[a][2].getVehicle()},${requestScope.allZone[a][0].getOrder_id()}">
+                                                        value="${a}&${sessionScope.allFormat.joinArrayByComma(requestScope.allZone[a].getAllProductName())}&${requestScope.allCustomer[a].getCust_id_str()}&${requestScope.allCustomer[a].getFullname()}&${requestScope.allCustomer[a].getCust_type_Str()}&${requestScope.allCustomer[a].getStudent_id()}&${requestScope.allCustomer[a].getCitizen_id()}&${requestScope.allCustomer[a].getTel()}&${requestScope.allCustomer[a].getEmail()}&${requestScope.allCustomer[a].getVehicle()}&${requestScope.allOrder[a].getOrder_id()}">
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:otherwise>
@@ -153,7 +153,7 @@
     
     $('.rented').click(function() {
         var area = this.id;
-        var info = $('#info-' + area).val().split(',');
+        var info = $('#info-' + area).val().split('&');
         $('#area').text(info[0]);
         $('#product').text(info[1]);
         $('#custid').text(info[2]);

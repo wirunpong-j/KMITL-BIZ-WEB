@@ -10,6 +10,7 @@ import Model.Customer;
 import Model.Formating;
 import Model.Order;
 import Model.Product;
+import Model.Zone;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -75,47 +76,55 @@ public class ShowAllArea extends HttpServlet {
             allRentType.put(count, "วันพฤหัสบดีที่ " + dt.getDayOfMonth() + " " + Formating.monthFormat(dt.getMonth().getValue()) + " " + dt.getYear());;
             count++;
         }
-        
-        
-        String query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN customer USING (cust_id) JOIN product USING (product_id) "
-                    + "WHERE DAY(rent_date) = "+ allThursday.get(type).getDayOfMonth() +" AND MONTH(rent_date) = "+ allThursday.get(type).getMonthValue() +" AND YEAR(rent_date) = "+ allThursday.get(type).getYear() +" ORDER BY zone_id;";
+
+        String query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN customer USING (cust_id) JOIN order_product USING (order_id) JOIN product USING (product_id) "
+                    + "WHERE DAY(rent_date) = "+ allThursday.get(type).getDayOfMonth() +" AND MONTH(rent_date) = "+ allThursday.get(type).getMonthValue() +" AND YEAR(rent_date) = "+ allThursday.get(type).getYear() +" ORDER BY zone_id, product_id;";
         
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
         // set Area
-        HashMap<String,ArrayList<Object>> allZone = new HashMap<>();
+        HashMap<String,Order> allOrder = new HashMap<>();
+        HashMap<String,Zone> allZone = new HashMap<>();
+        HashMap<String,Customer> allCustomer = new HashMap<>();
+
         try {
             conn = (Connection) Constant.getConnection();
             pstmt = conn.prepareStatement(query);
             
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                ArrayList<Object> info = new ArrayList<>();
                 
-                Order order = new Order();
-                order.setOrder_id(rs.getInt("order_id"));
-                order.setCust_id_str(rs.getString("cust_id"));
-                order.setProduct_id(rs.getInt("product_id"));
-                order.setRent_date(rs.getString("rent_date"));
+                if (!allOrder.containsKey(rs.getString("zone_id"))) {
+                    
+                    Order order = new Order();
+                    order.setOrder_id(rs.getInt("order_id"));
+                    order.setCust_id_str(rs.getString("cust_id"));
+                    order.setRent_date(rs.getString("rent_date"));
+                    
+                    Zone zone = new Zone(rs.getString("zone_id"), order.getOrder_id());
+                    zone.getAllProductName().add(rs.getString("product_name"));
+                    
+                    Customer cust = new Customer(rs.getInt("cust_id"));
+                    cust.setFullname(rs.getString("fullname"));
+                    cust.setTel(rs.getString("tel"));
+                    cust.setCust_type(rs.getString("cust_type"));
+                    cust.setStudent_id(rs.getString("student_id"));
+                    cust.setCitizen_id(rs.getString("citizen_id"));
+                    cust.setVehicle(rs.getString("vehicle"));
+                    cust.setEmail(rs.getString("email"));
+                    
+                    allOrder.put(rs.getString("zone_id"), order);
+                    allZone.put(rs.getString("zone_id"), zone);
+                    allCustomer.put(rs.getString("zone_id"), cust);
+                    
+                } else {
+                    Zone zone = allZone.get(rs.getString("zone_id"));
+                    zone.getAllProductName().add(rs.getString("product_name"));
+                    allZone.put(rs.getString("zone_id"), zone);
+                }
                 
-                Product pro = new Product(rs.getInt("product_id"), rs.getString("product_name"));
-                
-                Customer cust = new Customer(rs.getInt("cust_id"));
-                cust.setFullname(rs.getString("fullname"));
-                cust.setTel(rs.getString("tel"));
-                cust.setCust_type(rs.getString("cust_type"));
-                cust.setStudent_id(rs.getString("student_id"));
-                cust.setCitizen_id(rs.getString("citizen_id"));
-                cust.setVehicle(rs.getString("vehicle"));
-                cust.setEmail(rs.getString("email"));
-                
-                info.add(order);
-                info.add(pro);
-                info.add(cust);
-                
-                allZone.put(rs.getString("zone_id"), info);
             }
 
             rs.close();
@@ -128,6 +137,8 @@ public class ShowAllArea extends HttpServlet {
         }
         
         request.setAttribute("allZone", allZone);
+        request.setAttribute("allOrder", allOrder);
+        request.setAttribute("allCustomer", allCustomer);
         request.setAttribute("allRentType", allRentType);
         request.setAttribute("type", type);
         

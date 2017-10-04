@@ -6,7 +6,6 @@
 package Controller;
 
 import Listener.Constant;
-import Model.AreaModel;
 import Model.Customer;
 import Model.Product;
 import Model.Zone;

@@ -19,6 +19,7 @@ public class Zone {
     private String zone_id;
     private int order_id;
     private ArrayList<Integer> allProductID;
+    private ArrayList<String> allProductName;
     
     private boolean hasProduct;
 
@@ -26,6 +27,7 @@ public class Zone {
         this.zone_id = zone_id;
         this.order_id = order_id;
         this.allProductID = new ArrayList<>();
+        this.allProductName = new ArrayList<>();
     }
     
     
@@ -79,6 +81,16 @@ public class Zone {
     public void setAllProductID(ArrayList<Integer> allProductID) {
         this.allProductID = allProductID;
     }
+
+    public ArrayList<String> getAllProductName() {
+        return allProductName;
+    }
+
+    public void setAllProductName(ArrayList<String> allProductName) {
+        this.allProductName = allProductName;
+    }
+    
+    
     
     
 }
