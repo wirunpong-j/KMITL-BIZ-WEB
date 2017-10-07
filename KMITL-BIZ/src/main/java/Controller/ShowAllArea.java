@@ -6,6 +6,7 @@
 package Controller;
 
 import Listener.Constant;
+import Model.AreaModel;
 import Model.Customer;
 import Model.Formating;
 import Model.Order;
@@ -22,6 +23,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -136,11 +139,42 @@ public class ShowAllArea extends HttpServlet {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
         
+        // show count product on thursday.
+        HashMap<Integer, Product> sellProduct = new HashMap<>();
+        try {
+            conn = (Connection) Constant.getConnection();
+            pstmt = conn.prepareStatement("SELECT * FROM `order` JOIN order_product USING (order_id) JOIN product USING (product_id) WHERE DAY(rent_date) = "+ allThursday.get(type).getDayOfMonth() +" AND MONTH(rent_date) = "+ allThursday.get(type).getMonthValue() +" AND YEAR(rent_date) = "+ allThursday.get(type).getYear() + " ORDER BY product_id;");
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Product product;
+                if (!sellProduct.containsKey(rs.getInt("product_id"))) {
+                    product = new Product(rs.getInt("product_id"), rs.getString("product_name"));
+                } else {
+                    product = sellProduct.get(rs.getInt("product_id"));
+                    product.addCountProduct();
+                }
+                sellProduct.put(rs.getInt("product_id"), product);
+            }
+            
+            rs.close();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        Map<Integer, Product> copySellProduct = new TreeMap<>(sellProduct);
+        
         request.setAttribute("allZone", allZone);
         request.setAttribute("allOrder", allOrder);
         request.setAttribute("allCustomer", allCustomer);
         request.setAttribute("allRentType", allRentType);
         request.setAttribute("type", type);
+        request.setAttribute("blankArea", AreaModel.getAreaLength() - allOrder.size());
+        request.setAttribute("sellProduct", copySellProduct);
+        
         
         RequestDispatcher page = request.getRequestDispatcher("/lookup.jsp");
         page.forward(request, response);

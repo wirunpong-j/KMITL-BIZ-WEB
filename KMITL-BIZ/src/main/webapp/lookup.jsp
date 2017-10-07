@@ -77,6 +77,7 @@
             <div class="col-md-3" style="margin:auto 0;">
                 <form action="#" method="POST" id="deleteOrderForm">
                     <div class="form-group">
+                        <h4>จำนวนพื้นที่ว่าง : ${requestScope.blankArea} ร้าน</h4>
                         <button class="btn btn-info" type="button" style="width:100%;" id="area">-</button>
                         <h5 style="color:rgb(189,189,189);">สินค้าที่วางขาย </h5>
                         <h4 id="product">-</h4>
@@ -102,6 +103,25 @@
                 </form>
             </div>
         </div>
+                
+                <br><br><h3 id="con1">สรุปข้อมูลใน</h3><hr>
+                <table class="table table-bordered table-striped table-list" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>รายชื่อสินค้าที่มีขาย</th>
+                            <th>จำนวน (ร้าน)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="product" items="${requestScope.sellProduct}">
+                            <tr>
+                                <td>${product.value.getProduct_name()}</td>
+                                <td>${product.value.getCount()}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+                <br><br>
     </div>
 </div>
 
@@ -183,6 +203,11 @@
         $('#vehicle').text('ไม่มีข้อมูล');
         $('#deleteOrderBtn').attr('disabled', true);
         
+    });
+    
+    $(document).ready(function(){
+        $('#con1').text('สรุปข้อมูลใน' + $("#type option:selected").text());
+        $('#myTable').DataTable();
     });
 </script>
 

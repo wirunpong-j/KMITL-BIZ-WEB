@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/semantic.min.css"/>
     <!-- Bootstrap theme -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css"/>
+
+    <link rel="stylesheet" href="${SITE_URL}/assets/css/dataTables.bootstrap.min.css"/>
     
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     
@@ -33,6 +35,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     
     <script src="https://use.fontawesome.com/211152dd25.js"></script>
+    
+    <script src="${SITE_URL}/assets/js/jquery.dataTables.min.js"></script>
+    <script src="${SITE_URL}/assets/js/dataTables.bootstrap.min.js"></script>
     
     <!-- bootstarp tag-input -->
     <link rel="stylesheet" href="${SITE_URL}/assets/css/bootstrap-tagsinput.css">

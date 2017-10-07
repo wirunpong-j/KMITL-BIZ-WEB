@@ -194,8 +194,22 @@ public class AreaModel {
                 "B", "B", "B", "B", 
                 };
     
+    
     public static String[][] allArea() {
         String[][] allArea = {area1, area2, area3, area4, area5, area6, area7, area8, area9, area10, area11};
         return allArea;
+    }
+    
+    public static int getAreaLength() {
+        String[][] allArea = {area1, area2, area3, area4, area5, area6, area7, area8, area9, area10, area11};
+        int count = 0;
+        for (String[] area: allArea) {
+            for (String a: area) {
+                if (!a.equals("X") && (!a.equals("B"))) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }

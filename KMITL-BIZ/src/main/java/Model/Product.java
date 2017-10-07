@@ -19,6 +19,8 @@ public class Product {
     private int product_id;
     private String product_name;
     private int group_id;
+    
+    private int count;
 
     public Product() {
         
@@ -33,6 +35,7 @@ public class Product {
     }
 
     public Product(int product_id, String product_name) {
+        this.count = 1;
         this.product_id = product_id;
         this.product_name = product_name;
     }
@@ -201,8 +204,13 @@ public class Product {
     public void setGroup_id(int group_id) {
         this.group_id = group_id;
     }
+    
+    public void addCountProduct() {
+        this.count++;
+    }
 
-    
-    
+    public int getCount() {
+        return count;
+    }
     
 }
