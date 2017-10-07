@@ -13,7 +13,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -35,8 +38,13 @@ public class Order {
     private String rent_date;
     private String order_type;
     private ZonedDateTime rent_date_obj;
+    
+    private Set allProductName;
+    private Set allZone;
 
     public Order() {
+        this.allProductName = new HashSet();
+        this.allZone = new HashSet();
     }
 
     public Order(ZonedDateTime rentDate, int price, int cust_id, String staff_id) {
@@ -220,5 +228,37 @@ public class Order {
     public void setCust_id_str(String cust_id_str) {
         this.cust_id_str = cust_id_str;
     }
+
+    public Set getAllProductName() {
+        return allProductName;
+    }
+
+    public void setAllProductName(Set allProductName) {
+        this.allProductName = allProductName;
+    }
+
+    public Set getAllZone() {
+        return allZone;
+    }
+
+    public void setAllZone(Set allZone) {
+        this.allZone = allZone;
+    }
+    
+    public ArrayList<String> getArrayProductName() {
+        ArrayList<String> productName = new ArrayList<>();
+        productName.addAll(this.allProductName);
+        
+        return productName;
+    }
+    
+    public ArrayList<String> getArrayZoneID() {
+        ArrayList<String> zoneID = new ArrayList<>();
+        zoneID.addAll(this.allZone);
+        
+        return zoneID;
+    }
+
+    
 
 }
