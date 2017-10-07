@@ -118,12 +118,7 @@ public class ExportData extends HttpServlet {
                     result.put(2, "zone_id");
                     result.put(3, "product_name");
                     
-                    String query = "SELECT cust_id, rent_date, zone_id, product_name "
-                            + "FROM kmitlbiz.order "
-                            + "JOIN product "
-                            + "USING (product_id) "
-                            + "JOIN zone "
-                            + "USING (order_id)";
+                    String query = "SELECT cust_id, rent_date, zone_id, product_name FROM `order` JOIN order_product USING (order_id) JOIN product USING (product_id) JOIN zone USING (order_id)";
                     fileName = "สรุปข้อมูลการจองพื้นที่ขาย";
                     
                     createExcel(fileName, 4, header, query, result);
