@@ -10,6 +10,7 @@ import Model.Product;
 import Model.Product_Group;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -95,20 +96,29 @@ public class ManageGroupProduct extends HttpServlet {
         // Remove Product
         else if (action.equals("removeProduct")) {
             String[] allProduct = request.getParameter("product").split(",");
+            ArrayList<String> notRemovePro = new ArrayList<>();
             int pass = 0;
             
             for (String proID: allProduct) {
                 Product product = new Product(Integer.parseInt(proID));
-                if (product.removeProduct()) {
+                if (!product.checkProductInOrder()) {
                     pass++;
+                } else {
+                    product.searchProductByID();
+                    notRemovePro.add(product.getProduct_name());
                 }
+                
             }
             
             try (PrintWriter out = response.getWriter()) {
                 if (allProduct.length == pass) {
+                    for (String proID: allProduct) {
+                        Product product = new Product(Integer.parseInt(proID));
+                        product.removeProduct();
+                    }
                     out.println("REMOVED");
                 } else {
-                    out.println("REMOVE ERROR");
+                    out.println(String.join(",", notRemovePro));
                 }
             }
         }

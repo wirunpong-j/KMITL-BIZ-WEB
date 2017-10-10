@@ -19,13 +19,13 @@ public class Constant {
         String url = "";
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-//            url ="jdbc:mysql://kmtil-biz-way-db.mysql.database.azure.com:3306/KMITLBIZ?useUnicode=true&characterEncoding=UTF8";
-            url ="jdbc:mysql://localhost:3306/kmitlbiz?useUnicode=true&characterEncoding=UTF8";
+            url ="jdbc:mysql://kmtil-biz-way-db.mysql.database.azure.com:3306/KMITLBIZ?useUnicode=true&characterEncoding=UTF8";
+//            url ="jdbc:mysql://localhost:3306/kmitlbiz?useUnicode=true&characterEncoding=UTF8";
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
 
-//        return DriverManager.getConnection(url, "kmitlbizadmin@kmtil-biz-way-db", "3hX-Mxx-gzq-QTV");
-        return DriverManager.getConnection(url, "root", "");
+        return DriverManager.getConnection(url, "kmitlbizadmin@kmtil-biz-way-db", "3hX-Mxx-gzq-QTV");
+//        return DriverManager.getConnection(url, "root", "");
     }
 }

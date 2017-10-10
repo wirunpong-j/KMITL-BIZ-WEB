@@ -99,7 +99,7 @@
                                     window.location = "${SITE_URL}/SelectGroupProduct/?product=" + groupID[0];
                                 });                       
                          } else {
-                             alertify.error('ERROR');
+                             alertify.alert('ลบสินค้าไม่สำเร็จ', '<h3 style="color:red;">ไม่สามารถลบสินค้าได้ เนื่องจากมีสินค้า "' + $.trim(data) + '" ถูกใช้อยู่ในใบจองพื้นที่ขายอื่น ๆ โปรดเลือกสินค้าใหม่!!</h3>');
                          }
                      }
                  });

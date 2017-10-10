@@ -158,6 +158,36 @@ public class Product {
         return status;
     }
     
+    public boolean checkProductInOrder() {
+        boolean status = true;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            
+            pstmt = conn.prepareStatement("SELECT * FROM order_product WHERE product_id = ?");
+            pstmt.setInt(1, this.product_id);
+            
+            rs = pstmt.executeQuery();
+            // if don't have return false
+            if (!rs.next()) {status = false;}
+            
+            rs.close();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+            
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        return status;
+    }
+    
     public boolean removeProduct() {
         boolean status = true;
         Connection conn = null;
