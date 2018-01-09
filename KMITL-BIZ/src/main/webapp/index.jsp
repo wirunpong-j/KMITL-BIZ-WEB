@@ -55,7 +55,8 @@
                     </c:when>
                         <c:otherwise>
                             <h1>ทำการเลือกสินค้าแล้ว</h1>
-                            <h2>รูปแบบการจองพื้นที่ : ${sessionScope.selectRentText}</h2>
+                            <h2 id="rentAreaTypeText">รูปแบบการจองพื้นที่ : ${sessionScope.selectRentText}</h2>
+                            <input type="hidden" id="rentTypeID" value="${sessionScope.rentType}"/>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -238,7 +239,7 @@
     $('#confirmBtn').click(function() {
         var cost = parseInt($(this).val().split(',')[0]) * allArea.length * parseInt($(this).val().split(',')[1]);
         var text = '<h3><strong>จองพื้นที่ : ' + allArea.toString() + ' </strong></h3>\n\
-                    <h4>รูปแบบการจอง : ' + $("#selectRent option:selected").text() + '<h4>\n\
+                    <h4>' + $("#rentAreaTypeText").text() + '<h4>\n\
                     <h4>รหัสรับบริการ : ${sessionScope.customer.getCust_id_str()} </h4>\n\
                     <h4>ชื่อผู้ใช้บริการ : ${sessionScope.customer.getFullname()} </h4>\n\
                     <h4>ผู้ใช้บริการประเภท : ${sessionScope.customer.getCust_type_Str()} </h4>\n\
@@ -256,7 +257,7 @@
                 $('.btn-rent').attr("disabled", true);
                 $.ajax({
                     type: "POST",
-                    url: "${SITE_URL}/RentArea/?rentType=" + $('#selectRent').val(),
+                    url: "${SITE_URL}/RentArea/?rentType=" + $('#rentTypeID').val(),
                     data: {'allArea': allArea.toString(), 'addCost': $('#addCost').val(), 'note': $('#note').val()},
                     success: function(data) {
                         $('#confirmBtn').html('<i id="spinBtn"></i> จองพื้นที่สำเร็จ');

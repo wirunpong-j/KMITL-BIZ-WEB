@@ -131,6 +131,7 @@ public class ProductServlet extends HttpServlet {
         session.setAttribute("count", (Integer) priceAreaMap.get("count"));
         session.setAttribute("allZone", allZone);
         session.setAttribute("selectRentText", request.getParameter("selectRentText"));
+        session.setAttribute("rentType", selectRent);
         return;
     }
     

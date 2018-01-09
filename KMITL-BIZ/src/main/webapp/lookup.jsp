@@ -36,7 +36,7 @@
                         <thead>
                             <tr>
                                 <c:forEach var="i" begin="1" end="165">
-                                    <th><button class="btn btn-danger btn-xs btn-area c-hide" type="button">X${i}</button></th>
+                                    <th style="padding: 3px;"><button class="btn btn-danger btn-xs btn-area c-hide" type="button">X${i}</button></th>
                                 </c:forEach>
                             </tr>
                         </thead>
@@ -47,18 +47,18 @@
                                 <c:forEach var="a" items="${area}">
                                     <c:choose>
                                         <c:when test="${a == 'X'}">
-                                            <td class="blank-space"></td>
+                                            <td style="padding: 3px;" class="blank-space"></td>
                                         </c:when>
                                         <c:when test="${a == 'B'}">
-                                            <td class="black-area"></td>
+                                            <td style="padding: 3px;" class="black-area"></td>
                                         </c:when>    
                                         <c:otherwise>
                                             <c:choose>
                                                 <c:when test="${!requestScope.allZone.containsKey(a)}">
-                                                    <td><button class="btn btn-success btn-xs btn-area not-rent c-hide" id="${a}" type="button">${a}</button></td>
+                                                    <td style="padding: 3px;"><button class="btn btn-success btn-xs btn-area not-rent c-hide" id="${a}" type="button">${a}</button></td>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td><button type="button" class="btn btn-danger btn-xs btn-area rented c-hide" id="${a}" name="${a}">${a}</button></td>
+                                                    <td style="padding: 3px;"><button type="button" class="btn btn-danger btn-xs btn-area rented c-hide" id="${a}" name="${a}">${a}</button></td>
                                                     <input type="hidden" id="info-${a}" 
                                                         value="${a}&${sessionScope.allFormat.joinArrayByComma(requestScope.allZone[a].getAllProductName())}&${requestScope.allCustomer[a].getCust_id_str()}&${requestScope.allCustomer[a].getFullname()}&${requestScope.allCustomer[a].getCust_type_Str()}&${requestScope.allCustomer[a].getStudent_id()}&${requestScope.allCustomer[a].getCitizen_id()}&${requestScope.allCustomer[a].getTel()}&${requestScope.allCustomer[a].getEmail()}&${requestScope.allCustomer[a].getVehicle()}&${requestScope.allOrder[a].getOrder_id()}">
                                                 </c:otherwise>
