@@ -22,7 +22,7 @@ public class FetchData {
         Connection conn = null;
         try {
             conn = (Connection) Constant.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product_group ORDER BY group_id");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product_group WHERE is_hidden = 0 ORDER BY group_id");
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {

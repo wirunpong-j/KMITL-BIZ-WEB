@@ -37,7 +37,7 @@ public class Product_Group {
         try {
             conn = (Connection) Constant.getConnection();
             
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product_group WHERE group_id = ?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM product_group WHERE group_id = ? AND is_hidden = 0");
             pstmt.setInt(1, this.group_id);
             
             ResultSet rs = pstmt.executeQuery();
@@ -62,7 +62,7 @@ public class Product_Group {
         
         try {
             conn = (Connection) Constant.getConnection();
-            pstmt = conn.prepareStatement("SELECT * FROM product_group WHERE group_name = ?");
+            pstmt = conn.prepareStatement("SELECT * FROM product_group WHERE group_name = ? AND is_hidden = 0");
             pstmt.setString(1, this.group_name);
             
             rs = pstmt.executeQuery();
@@ -73,7 +73,7 @@ public class Product_Group {
             rs.close();
             pstmt.close();
             
-            pstmt = conn.prepareStatement("INSERT INTO product_group(group_name) VALUES(?);");
+            pstmt = conn.prepareStatement("INSERT INTO product_group(group_name, is_hidden) VALUES(?, 0);");
             pstmt.setString(1, this.group_name);
             
             pstmt.executeUpdate();
@@ -111,6 +111,29 @@ public class Product_Group {
             if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
         }
     }
+    
+    public boolean deleteThisGroup() {
+        boolean status = true;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        
+        try {
+            conn = (Connection) Constant.getConnection();
+            pstmt = conn.prepareStatement("UPDATE product_group SET is_hidden = 1 WHERE group_id = ?");
+            pstmt.setInt(1, this.group_id);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            status = false;
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+        }
+        
+        return status;
+        
+    }
 
     public int getGroup_id() {
         return group_id;
@@ -132,13 +155,5 @@ public class Product_Group {
         return allProduct;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
     
 }

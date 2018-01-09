@@ -4,7 +4,8 @@
 
 <div class="container">
     <div class="jumbotron">
-        <h1>กลุ่ม ${requestScope.gProduct.getGroup_name()}</h1>
+        <h1>กลุ่ม ${requestScope.gProduct.getGroup_name()}</h1><br>
+        <button class="btn btn-lg btn-danger" id="deleteGroupBtn"><i class="fa fa-ban" aria-hidden="true"></i>  ลบกลุ่มนี้</button>
     </div>
     <div class="back_panel">
         <div style="display:inline-block;">
@@ -119,6 +120,30 @@
     $('input.checkbox1').on('click', function() {
         product = $('.checkbox1:checked').map(function() {return this.value;}).get().join(',');
         $('.btn-manage').attr('disabled', productIsEmpty());
+    });
+    
+    $('#deleteGroupBtn').click(function() {
+        alertify.confirm('ลบกลุ่มนี้', '<h3>คุณต้องการลบกลุ่มนี้ใช่หรือไม่ ? เมื่อลบแล้วจะไม่สามารถกู้คืนได้</h3>'
+            , function(){
+                $.ajax({
+                     type: "POST",
+                     url: "${SITE_URL}/ManageGroupProduct/?action=deleteGroupProduct",
+                     data: {groupID: groupID[0]},
+                     success: function(data) {
+                         if ($.trim(data) === 'DELETED') {
+                            alertify.alert('ลบกลุ่มสำเร็จ', '<h3>ทำการลบกลุ่มที่เลือกเรียบร้อย</h3>', 
+                                function() {
+                                    toSelectGroupProduct();
+                                });                       
+                         } else {
+                             alertify.alert('ลบกลุ่มไม่สำเร็จ', '<h3 style="color:red;">ไม่สามารถลบกลุ่มได้</h3>');
+                         }
+                     }
+                 });
+            }
+            , function(){ 
+                alertify.error('Cancel');
+            });
     });
     
 

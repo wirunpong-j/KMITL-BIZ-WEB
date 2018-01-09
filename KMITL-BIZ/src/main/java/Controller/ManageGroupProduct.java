@@ -123,6 +123,21 @@ public class ManageGroupProduct extends HttpServlet {
             }
         }
         
+        // Delete Group Product
+        else if (action.equals("deleteGroupProduct")) {
+            int group_id = Integer.parseInt(request.getParameter("groupID"));
+            Product_Group proGroup = new Product_Group(group_id);
+            
+            try (PrintWriter out = response.getWriter()) {
+                if (proGroup.deleteThisGroup()) {
+                    out.println("DELETED");
+                } else {
+                    out.println("DELETE ERROR");
+                }
+            }
+            
+        }
+        
         session.setAttribute("allGroupPro", FetchData.fetchGroupProduct());
         return;
         
