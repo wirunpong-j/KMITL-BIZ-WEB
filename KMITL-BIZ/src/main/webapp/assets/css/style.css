@@ -32,20 +32,21 @@ body {
 
 .btn-area {
     margin: 0px 0px 0px 0px; 
-    height: 40px; 
-    width: 50px;
+    height: 25px; 
+    width: 40px;
+    font-size: 12px;
 }
 
 .blank-space {
     margin: 0px 0px 0px 0px; 
-    height: 40px; 
-    width: 50px;
+    height: 25px; 
+    width: 40px;
 }
 
 .black-area {
     margin: 0px 0px 0px 0px; 
-    height: 40px; 
-    width: 50px;
+    height: 25px;
+    width: 40px;
     background-color: black;
 }
 

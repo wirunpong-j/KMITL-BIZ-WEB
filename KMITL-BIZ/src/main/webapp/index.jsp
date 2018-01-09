@@ -108,7 +108,7 @@
                         <thead>
                             <tr>
                                 <c:forEach var="i" begin="1" end="165">
-                                    <th><button class="btn btn-danger btn-xs btn-area rented" type="button">X${i}</button></th>
+                                    <th style="padding: 3px;"><button class="btn btn-danger btn-xs btn-area rented" type="button">X${i}</button></th>
                                 </c:forEach>
                             </tr>
                         </thead>
@@ -119,21 +119,21 @@
                                 <c:forEach var="a" items="${area}">
                                     <c:choose>
                                         <c:when test="${a == 'X'}">
-                                            <td class="blank-space"></td>
+                                            <td style="padding: 3px;" class="blank-space"></td>
                                         </c:when>
                                         <c:when test="${a == 'B'}">
-                                            <td class="black-area"></td>
+                                            <td style="padding: 3px;" class="black-area"></td>
                                         </c:when>    
                                         <c:otherwise>
                                             <c:choose>
                                                 <c:when test="${!sessionScope.allZone.containsKey(a)}">
-                                                    <td><button class="btn btn-success btn-xs btn-area btn-unselect rented" id="${a}" name="${a}" type="button">${a}</button></td>
+                                                    <td style="padding: 3px;"><button class="btn btn-success btn-xs btn-area btn-unselect rented" id="${a}" name="${a}" type="button">${a}</button></td>
                                                 </c:when>
                                                 <c:when test="${sessionScope.allZone[a].isHasProduct()}">
-                                                    <td><button class="btn btn-warning btn-xs btn-area rented" type="button" disabled>${a}</button></td>
+                                                    <td style="padding: 3px;"><button class="btn btn-warning btn-xs btn-area rented" type="button" disabled>${a}</button></td>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td><button class="btn btn-danger btn-xs btn-area rented" type="button" disabled>${a}</button></td>
+                                                    <td style="padding: 3px;"><button class="btn btn-danger btn-xs btn-area rented" type="button" disabled>${a}</button></td>
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:otherwise>
