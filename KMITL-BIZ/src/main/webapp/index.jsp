@@ -17,6 +17,21 @@
                                     </c:forEach>
                                 </ul>
                             </li>
+                            <label for="selectRent" class="col-sm-2 control-label">เลือกรูปแบบการจองพื้นที่ : </label>
+                            <select class="form-control rented" style="width:300px" id="selectRent" name="selectRent">
+                                <c:forEach var="i" begin="1" end="4">
+                                    <c:set var="key" scope="session" value="R${i}"></c:set>
+                                    <c:choose>
+                                        <c:when test="${key == sessionScope.typeRent}">
+                                            <option value="${key}" text="${sessionScope.allRentType[key]}" selected="selected">${sessionScope.allRentType[key]}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${key}" text="${sessionScope.allRentType[key]}">${sessionScope.allRentType[key]}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </select>
+                            
                         </ul>
                     
                         <div class="tab-content">
@@ -40,6 +55,7 @@
                     </c:when>
                         <c:otherwise>
                             <h1>ทำการเลือกสินค้าแล้ว</h1>
+                            <h2>รูปแบบการจองพื้นที่ : ${sessionScope.selectRentText}</h2>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -79,45 +95,10 @@
         </div>
     </div>
     <br><br>
-    
-    <c:choose>
-        <c:when test="${sessionScope.status == 'RENT'}">
-            <div class="row">
-                <form class="form-horizontal" action="${SITE_URL}/ShowRentArea" method="POST">
-                    <div class="form-group">
-                        <label for="selectRent" class="col-sm-2 control-label">เลือกรูปแบบการจองพื้นที่ : </label>
-                        <div class="col-sm-4">
-                            <select class="form-control rented" style="width:300px" id="selectRent" name="selectRent">
-                                <c:forEach var="i" begin="1" end="4">
-                                    <c:set var="key" scope="session" value="R${i}"></c:set>
-                                    <c:choose>
-                                        <c:when test="${key == sessionScope.typeRent}">
-                                            <option value="${key}" text="${sessionScope.allRentType[key]}" selected="selected">${sessionScope.allRentType[key]}</option>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <option value="${key}" text="${sessionScope.allRentType[key]}">${sessionScope.allRentType[key]}</option>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                                
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="submit" class="btn btn-primary rented" id="changeRent">ยืนยัน</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </c:when>
-        <c:otherwise>
-            
-        </c:otherwise>
-    </c:choose>
-    
 
     <div class="row">
         <c:choose>
-            <c:when test="${sessionScope.statusShow != 'true'}">
+            <c:when test="${sessionScope.status != 'RENT'}">
                 <div class="col-md-9"><img class="img-responsive" src="assets/img/Caremal-Market.jpg"></div>
             </c:when>
             <c:otherwise>
@@ -298,8 +279,11 @@
     $('#saveBtn').click(function() {
         var product = $('#product').val();
         var customer = $('#customer').val();
-        var textDialog = '<h3>สินค้าที่เลือก : ' + product + ' </h3>\n\
-                          <h3>รหัสรับบริการ : ' + customer + ' </h3>';
+        var selectRent = $('#selectRent').val();
+        var selectRentText = $("#selectRent option:selected").text();
+        var textDialog = '<h4>รูปแบบการจองพื้นที่ : ' + selectRentText + ' </h4>\n\
+                          <h4>สินค้าที่เลือก : ' + product + ' </h4>\n\
+                          <h4>รหัสรับบริการ : ' + customer + ' </h4>';
         alertify.confirm('ยืนยันการเลือกสินค้า', textDialog,
             function(){
                 $('#saveBtn').attr("disabled", true).html('<i id="spinBtn" class="fa fa-circle-o-notch fa-spin"></i> กำลังบันทึก');
@@ -308,7 +292,7 @@
                 $.ajax({
                     type: "POST",
                     url: "${SITE_URL}/ProductServlet",
-                    data: {'product': product, 'customer': customer},
+                    data: {'product': product, 'customer': customer, 'selectRent': selectRent, 'selectRentText': selectRentText},
                     success: function(data) {
                         if ($.trim(data) === 'NOT FOUND') {
                             alertify.error('รหัสรับบริการไม่ถูกต้อง กรุณากรอกรหัสรับบริการใหม่อีกครั้ง');

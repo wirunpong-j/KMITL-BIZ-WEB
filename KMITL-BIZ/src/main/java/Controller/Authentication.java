@@ -8,6 +8,7 @@ package Controller;
 import Model.AllFormat;
 import Model.AreaModel;
 import Model.FetchData;
+import Model.MyDateTime;
 import Model.Staff;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -59,6 +60,9 @@ public class Authentication extends HttpServlet {
             session.setAttribute("staff", staff);
             session.setAttribute("allArea", AreaModel.allArea());
             session.setAttribute("allFormat", new AllFormat());
+            
+            session.setAttribute("allRentType", MyDateTime.getInstance().getAllRentType());
+            session.setAttribute("allRentDate", MyDateTime.getInstance().getAllRentDate());
             
             response.sendRedirect("/KMITL-BIZ/index.jsp");
             

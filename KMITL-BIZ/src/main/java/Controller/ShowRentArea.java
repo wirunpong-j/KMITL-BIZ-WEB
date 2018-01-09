@@ -45,97 +45,97 @@ public class ShowRentArea extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
-        HttpSession session = request.getSession();
-        HashMap<String, Object> allRentDate = (HashMap<String, Object>) session.getAttribute("allRentDate");
-        String selectRent = request.getParameter("selectRent");
+//        HttpSession session = request.getSession();
+//        HashMap<String, Object> allRentDate = (HashMap<String, Object>) session.getAttribute("allRentDate");
+//        String selectRent = request.getParameter("selectRent");
+//        
+//        ZonedDateTime thursday = null;
+//        ArrayList<ZonedDateTime> thursdayOnMonth = null;
+//        String query = "";
+//        // set price area
+//        Customer cust = (Customer) session.getAttribute("customer");
+//        int count = 0;
+//        
+//        if (selectRent.equals("R1") || selectRent.equals("R2")) {
+//            thursday = (ZonedDateTime) allRentDate.get(selectRent);
+//            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN order_product USING (order_id) JOIN product USING (product_id) "
+//                    + "WHERE DAY(rent_date) = "+ thursday.getDayOfMonth() +" AND MONTH(rent_date) = "+ thursday.getMonthValue() +" AND YEAR(rent_date) = "+ thursday.getYear() +" ORDER BY zone_id;";
+//            
+//            switch (cust.getCust_type()) {
+//                case "STUDENT": cust.setPrice(100); break;
+//                case "STAFF": cust.setPrice(160); break;
+//                case "OUTSIDER": cust.setPrice(200); break;
+//            }
+//            
+//            count = 1;
+//
+//            
+//        } else {
+//            thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(selectRent);
+//            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN order_product USING (order_id) JOIN product USING (product_id) "
+//                    + "WHERE MONTH(rent_date) = "+ thursdayOnMonth.get(0).getMonthValue() +" ORDER BY zone_id;";
+//            
+//            switch (cust.getCust_type()) {
+//                case "STUDENT": cust.setPrice(90); break;
+//                case "STAFF": cust.setPrice(150); break;
+//                case "OUTSIDER": cust.setPrice(190); break;
+//            }
+//            
+//            count = thursdayOnMonth.size();
+//            
+//        }
         
-        ZonedDateTime thursday = null;
-        ArrayList<ZonedDateTime> thursdayOnMonth = null;
-        String query = "";
-        // set price area
-        Customer cust = (Customer) session.getAttribute("customer");
-        int count = 0;
+//        Connection conn = null;
+//        PreparedStatement pstmt = null;
+//        ResultSet rs = null;
         
-        if (selectRent.equals("R1") || selectRent.equals("R2")) {
-            thursday = (ZonedDateTime) allRentDate.get(selectRent);
-            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN order_product USING (order_id) JOIN product USING (product_id) "
-                    + "WHERE DAY(rent_date) = "+ thursday.getDayOfMonth() +" AND MONTH(rent_date) = "+ thursday.getMonthValue() +" AND YEAR(rent_date) = "+ thursday.getYear() +" ORDER BY zone_id;";
-            
-            switch (cust.getCust_type()) {
-                case "STUDENT": cust.setPrice(100); break;
-                case "STAFF": cust.setPrice(160); break;
-                case "OUTSIDER": cust.setPrice(200); break;
-            }
-            
-            count = 1;
-
-            
-        } else {
-            thursdayOnMonth = (ArrayList<ZonedDateTime>) allRentDate.get(selectRent);
-            query = "SELECT * FROM `order` JOIN zone USING (order_id) JOIN order_product USING (order_id) JOIN product USING (product_id) "
-                    + "WHERE MONTH(rent_date) = "+ thursdayOnMonth.get(0).getMonthValue() +" ORDER BY zone_id;";
-            
-            switch (cust.getCust_type()) {
-                case "STUDENT": cust.setPrice(90); break;
-                case "STAFF": cust.setPrice(150); break;
-                case "OUTSIDER": cust.setPrice(190); break;
-            }
-            
-            count = thursdayOnMonth.size();
-            
-        }
+//        // set Area
+//        HashMap<String,Zone> allZone = new HashMap<>();
+//        try {
+//            conn = (Connection) Constant.getConnection();
+//            pstmt = conn.prepareStatement(query);
+//            
+//            rs = pstmt.executeQuery();
+//            
+//            Zone zone;
+//            while (rs.next()) {
+//                if (!allZone.containsKey(rs.getString("zone_id"))) {
+//                    zone = new Zone(rs.getString("zone_id"), rs.getInt("order_id"));
+//                    zone.setHasProduct(false);
+//                    zone.getAllProductID().add(rs.getInt("product_id"));
+//                } else {
+//                    zone = allZone.get(rs.getString("zone_id"));
+//                    zone.getAllProductID().add(rs.getInt("product_id"));
+//                }               
+//                allZone.put(rs.getString("zone_id"), zone);
+//            }
+//
+//            rs.close();
+//            pstmt.close();
+//
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        } finally {
+//            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
+//        }
         
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+//        for (String zoneID: allZone.keySet()) {
+//            for (Product product: cust.getAllProduct()) {
+//                for (int id: allZone.get(zoneID).getAllProductID()) {
+//                    if (product.getProduct_id() == id) {
+//                        allZone.get(zoneID).setHasProduct(true);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
         
-        // set Area
-        HashMap<String,Zone> allZone = new HashMap<>();
-        try {
-            conn = (Connection) Constant.getConnection();
-            pstmt = conn.prepareStatement(query);
-            
-            rs = pstmt.executeQuery();
-            
-            Zone zone;
-            while (rs.next()) {
-                if (!allZone.containsKey(rs.getString("zone_id"))) {
-                    zone = new Zone(rs.getString("zone_id"), rs.getInt("order_id"));
-                    zone.setHasProduct(false);
-                    zone.getAllProductID().add(rs.getInt("product_id"));
-                } else {
-                    zone = allZone.get(rs.getString("zone_id"));
-                    zone.getAllProductID().add(rs.getInt("product_id"));
-                }               
-                allZone.put(rs.getString("zone_id"), zone);
-            }
-
-            rs.close();
-            pstmt.close();
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        } finally {
-            if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
-        }
-        
-        for (String zoneID: allZone.keySet()) {
-            for (Product product: cust.getAllProduct()) {
-                for (int id: allZone.get(zoneID).getAllProductID()) {
-                    if (product.getProduct_id() == id) {
-                        allZone.get(zoneID).setHasProduct(true);
-                        break;
-                    }
-                }
-            }
-        }
-        
-        session.setAttribute("count", count);
-        session.setAttribute("allZone", allZone);
-        session.setAttribute("typeRent", selectRent);
-        session.setAttribute("statusShow", "true");
-        session.setAttribute("customer", cust);
-        response.sendRedirect("/KMITL-BIZ/index.jsp");
+//        session.setAttribute("count", count);
+//        session.setAttribute("allZone", allZone);
+//        session.setAttribute("typeRent", selectRent);
+//        session.setAttribute("statusShow", "true");
+//        session.setAttribute("customer", cust);
+//        response.sendRedirect("/KMITL-BIZ/index.jsp");
         return;
     }
 
