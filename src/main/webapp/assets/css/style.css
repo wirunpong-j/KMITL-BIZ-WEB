@@ -1,0 +1,166 @@
+#login_body {
+  background-color: #212121;
+  height: 100%
+}
+
+#login_panel {
+  background-color: #FAFAFA;
+  width: 400px;
+  margin: auto;
+  margin-top: 50px;
+  border-radius: 5px;
+  padding: 25px;
+}
+
+#login_top_items {
+  text-align: center;
+}
+
+.back_panel {
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  padding: 25px;
+}
+
+body {
+    padding-top: 65px;
+}
+
+.row {
+  border-radius:5px;
+}
+
+.btn-area {
+    margin: 0px 0px 0px 0px; 
+    height: 25px; 
+    width: 40px;
+    font-size: 12px;
+}
+
+.blank-space {
+    margin: 0px 0px 0px 0px; 
+    height: 25px; 
+    width: 40px;
+}
+
+.black-area {
+    margin: 0px 0px 0px 0px; 
+    height: 25px;
+    width: 40px;
+    background-color: black;
+}
+
+.admin_panel {
+  background-color: grey;
+  border-radius: 5px;
+  padding: 5px;
+  color: white;
+  text-align: center;
+  padding: 25px 0;
+}
+
+.product_panel {
+  background-color: #ffbfbf;
+  border-radius: 5px;
+  padding: 5px;
+  color: white;
+  text-align: center;
+  padding: 25px 0;
+  margin-bottom: 30px;
+}
+
+#admin_cust_add {
+  background-color: #0FBEFF;
+  color: white;
+}
+
+#admin_cust_edit {
+  background-color: #0FBEFF;
+  color: white;
+}
+
+#admin_cust_history {
+  background-color: #0FBEFF;
+  color: white;
+}
+
+#admin_cust_add:hover {
+  background-color: #0D47A1;
+  color: white;
+}
+
+#admin_cust_edit:hover {
+  background-color: #0D47A1;
+  color: white;
+}
+
+#admin_cust_history:hover {
+  background-color: #0D47A1;
+  color: white;
+}
+
+#admin_staff_add {
+  background-color: #8CDA95;
+  color: white;
+}
+
+#admin_staff_edit {
+  background-color: #8CDA95;
+  color: white;
+}
+
+#admin_staff_history {
+  background-color: #8CDA95;
+  color: white;
+}
+
+#admin_staff_add:hover {
+  background-color: #1B5E20;
+  color: white;
+}
+
+#admin_staff_edit:hover {
+  background-color: #1B5E20;
+  color: white;
+}
+
+#admin_staff_history:hover {
+  background-color: #1B5E20;
+  color: white;
+}
+
+#admin_data_1 {
+  background-color: #B6B6B6;
+  color: white;
+}
+
+#admin_data_2 {
+  background-color: #B6B6B6;
+  color: white;
+}
+
+#admin_data_3 {
+  background-color: #B6B6B6;
+  color: white;
+}
+
+#admin_data_1:hover {
+  background-color: #707B7C;
+  color: white;
+}
+
+#admin_data_2:hover {
+  background-color: #707B7C;
+  color: white;
+}
+
+#admin_data_3:hover {
+  background-color: #707B7C;
+  color: white;
+}
+
+#product_data_1:hover {
+  background-color: #f74747;
+  color: white;
+}
+
