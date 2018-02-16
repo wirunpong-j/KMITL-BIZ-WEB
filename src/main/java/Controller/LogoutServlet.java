@@ -37,7 +37,7 @@ public class LogoutServlet extends HttpServlet {
         
         HttpSession session = request.getSession();
         session.invalidate();
-        response.sendRedirect("/KMITL-BIZ/");
+        response.sendRedirect("/");
         return;
     }
 
