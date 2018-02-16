@@ -93,8 +93,8 @@ public class ExportData extends HttpServlet {
                     result.put(4, "c_zone");
                     
                     String query = "SELECT cust_id, order_date, SUM(price) as s_price, order_type, COUNT(*) as c_zone "
-                            + "FROM kmitlbiz.customer "
-                            + "JOIN kmitlbiz.order "
+                            + "FROM customer "
+                            + "JOIN `order` "
                             + "USING (cust_id) "
                             + "GROUP BY cust_id";
                     fileName = "สรุปข้อมูลการชำระเงิน";
