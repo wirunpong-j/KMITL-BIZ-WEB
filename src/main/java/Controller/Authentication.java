@@ -64,7 +64,7 @@ public class Authentication extends HttpServlet {
             session.setAttribute("allRentType", MyDateTime.getInstance().getAllRentType());
             session.setAttribute("allRentDate", MyDateTime.getInstance().getAllRentDate());
             
-            response.sendRedirect("/KMITL-BIZ/index.jsp");
+            response.sendRedirect("/KMITL-BIZ/main.jsp");
             
         } else {
             response.sendRedirect("/KMITL-BIZ/");
