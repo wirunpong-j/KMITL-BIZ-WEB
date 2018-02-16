@@ -28,6 +28,6 @@ public class Constant {
 
 //        return DriverManager.getConnection(url, "kmitlbizadmin@kmtil-biz-way-db", "3hX-Mxx-gzq-QTV");
 //        return DriverManager.getConnection(url, "root", "root");
-        return DriverManager.getConnection("mysql://b2bcc8e43494d6:de2f014e@us-cdbr-iron-east-05.cleardb.net/heroku_1c0f380175ca8b3?reconnect=true&useUnicode=true&characterEncoding=UTF8");
+        return DriverManager.getConnection("jdbc:mysql://b2bcc8e43494d6:de2f014e@us-cdbr-iron-east-05.cleardb.net/heroku_1c0f380175ca8b3?reconnect=true&useUnicode=true&characterEncoding=UTF8");
     }
 }
