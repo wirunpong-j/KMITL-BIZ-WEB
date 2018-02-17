@@ -26,7 +26,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author BellKunG
  */
-@WebFilter(filterName = "AuthenFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "AuthenFilter", urlPatterns = {"/asdaldkaldkasldk/*"})
 public class AuthenFilter implements Filter {
     
     private static final boolean debug = true;
