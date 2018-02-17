@@ -304,7 +304,7 @@
                             setTimeout(function() {
                                 alertify.success('คุณทำการเลือกสินค้า ' + product);
                                 setTimeout(function() {
-                                    window.location = "${SITE_URL}/index.jsp";
+                                    window.location = "${SITE_URL}/main.jsp";
                                 }, 2000);
                             }, 2000);
                         }
